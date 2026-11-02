@@ -16,17 +16,20 @@ The primary ecosystem will be TypeScript, React, and Next.js, but the registry a
 
 simplify.dev consists of:
 
-1. A registry that defines and distributes libraries and other installable assets.
+1. A registry that defines, indexes, versions, and distributes libraries and other installable assets.
 2. A CLI that detects projects, resolves dependencies, and installs assets.
 3. A web application for discovering, previewing, configuring, and installing assets.
-4. A design system and token infrastructure for consistent, customizable interfaces.
-5. An extensible ecosystem for publishing implementations across different languages and frameworks.
+4. A GitHub integration for creating, connecting, versioning, and publishing libraries from GitHub repositories.
+5. A design system and token infrastructure for consistent, customizable interfaces.
+6. An extensible ecosystem for publishing implementations across different languages and frameworks.
 
-The platform should make it possible to install a substantial, well-engineered feature, connect it to the application's existing services, and customize it without rebuilding the entire feature.
+GitHub will be the primary way to create and maintain libraries. Developers should be able to use their existing GitHub repositories, branches, commits, tags, releases, and GitHub Actions workflows while using simplify.dev as the distribution and discovery platform.
 
----
+The platform should not require developers to create or maintain all their library source code directly inside simplify.dev.
 
-2. Why simplify.dev Exists
+The central objective is to make it possible to install a substantial, well-engineered feature, connect it to an application's existing services, and customize it without rebuilding the entire feature.
+
+## 2. Why simplify.dev Exists
 
 Developers repeatedly implement similar functionality across different applications.
 
@@ -60,13 +63,29 @@ The developer should not need to implement the entire chat system manually. They
 
 The same approach should apply to other categories of software, including non-visual logic and integrations.
 
----
+### 2.1 GitHub as the Library Development Environment
 
-3. Core Concepts
+Libraries should be developed and maintained using familiar software development workflows.
+
+A developer should be able to:
+
+1. Create a library from an existing GitHub repository or create a new repository for it.
+2. Add simplify.dev metadata and organize its assets.
+3. Continue developing locally or through GitHub's development tools.
+4. Commit and push changes using normal Git workflows.
+5. Use GitHub Actions to validate and publish library versions.
+6. Connect the repository to a simplify.dev account.
+7. Make published assets discoverable and installable through the registry.
+
+This approach gives developers ownership of their source code and lets them benefit from GitHub's existing collaboration, review, automation, and version-control features.
+
+simplify.dev should manage registry metadata, asset discovery, compatibility, distribution, and installation without replacing GitHub's role in source-code management.
+
+## 3. Core Concepts
 
 simplify.dev organizes installable assets into distinct categories. Each category has a specific responsibility.
 
-3.1 UI Components
+### 3.1 UI Components
 
 UI components are reusable visual building blocks.
 
@@ -88,7 +107,7 @@ Components provide polished default styles, accessible interactions, and consist
 
 They should work independently and be composable into larger interfaces.
 
-3.2 Blocks
+### 3.2 Blocks
 
 Blocks are larger, functional interface compositions built from multiple components and reusable logic.
 
@@ -111,7 +130,7 @@ For example, an Agent Chat block should account for message rendering, conversat
 
 Application-specific business rules, credentials, authorization, and persistence should remain configurable or owned by the consuming application.
 
-3.3 Logic
+### 3.3 Logic
 
 Logic assets provide reusable behaviour without requiring a particular visual implementation.
 
@@ -128,9 +147,7 @@ Examples:
 
 Logic should be usable independently of UI components wherever possible.
 
-A developer should be able to install a chat controller and build their own interface around it, or install a complete chat block that uses the same controller.
-
-3.4 Integrations
+### 3.4 Integrations
 
 Integrations connect reusable components or logic to external technologies.
 
@@ -149,13 +166,13 @@ Integrations should implement defined interfaces or adapters instead of forcing 
 
 An integration should clearly declare its dependencies, configuration requirements, supported environments, and setup instructions.
 
-3.5 Recipes
+### 3.5 Recipes
 
 Recipes combine multiple assets into a ready-to-configure solution.
 
 For example:
 
-"agent-chat-postgres"
+`agent-chat-postgres`
 
 Could combine:
 
@@ -168,7 +185,7 @@ A recipe should describe the relationship between its dependencies and coordinat
 
 It should not duplicate the implementations of the assets it combines.
 
-3.6 Templates
+### 3.6 Templates
 
 Templates provide larger starting points for applications or substantial application sections.
 
@@ -182,23 +199,33 @@ Examples:
 
 Templates should be composed from existing assets whenever possible rather than independently reimplementing their functionality.
 
-3.7 Libraries
+### 3.7 Libraries
 
 A library is a distributable collection of related assets or a standalone reusable implementation.
 
 A library may contain components, blocks, logic, integrations, or other related resources.
 
+Libraries are the primary units developers create, maintain, and publish through simplify.dev.
+
+A library should have:
+
+- A unique identity.
+- A connected source repository.
+- Its own version history.
+- One or more assets.
+- Metadata and documentation.
+- Declared dependencies and compatibility.
+- A publishing configuration.
+
+A library may contain multiple assets, and each asset should remain independently identifiable and installable where appropriate.
+
 The registry should support both individual assets and libraries containing multiple assets.
 
-This distinction allows developers to install one specific feature or an entire collection.
-
----
-
-4. Platform Architecture
+## 4. Platform Architecture
 
 The platform should be divided into independent systems with clearly defined responsibilities.
 
-4.1 Registry
+### 4.1 Registry
 
 The registry is the central distribution and discovery system.
 
@@ -209,6 +236,7 @@ It should not be limited to storing a list of downloadable files. It must descri
 The registry is responsible for:
 
 - Asset discovery and metadata.
+- Library identity and ownership.
 - Version information.
 - Language and framework compatibility.
 - Dependency relationships.
@@ -220,12 +248,17 @@ The registry is responsible for:
 - Documentation references.
 - Preview information.
 - Licensing and attribution information.
+- Published source snapshots or artifact references.
 
 The registry should be independent of any particular programming language.
 
 An asset can have multiple implementations for different languages or frameworks while retaining a shared identity and documentation structure.
 
-4.2 CLI and Installer
+The registry should also maintain a relationship between published versions and their original GitHub repository, commit, tag, or release.
+
+GitHub remains the source of truth for repository history. The registry maintains the information required to discover and install published versions reliably.
+
+### 4.2 CLI and Installer
 
 The CLI is responsible for interacting with a developer's local project.
 
@@ -243,20 +276,59 @@ It should:
 - Detect installation conflicts.
 - Compare installed versions with registry versions.
 - Validate project configuration.
+- Inspect library metadata.
+- Initialize and validate library projects.
+- Publish libraries when authorized.
 
 The installer should be safe and predictable. It must not silently overwrite important project files, replace environment secrets, or execute arbitrary registry-provided scripts.
 
-4.3 Web Application
+### 4.3 Web Application
 
 The web application provides the visual interface for exploring and managing the registry.
 
 It should allow developers to discover assets, inspect their implementations, preview their functionality, configure their appearance, and obtain installation instructions.
 
+It should also provide library management capabilities, including:
+
+- Connecting GitHub repositories.
+- Creating libraries from repositories.
+- Viewing repository and publishing information.
+- Inspecting published versions.
+- Managing library metadata.
+- Viewing synchronization and publishing status.
+- Managing connected repositories and permissions.
+
 The web application and CLI must use the same registry definitions and installation metadata.
 
 The website must not maintain separate implementations of components or blocks just for demonstration purposes.
 
-4.4 Design System and Tokens
+### 4.4 GitHub Integration
+
+GitHub is the primary source-control and library-development environment for simplify.dev.
+
+The integration should allow developers to connect repositories to their simplify.dev accounts and publish libraries through familiar GitHub workflows.
+
+It is responsible for:
+
+- GitHub account authorization.
+- Repository discovery and selection.
+- Repository-to-library association.
+- Initial library setup.
+- Repository metadata synchronization.
+- Commit and tag tracking.
+- GitHub Actions publishing workflows.
+- Release synchronization.
+- Publishing validation.
+- Webhook processing.
+- Repository access and permission management.
+
+The integration should not attempt to replace GitHub's Git functionality.
+
+Developers should continue using GitHub for commits, branches, pull requests, code reviews, issues, releases, and collaboration.
+
+simplify.dev should consume the relevant repository information and published source to power its registry.
+
+### 4.5 Design System and Tokens
 
 The design system provides the shared visual foundation for UI implementations.
 
@@ -276,20 +348,361 @@ The token system should be independent of React and capable of generating framew
 
 This makes it possible to maintain a consistent visual identity across TypeScript applications, .NET applications, and future language ecosystems without forcing them to share the same UI implementation.
 
----
+## 5. GitHub Integration and Library Lifecycle
 
-5. Installation Architecture
+GitHub should be the first-class environment for creating and maintaining libraries.
+
+The integration should be designed around repository ownership, reproducible publishing, and clear version relationships.
+
+### 5.1 Connecting GitHub
+
+Developers should be able to connect their GitHub accounts to simplify.dev.
+
+The preferred approach is a GitHub App installation with explicitly requested repository permissions.
+
+This allows simplify.dev to interact with repositories the developer authorizes without requiring unrestricted access to their entire GitHub account.
+
+The connection flow should:
+
+1. Allow the developer to authorize simplify.dev through GitHub.
+2. Let the developer select which repositories simplify.dev can access.
+3. Retrieve repository metadata and relevant configuration files.
+4. Allow the developer to create a new library or connect the repository to an existing library.
+5. Validate the repository structure and library manifest.
+6. Display the resulting library configuration and connection status.
+
+Repository access should be limited to the permissions required by the integration.
+
+Developers should be able to disconnect repositories or revoke access through GitHub.
+
+### 5.2 Creating a Library from GitHub
+
+GitHub should be the default library creation method.
+
+A developer should be able to create a library in two ways:
+
+Connect an existing repository
+
+The developer selects an existing repository and imports it into simplify.dev.
+
+The platform should inspect the repository, locate or generate the required library manifest, and guide the developer through configuring the library.
+
+The existing repository structure should be preserved wherever possible.
+
+Create a new repository for a library
+
+The developer starts the library creation process from simplify.dev.
+
+The platform can guide them through creating a new GitHub repository, initializing the required library structure, and connecting it to their simplify.dev account.
+
+In both cases, the repository becomes the primary source for the library's implementation.
+
+The platform should not require developers to maintain a separate copy of their library source code inside simplify.dev.
+
+### 5.3 Repository Structure
+
+A library should have a predictable structure.
+
+For example:
+
+```
+agent-chat/
+├── simplify/
+│   ├── library.json
+│   └── assets/
+│       ├── blocks/
+│       │   └── agent-chat.json
+│       ├── logic/
+│       │   └── chat-controller.json
+│       └── integrations/
+│           ├── vercel-ai.json
+│           └── postgres.json
+├── src/
+│   ├── blocks/
+│   │   └── agent-chat/
+│   ├── logic/
+│   │   └── chat-controller/
+│   └── integrations/
+│       ├── vercel-ai/
+│       └── postgres/
+├── docs/
+├── examples/
+├── previews/
+├── README.md
+├── CHANGELOG.md
+└── package.json
+```
+
+The exact layout may vary by language and framework.
+
+The registry must be able to understand the library independently of its source directory structure through its manifest and file mappings.
+
+The platform should provide sensible defaults without forcing developers to adopt an unnecessarily rigid repository layout.
+
+### 5.4 Repository Manifest
+
+Every library should have a root manifest describing its identity, assets, and publishing configuration.
+
+For example:
+
+```
+{
+  "$schema": "https://simplify.dev/schema/library.json",
+  "id": "agent-chat",
+  "name": "Agent Chat",
+  "description": "Reusable agent conversation interfaces and logic.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "assets": [
+    "simplify/assets/blocks/agent-chat.json",
+    "simplify/assets/logic/chat-controller.json",
+    "simplify/assets/integrations/vercel-ai.json"
+  ],
+  "publishing": {
+    "include": [
+      "src/**",
+      "simplify/**",
+      "docs/**",
+      "README.md",
+      "CHANGELOG.md"
+    ],
+    "exclude": [
+      "**/node_modules/**",
+      "**/.env*",
+      "**/.git/**",
+      "**/dist/**"
+    ]
+  }
+}
+```
+
+This is an initial conceptual schema. The final library specification should define validation rules, supported values, version compatibility, and the complete set of fields.
+
+The manifest should describe the library rather than duplicate all the implementation details of its assets.
+
+Each asset should have its own manifest describing its implementation and installation requirements.
+
+### 5.5 Source of Truth
+
+The connected GitHub repository should remain the authoritative source for library source code.
+
+simplify.dev should maintain a relationship between a library version and the exact repository state from which it was published.
+
+For each published version, the registry should record:
+
+- GitHub repository identity.
+- Repository owner and name.
+- Source branch where relevant.
+- Git commit SHA.
+- Git tag or release, when applicable.
+- Library version.
+- Manifest version.
+- Publication timestamp.
+- Published artifact or immutable source snapshot.
+- Validation results.
+
+This ensures that an installed library version can be traced back to its original source.
+
+The registry should not depend on a repository's current branch state to serve an older published version.
+
+Published versions must remain reproducible even if the repository changes, branches are deleted, or newer commits are pushed.
+
+### 5.6 Versioning
+
+Library versions should follow Semantic Versioning where appropriate.
+
+For example:
+
+```
+1.0.0
+1.1.0
+1.1.1
+2.0.0
+```
+
+Developers should be able to use normal Git workflows to manage their source history.
+
+Git tags and GitHub releases should be the preferred release markers for published library versions.
+
+A publishing workflow should validate that the library version in its manifest matches the intended release version.
+
+For example:
+
+```
+v1.2.0
+```
+
+Should correspond to:
+
+```
+{
+  "version": "1.2.0"
+}
+```
+
+The registry should prevent accidental duplicate or conflicting releases.
+
+A published version should be immutable. If a release contains an error, the developer should publish a new version rather than silently replacing the existing one.
+
+### 5.7 Publishing Through GitHub Actions
+
+GitHub Actions should be the primary automated publishing mechanism.
+
+simplify.dev should provide a reusable GitHub Action or publishing CLI command that developers can include in their repositories.
+
+The workflow should support:
+
+- Validation on pull requests.
+- Validation on pushes to selected branches.
+- Publishing development snapshots.
+- Publishing stable releases from Git tags.
+- Manual publishing through workflow dispatch.
+- Publishing status reporting.
+
+A typical workflow could look like:
+
+```
+name: Publish simplify.dev Library
+
+on:
+  push:
+    tags:
+      - "v*"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish library
+        uses: simplify-dev/publish@v1
+        with:
+          token: ${{ secrets.SIMPLIFY_TOKEN }}
+```
+
+The example is illustrative. The final Action interface, authentication mechanism, and supported inputs should be defined separately.
+
+The checkout step is important because the publishing process must operate on the exact repository commit associated with the workflow run.
+
+The publishing Action should:
+
+1. Validate the repository and library manifest.
+2. Resolve the commit and intended version.
+3. Validate referenced asset manifests and source files.
+4. Check dependencies and implementation targets.
+5. Exclude files that should not be published.
+6. Create a reproducible publication artifact.
+7. Submit the artifact and metadata to simplify.dev.
+8. Wait for registry validation and publication results.
+9. Report the resulting library version and registry URL.
+
+The Action should fail clearly when validation or publication fails.
+
+### 5.8 Automatic Synchronization
+
+Developers should have control over how repository changes are synchronized with simplify.dev.
+
+The integration should support multiple synchronization strategies.
+
+Release-based publishing
+
+Only Git tags or GitHub releases trigger stable publication.
+
+This should be the default strategy for production libraries.
+
+Branch-based development publishing
+
+Pushes to configured branches can publish development snapshots.
+
+For example, a push to `main` may produce a development version associated with its commit SHA.
+
+These snapshots should be distinguishable from stable releases and should not silently replace stable versions.
+
+Manual publishing
+
+Developers can trigger a publication from GitHub Actions or the simplify.dev web application.
+
+This is useful when a library requires an explicit release decision.
+
+Webhook-based synchronization
+
+simplify.dev can use GitHub webhooks to receive repository events.
+
+Relevant events may include:
+
+- Push.
+- Tag creation.
+- Release publication.
+- Repository rename.
+- Repository deletion.
+- Installation permission changes.
+
+Webhooks should primarily keep repository and library metadata current, trigger appropriate validation, and update synchronization status.
+
+They should not publish every repository change as a stable release.
+
+All webhook processing must be authenticated, idempotent, and resilient to retries and out-of-order delivery.
+
+### 5.9 GitHub Features Remain Available
+
+Connecting a repository to simplify.dev should not restrict how developers use GitHub.
+
+Developers should continue to use:
+
+- Branches.
+- Commits.
+- Pull requests.
+- Code reviews.
+- GitHub Issues.
+- GitHub Projects.
+- GitHub Discussions.
+- GitHub Actions.
+- Git tags.
+- GitHub Releases.
+- Repository visibility and access controls.
+
+simplify.dev should complement these capabilities.
+
+A developer should not have to edit source code through the simplify.dev website or use simplify.dev as their only library development environment.
+
+The website should provide library management, discovery, configuration, and publishing visibility while GitHub remains the primary development environment.
+
+### 5.10 Library Creation Without GitHub
+
+GitHub should be the primary and recommended library creation method.
+
+However, the platform should avoid making GitHub a permanent architectural requirement.
+
+A future implementation may support direct CLI publishing or other Git hosting providers.
+
+These alternative methods should use the same library manifest, validation rules, versioning model, and registry publishing contracts.
+
+The registry should not depend on GitHub-specific concepts for its fundamental asset model.
+
+## 6. Installation Architecture
 
 Installation should support three modes.
 
-5.1 Package Installation
+### 6.1 Package Installation
 
 Package installation uses conventional package managers such as npm, pnpm, or yarn.
 
 Example:
 
+```
 pnpm add @scope/ui
 pnpm add @scope/blocks
+```
 
 The implementation remains inside the installed package and is consumed through its public API.
 
@@ -303,15 +716,17 @@ This mode is suitable for:
 
 Package users should still have customization options through themes, variants, props, slots, callbacks, and supported extension points.
 
-5.2 Source Installation
+### 6.2 Source Installation
 
 Source installation downloads an asset's implementation and places it inside the consuming project.
 
 Example:
 
+```
 simplify add ui/button
 simplify add blocks/agent-chat
 simplify add logic/chat-controller
+```
 
 The developer owns the installed source and can modify its implementation directly.
 
@@ -324,7 +739,7 @@ This mode is particularly useful for:
 
 Source installation should not require copying every dependency into the project. Dependencies that are better maintained as packages should remain external package dependencies.
 
-5.3 Hybrid Installation
+### 6.3 Hybrid Installation
 
 Hybrid installation combines source installation with package dependencies.
 
@@ -339,14 +754,15 @@ For example, installing an Agent Chat integration may:
 
 This should be the preferred installation mode for many functional blocks and integrations.
 
-5.4 Installation Configuration
+### 6.4 Installation Configuration
 
 The project should have a configuration file such as:
 
-"simplify.config.json"
+`simplify.config.json`
 
 Example:
 
+```
 {
   "$schema": "https://simplify.dev/schema/config.json",
   "version": 1,
@@ -370,6 +786,7 @@ Example:
     "@simplify": "https://simplify.dev/r/{name}.json"
   }
 }
+```
 
 The installer should automatically detect common project settings and provide sensible defaults.
 
@@ -379,13 +796,15 @@ It should also support monorepos, multiple applications, custom source directori
 
 For example, a monorepo might place UI blocks inside an application's source directory while keeping reusable logic inside a shared package.
 
-5.5 Installation Commands
+### 6.5 Installation Commands
 
 The CLI should expose a consistent command structure.
 
 Illustrative commands:
 
+```
 simplify init
+
 simplify add ui/button
 simplify add blocks/agent-chat
 simplify add logic/chat-controller
@@ -398,23 +817,38 @@ simplify diff blocks/agent-chat
 simplify update blocks/agent-chat
 simplify remove blocks/agent-chat
 simplify doctor
+```
+
+Library-related commands may include:
+
+```
+simplify library init
+simplify library connect
+simplify library validate
+simplify library build
+simplify library publish
+simplify library info
+```
 
 Commands should support options for installation mode, target paths, versions, dry runs, and other relevant configuration.
 
 The installer should show a summary of files, dependencies, and configuration changes before applying them when appropriate.
 
-5.6 Tracking Installed Assets
+### 6.6 Tracking Installed Assets
 
 Source-installed assets must be tracked so that the CLI can identify their original versions and manage updates.
 
 A local directory can contain installation metadata:
 
+```
 .simplify/
 ├── lock.json
 └── metadata/
+```
 
 An illustrative lock file:
 
+```
 {
   "version": 1,
   "installed": [
@@ -429,6 +863,7 @@ An illustrative lock file:
     }
   ]
 }
+```
 
 The lock file should record enough information to identify installed assets, versions, files, dependencies, and relevant installation decisions.
 
@@ -440,25 +875,33 @@ It should not automatically overwrite customized source files.
 
 A future implementation can support three-way merging and more advanced update conflict resolution.
 
----
-
-6. Creating and Publishing Libraries
+## 7. Creating and Publishing Libraries
 
 Creating new libraries and adding assets to the registry should be a first-class workflow.
 
-The platform should support both official libraries maintained by simplify.dev and external libraries published by independent developers.
+The platform should support official libraries maintained by simplify.dev and external libraries published by independent developers.
 
-6.1 Library Structure
+GitHub should be the primary library creation and publishing environment.
+
+### 7.1 Library Structure
 
 A library should have a predictable structure.
 
 For example:
 
+```
 agent-chat/
-├── library.json
-├── README.md
-├── CHANGELOG.md
-├── assets/
+├── simplify/
+│   ├── library.json
+│   └── assets/
+│       ├── blocks/
+│       │   └── agent-chat.json
+│       ├── logic/
+│       │   └── chat-controller.json
+│       └── integrations/
+│           ├── vercel-ai.json
+│           └── postgres.json
+├── src/
 │   ├── blocks/
 │   │   └── agent-chat/
 │   ├── logic/
@@ -468,16 +911,21 @@ agent-chat/
 │       └── postgres/
 ├── docs/
 ├── examples/
-└── previews/
+├── previews/
+├── README.md
+├── CHANGELOG.md
+└── package.json
+```
 
 The exact layout may vary by language and framework, but the registry must be able to understand the library independently of its source directory structure.
 
-6.2 Asset Manifest
+### 7.2 Asset Manifest
 
 Every published asset should have a manifest describing its implementation and requirements.
 
 Example:
 
+```
 {
   "id": "blocks/agent-chat",
   "name": "Agent Chat",
@@ -516,6 +964,7 @@ Example:
     "entry": "previews/agent-chat.tsx"
   }
 }
+```
 
 This is an initial conceptual schema. The final registry specification should define validation rules, supported values, version compatibility, and the complete set of fields.
 
@@ -537,23 +986,43 @@ Manifests should support:
 - Preview information.
 - Licensing and attribution.
 
-6.3 Adding a New Asset
+### 7.3 Adding a New Asset
 
 A contributor should be able to add a new asset to a library without changing the registry implementation.
 
-An illustrative publishing workflow:
+An illustrative workflow:
 
+```
 simplify library init
 simplify asset create
 simplify asset validate
 simplify library build
-simplify library publish
+```
 
 The author should be able to define the asset category, implementation targets, dependencies, installation requirements, documentation, and preview.
 
 The publishing process should validate the manifest, verify referenced files, check dependency declarations, and ensure that supported installation modes are correctly defined.
 
-6.4 Library Versioning
+### 7.4 Publishing a Library
+
+A library should be published from a known repository state.
+
+The recommended workflow is:
+
+1. Develop the library locally or through GitHub.
+2. Commit and push changes to the connected repository.
+3. Run validation through GitHub Actions.
+4. Create a Git tag or GitHub release for the intended version.
+5. Trigger the simplify.dev publishing workflow.
+6. Validate the library and its assets.
+7. Publish an immutable version to the registry.
+8. Make the published version available for discovery and installation.
+
+The simplify.dev website should display the publishing status and the corresponding GitHub commit, tag, or release.
+
+Publishing should not require developers to manually upload every source file through the website.
+
+### 7.5 Library Versioning
 
 Libraries and assets should use explicit versions.
 
@@ -565,22 +1034,21 @@ The registry should support:
 - Deprecation notices.
 - Release notes.
 - Version-specific metadata.
+- GitHub repository and commit references.
 
 Installed source should remain reproducible. A developer should be able to inspect which version was installed and understand what changed between releases.
 
 The platform should avoid silently replacing an implementation with a newer version.
 
----
-
-7. Web Application: Registry Browser and Theme Studio
+## 8. Web Application: Registry Browser and Theme Studio
 
 The web application is an important part of simplify.dev.
 
-It should function as a discovery platform, documentation system, installation interface, and configuration environment.
+It should function as a discovery platform, documentation system, installation interface, library management environment, and configuration environment.
 
 Its experience can take inspiration from shadcn's component browsing and installation model, while extending that model to support functional blocks, logic, integrations, and multi-language libraries.
 
-7.1 Asset Discovery
+### 8.1 Asset Discovery
 
 Developers should be able to browse assets by category:
 
@@ -605,7 +1073,7 @@ The registry browser should support:
 
 The website should make the difference between a component, block, integration, and complete recipe clear.
 
-7.2 Asset Detail Pages
+### 8.2 Asset Detail Pages
 
 Each asset should have a dedicated documentation and preview page.
 
@@ -623,10 +1091,30 @@ A page should provide:
 10. Usage examples.
 11. Implementation information.
 12. Version history.
+13. Source repository and relevant GitHub references.
 
 For blocks and integrations, the page should also explain the built-in logic, supported adapters, callbacks, and responsibilities that remain with the consuming application.
 
-7.3 Live Previews
+### 8.3 Library Pages
+
+Each library should have a dedicated page containing:
+
+- Library description and documentation.
+- Publisher information.
+- Connected GitHub repository.
+- Available assets.
+- Latest published version.
+- Version history.
+- Supported languages and frameworks.
+- Dependencies and compatibility.
+- Installation instructions.
+- Release notes.
+- License information.
+- Source and issue-tracker links, where available.
+
+The library page should make it clear whether a library is maintained by simplify.dev or an external publisher.
+
+### 8.4 Live Previews
 
 The web application should render the actual implementation that developers will install or consume.
 
@@ -647,19 +1135,21 @@ The preview system should support:
 
 Where an asset requires external services, its preview should use safe demonstration data or a controlled mock adapter. It must not expose credentials or depend on a developer's private services.
 
-7.4 Installation Instructions
+### 8.5 Installation Instructions
 
 Every asset page should provide the appropriate installation commands.
 
 For example:
 
+```
 simplify add blocks/agent-chat
+```
 
 The website should clearly show what the command installs, which dependencies are required, and which configuration steps remain.
 
 Installation instructions should be derived from the registry metadata rather than manually maintained separately.
 
-7.5 Theme Studio
+### 8.6 Theme Studio
 
 Theme Studio allows developers to configure the visual appearance of compatible UI components and blocks.
 
@@ -691,7 +1181,7 @@ Semantic roles must remain distinct. For example, changing the primary brand col
 
 Theme presets should be available as starting points.
 
-7.6 Exporting Themes
+### 8.7 Exporting Themes
 
 The theme editor should export the configuration in reusable formats.
 
@@ -706,20 +1196,19 @@ The generated theme must use the same token definitions as the component and blo
 
 This prevents the documentation website, preview system, and installed packages from maintaining separate theme implementations.
 
----
-
-8. Building Customizable UI Components
+## 9. Building Customizable UI Components
 
 UI components must be designed to provide both good defaults and meaningful customization.
 
 The objective is not to expose every internal implementation detail as a prop. It is to define stable extension points that allow developers to adapt components without fighting their internal structure.
 
-8.1 Design Tokens
+### 9.1 Design Tokens
 
 Components should consume semantic design tokens instead of hardcoded brand values.
 
 For example:
 
+```
 :root {
   --sd-primary: #202020;
   --sd-primary-foreground: #ffffff;
@@ -737,17 +1226,19 @@ For example:
   --sd-radius-md: 0.625rem;
   --sd-radius-lg: 0.875rem;
 }
+```
 
 These values are illustrative. Actual themes should be generated from the shared token definitions.
 
 Components should use the semantic tokens rather than defining their own unrelated color and spacing systems.
 
-8.2 Compound Components
+### 9.2 Compound Components
 
 Components that contain multiple related parts should support clear composition.
 
 For example:
 
+```
 <Dialog.Root open={open} onOpenChange={setOpen}>
   <Dialog.Trigger>
     Open dialog
@@ -767,12 +1258,13 @@ For example:
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
+```
 
 Compound components should provide predictable relationships between their parts, appropriate accessibility behaviour, and sensible default styling.
 
 Their internal implementation should remain encapsulated.
 
-8.3 Controlled and Uncontrolled State
+### 9.3 Controlled and Uncontrolled State
 
 Components should support controlled state where applications need to manage behaviour externally.
 
@@ -780,37 +1272,42 @@ They should also provide sensible internal defaults for common usage.
 
 For example:
 
+```
 <Dialog.Root defaultOpen={false}>
   ...
 </Dialog.Root>
+```
 
 And:
 
+```
 <Dialog.Root
   open={open}
   onOpenChange={setOpen}
 >
   ...
 </Dialog.Root>
+```
 
 State ownership must be clear. Components should not create hidden state conflicts between internal and external controllers.
 
-8.4 Customization APIs
+### 9.4 Customization APIs
 
 The public component API should use a consistent set of customization mechanisms.
 
 These should include:
 
-- "className" for root-level styling.
+- `className` for root-level styling.
 - Slot-level style overrides.
-- "slotProps" for configuring internal elements.
-- "slots" for replacing meaningful sections.
+- `slotProps` for configuring internal elements.
+- `slots` for replacing meaningful sections.
 - Variants and sizes.
 - Theme tokens.
 - Controlled state and callbacks.
 
 For example:
 
+```
 <AgentChat
   controller={chatController}
   slots={{
@@ -820,12 +1317,13 @@ For example:
     composer: <CustomComposer />
   }}
 />
+```
 
 Slots should represent meaningful extension points rather than every DOM element inside the component.
 
 A component should be customizable without requiring an excessive number of unrelated props.
 
-8.5 Accessibility
+### 9.5 Accessibility
 
 Accessibility is part of component functionality, not an optional styling feature.
 
@@ -843,12 +1341,13 @@ Components should account for:
 
 Headless foundations may be used where appropriate, but simplify.dev should maintain consistent public APIs and behaviour across its own components.
 
-8.6 Component Implementation Boundaries
+### 9.6 Component Implementation Boundaries
 
 Components should have clear internal boundaries.
 
 A typical component may separate:
 
+```
 dialog/
 ├── dialog.tsx
 ├── dialog-content.tsx
@@ -858,25 +1357,25 @@ dialog/
 ├── dialog.styles.ts
 ├── dialog.types.ts
 └── index.ts
+```
 
 The exact file layout should be based on component complexity rather than enforcing unnecessary file separation for every small component.
 
 Public exports should be deliberate. Internal utilities should not automatically become part of the public API.
 
----
-
-9. Functional Blocks and Logic Isolation
+## 10. Functional Blocks and Logic Isolation
 
 Blocks should be treated as complete reusable feature units.
 
 They must provide meaningful interaction behaviour while remaining independent of application-specific business logic.
 
-9.1 Separate Presentation from Behaviour
+### 10.1 Separate Presentation from Behaviour
 
 A block should not have to own every part of its functionality.
 
 For example, an Agent Chat implementation can be divided into:
 
+```
 agent-chat/
 ├── ui/
 │   ├── agent-chat.tsx
@@ -894,6 +1393,7 @@ agent-chat/
 ├── types/
 │   └── index.ts
 └── index.ts
+```
 
 This is a conceptual organization. The actual structure should keep independently reusable logic separate from UI-specific implementation.
 
@@ -901,7 +1401,7 @@ The UI should consume a stable controller or state interface.
 
 The controller should not depend on React rendering details unless it is explicitly a React-specific adapter.
 
-9.2 Integration Boundaries
+### 10.2 Integration Boundaries
 
 The core chat functionality should not depend directly on Vercel AI SDK, OpenAI, or another provider.
 
@@ -909,6 +1409,7 @@ Instead, define interfaces for communication and storage.
 
 For example:
 
+```
 interface ChatTransport {
   send(
     messages: Message[],
@@ -923,6 +1424,7 @@ interface ConversationStore {
     messages: Message[]
   ): Promise<void>;
 }
+```
 
 These interfaces are illustrative and should be adapted to the requirements of streaming, cancellation, error handling, and persistence.
 
@@ -932,30 +1434,34 @@ A database integration can implement the storage contract.
 
 This keeps the feature independent of specific vendors and allows applications to use existing services.
 
-9.3 Example Usage
+### 10.3 Example Usage
 
 A developer should be able to use the block with their own implementation:
 
+```
 const chat = useChatController({
   transport: myTransport,
   storage: myConversationStore
 });
 
 <AgentChat controller={chat} />
+```
 
 Or install a supported integration that provides the controller configuration:
 
+```
 const chat = useVercelAIChat({
   api: "/api/chat"
 });
 
 <AgentChat controller={chat.controller} />
+```
 
 The exact APIs should be defined by the asset contracts.
 
 The important requirement is that the interface, reusable chat behaviour, AI integration, and storage implementation remain separate.
 
-9.4 Application-Owned Responsibilities
+### 10.4 Application-Owned Responsibilities
 
 The platform should not assume ownership of application-specific concerns.
 
@@ -973,7 +1479,7 @@ Unless an asset explicitly provides a configurable implementation, the consuming
 
 Integrations should make these responsibilities easier to implement without hiding them.
 
-9.5 Avoid Unnecessary Global Dependencies
+### 10.5 Avoid Unnecessary Global Dependencies
 
 A mandatory global provider should not be required for basic components.
 
@@ -987,15 +1493,13 @@ A global provider should only be introduced for shared runtime infrastructure th
 
 This keeps the core UI lightweight and allows developers to install only the capabilities they need.
 
----
-
-10. Performance and Runtime Requirements
+## 11. Performance and Runtime Requirements
 
 Performance must be considered during implementation, packaging, installation, and rendering.
 
 The platform should not become a large runtime that every consuming application must load.
 
-10.1 Package Size
+### 11.1 Package Size
 
 Packages should support tree-shaking and deliberate public exports.
 
@@ -1003,7 +1507,7 @@ Optional features should not be pulled into an application just because the deve
 
 Heavy dependencies should remain optional or isolated behind separate integration packages where appropriate.
 
-10.2 React and Next.js
+### 11.2 React and Next.js
 
 React should be the primary UI target.
 
@@ -1015,7 +1519,7 @@ Client-only behaviour should be marked and bundled deliberately rather than appl
 
 Server-compatible components should not unnecessarily require client-side JavaScript.
 
-10.3 Rendering
+### 11.3 Rendering
 
 Components should avoid unnecessary rerenders, excessive state duplication, unnecessary context updates, and expensive work during rendering.
 
@@ -1023,7 +1527,7 @@ Feature logic should not be tightly coupled to visual rendering when it can be i
 
 Large or optional features should use dynamic imports or lazy loading where appropriate.
 
-10.4 Styling
+### 11.4 Styling
 
 The default styling system should be predictable and efficient.
 
@@ -1033,7 +1537,7 @@ If Tailwind is used for implementation, generated classes must be discoverable b
 
 The public installation process should not require consumers to reverse-engineer internal styling configuration.
 
-10.5 Animation
+### 11.5 Animation
 
 Motion should be purposeful and consistent.
 
@@ -1049,20 +1553,19 @@ Animations should:
 
 Scrolling, carousels, swipe interactions, and drag behaviour should be implemented as deliberate capabilities rather than making every scrollable region behave like a carousel.
 
----
-
-11. Multi-language and Framework Support
+## 12. Multi-language and Framework Support
 
 TypeScript, React, and Next.js will be the primary implementation targets.
 
 However, the registry, manifest format, and installer should be designed to support other languages and frameworks without requiring a separate platform for each ecosystem.
 
-11.1 Language-Aware Assets
+### 12.1 Language-Aware Assets
 
 An asset should declare its supported language, framework, and runtime.
 
 For example:
 
+```
 agent-chat/
 ├── typescript/
 │   ├── react/
@@ -1072,12 +1575,13 @@ agent-chat/
 │   └── django/
 └── dotnet/
     └── aspnet/
+```
 
 Not every asset needs implementations for every language.
 
 The registry should allow one logical asset to have multiple implementations, each with its own dependencies, configuration, and compatibility requirements.
 
-11.2 Framework-Specific Implementations
+### 12.2 Framework-Specific Implementations
 
 Implementations should follow the conventions of their target ecosystems.
 
@@ -1100,7 +1604,7 @@ What should remain consistent is:
 - Compatibility information.
 - Integration contracts where cross-language communication is required.
 
-11.3 Cross-Language Integration
+### 12.3 Cross-Language Integration
 
 Different implementations should be able to work together through documented contracts.
 
@@ -1110,7 +1614,7 @@ The React implementation and Python implementation would remain separate assets,
 
 The registry should be able to describe these relationships so the installer can select compatible combinations.
 
-11.4 Progressive Ecosystem Expansion
+### 12.4 Progressive Ecosystem Expansion
 
 TypeScript and React should receive the earliest and deepest implementation support.
 
@@ -1120,13 +1624,11 @@ The platform should not claim support for a language or framework merely because
 
 Each published implementation must have its own validation, documentation, compatibility requirements, and installation tests.
 
----
-
-12. Registry and Web Application Scalability
+## 13. Registry and Web Application Scalability
 
 The platform should be designed so that new asset categories, libraries, languages, and integrations can be introduced without redesigning its core systems.
 
-12.1 Registry Extensibility
+### 13.1 Registry Extensibility
 
 The registry should use a stable asset metadata contract with extensible, validated target-specific metadata.
 
@@ -1136,7 +1638,7 @@ An asset's manifest should describe its requirements, while the installer should
 
 New asset categories should be introduced through explicit schema extensions rather than ad hoc fields.
 
-12.2 Documentation Extensibility
+### 13.2 Documentation Extensibility
 
 The documentation website should discover assets through the registry.
 
@@ -1148,9 +1650,9 @@ The website should select the appropriate renderer for the asset category and im
 
 Some assets may require specialized preview renderers, particularly non-visual logic or implementations that cannot run safely in the browser.
 
-12.3 Independent Services
+### 13.3 Independent Services
 
-The registry, CLI, documentation application, preview infrastructure, and token tooling should have clear boundaries.
+The registry, CLI, documentation application, preview infrastructure, GitHub integration, and token tooling should have clear boundaries.
 
 They should communicate through defined contracts rather than importing each other's internal implementation.
 
@@ -1158,23 +1660,27 @@ The CLI should not depend on the documentation application's internal code.
 
 The documentation website should consume registry data instead of maintaining its own asset catalogue.
 
+The GitHub integration should handle repository authorization and synchronization without owning the registry's fundamental asset model.
+
 Token generation should not depend on React.
 
 This separation allows the platform to evolve each system independently.
 
-12.4 Storage and Distribution
+### 13.4 Storage and Distribution
 
 Registry metadata, documentation assets, and implementation files should be distributed through an appropriate versioned storage and delivery system.
 
 The design should allow the registry catalogue and asset files to be cached independently.
 
-The platform should support versioned, reproducible downloads and avoid making every installation depend on a live documentation application.
+The platform should support versioned, reproducible downloads and avoid making every installation depend on a live documentation application or GitHub repository.
 
----
+GitHub should remain the source for library development, while simplify.dev should maintain reliable published artifacts for distribution.
 
-13. Security and Trust
+## 14. Security and Trust
 
 Because simplify.dev installs source code and dependencies into other people's projects, registry security is a core requirement.
+
+GitHub integration introduces additional responsibilities around repository access, publishing credentials, and automated workflows.
 
 The platform should:
 
@@ -1189,31 +1695,83 @@ The platform should:
 - Support license and attribution metadata.
 - Provide a way to report malicious or compromised assets.
 - Support deprecation and removal of unsafe versions.
+- Clearly distinguish official simplify.dev assets from community-published assets.
+
+### 14.1 GitHub Authorization
+
+The GitHub integration should request only the permissions it needs.
+
+Repository access should be explicitly authorized by the repository owner or an organization administrator with appropriate permissions.
+
+The platform should:
+
+- Use a GitHub App where practical.
+- Avoid requesting unrestricted account access.
+- Store credentials securely.
+- Support access revocation.
+- Handle repository permission changes.
+- Avoid exposing installation tokens or credentials to the browser.
+- Avoid logging sensitive authorization data.
+
+### 14.2 Publishing Authentication
+
+GitHub Actions must authenticate securely when publishing to simplify.dev.
+
+The initial implementation may use a dedicated, scoped publishing token stored as a GitHub Actions secret.
+
+The token should:
+
+- Be limited to publishing operations.
+- Be associated with the relevant account or library.
+- Be revocable.
+- Have a clear expiration or rotation policy.
+- Never be committed to the repository.
+- Never be exposed in workflow logs.
+
+A future implementation should consider short-lived credentials through a trusted identity mechanism such as GitHub Actions OIDC, reducing the need for long-lived publishing secrets.
+
+### 14.3 Workflow and Source Validation
+
+GitHub Actions workflows and repository contents should be treated as untrusted input.
+
+The publishing service should not execute arbitrary repository code as part of registry ingestion.
+
+The publishing process should:
+
+- Validate manifest structure.
+- Verify source paths remain within the repository.
+- Reject prohibited or sensitive files.
+- Exclude credentials, environment files, and unnecessary build artifacts.
+- Validate dependency declarations.
+- Enforce artifact size limits.
+- Verify the repository and commit associated with the publication.
+- Prevent duplicate or conflicting version publication.
+- Record the publishing identity and source commit.
 
 External libraries should be treated as third-party code.
 
-The platform should distinguish official simplify.dev assets from community-published assets.
-
 A reviewed or verified status should only be assigned after an actual review process.
 
----
-
-14. Recommended Repository Structure
+## 15. Recommended Repository Structure
 
 The platform should use a monorepo initially, with clear package and application boundaries.
 
 An illustrative structure:
 
+```
 simplify/
 ├── apps/
 │   ├── web/
 │   │   ├── app/
 │   │   ├── features/
 │   │   │   ├── registry/
+│   │   │   ├── libraries/
+│   │   │   ├── github/
 │   │   │   ├── theme-studio/
 │   │   │   ├── previews/
 │   │   │   └── installation/
 │   │   └── components/
+│   │
 │   └── registry-api/
 │
 ├── packages/
@@ -1221,6 +1779,12 @@ simplify/
 │   │   ├── schema/
 │   │   ├── resolver/
 │   │   └── client/
+│   │
+│   ├── github/
+│   │   ├── authorization/
+│   │   ├── repositories/
+│   │   ├── webhooks/
+│   │   └── publishing/
 │   │
 │   ├── cli/
 │   │   ├── commands/
@@ -1271,7 +1835,8 @@ simplify/
 ├── schemas/
 │   ├── registry/
 │   ├── configuration/
-│   └── assets/
+│   ├── assets/
+│   └── libraries/
 │
 ├── docs/
 │   ├── architecture/
@@ -1281,6 +1846,7 @@ simplify/
 ├── package.json
 ├── pnpm-workspace.yaml
 └── turbo.json
+```
 
 This structure is a starting point, not a requirement to create every package immediately.
 
@@ -1288,15 +1854,15 @@ Packages should be introduced when they represent a meaningful boundary or indep
 
 For example, the interaction package should only be separated when the logic is sufficiently independent from the UI implementation.
 
+The GitHub integration should remain separate from the registry's core asset and versioning contracts.
+
 The monorepo should not become an excuse to split every module into a separate package.
 
----
-
-15. Development and Quality Standards
+## 16. Development and Quality Standards
 
 Every published asset should meet the standards appropriate to its category.
 
-15.1 UI Quality
+### 16.1 UI Quality
 
 UI components and blocks must have a consistent visual standard.
 
@@ -1316,7 +1882,7 @@ Implementations should prioritize:
 
 The goal is to provide interfaces that can be used in serious applications without requiring developers to redesign every installed block.
 
-15.2 Interaction States
+### 16.2 Interaction States
 
 Applicable components and blocks must account for relevant states.
 
@@ -1337,7 +1903,7 @@ State implementations should be configurable and replaceable where appropriate.
 
 Skeletons should reflect the content they represent instead of relying exclusively on generic placeholder shapes.
 
-15.3 Testing
+### 16.3 Testing
 
 Tests should cover more than successful rendering.
 
@@ -1358,7 +1924,7 @@ Depending on the asset category, validation should include:
 
 Visual regression testing should be used for important UI components and blocks.
 
-15.4 Publishing Requirements
+### 16.4 Publishing Requirements
 
 Before publication, an asset should have:
 
@@ -1373,19 +1939,31 @@ Before publication, an asset should have:
 
 A block that only renders a static example should not be presented as a fully functional block.
 
----
+Library publishing should additionally validate:
 
-16. Initial Implementation Strategy
+- The root library manifest.
+- All referenced asset manifests.
+- Source file mappings.
+- Repository and commit identity.
+- Version consistency.
+- Required dependencies.
+- Publication file inclusion and exclusion rules.
+- License and attribution metadata.
+
+A successful GitHub Actions run should not automatically mean an asset is trusted or reviewed. It means the configured validation and publishing process completed successfully.
+
+## 17. Initial Implementation Strategy
 
 Development should proceed by validating the platform's most important architectural capabilities before expanding its asset catalogue.
 
-Phase 1: Platform Foundations
+### Phase 1: Platform Foundations
 
 Implement:
 
 - Monorepo structure.
 - Registry metadata schema.
 - Asset identity and versioning.
+- Library manifest schema.
 - Registry storage and retrieval.
 - Initial project detection.
 - Basic CLI structure.
@@ -1393,7 +1971,24 @@ Implement:
 
 Goal: Establish a stable foundation for describing and distributing assets.
 
-Phase 2: Installation Engine
+### Phase 2: GitHub Integration and Library Creation
+
+Implement:
+
+- GitHub App registration and authorization.
+- Repository selection and connection.
+- Existing repository import.
+- New repository initialization workflow.
+- Library manifest generation.
+- Repository-to-library association.
+- Commit and tag tracking.
+- Basic webhook processing.
+- GitHub Actions publishing workflow.
+- Scoped publishing authentication.
+
+Goal: Make GitHub the primary environment for creating, maintaining, and publishing libraries.
+
+### Phase 3: Installation Engine
 
 Implement:
 
@@ -1408,7 +2003,7 @@ Implement:
 
 Goal: Reliably install assets into real projects.
 
-Phase 3: Design System and Core UI
+### Phase 4: Design System and Core UI
 
 Implement:
 
@@ -1422,7 +2017,7 @@ Implement:
 
 Goal: Establish the visual and technical foundation for UI assets.
 
-Phase 4: Functional Blocks and Integrations
+### Phase 5: Functional Blocks and Integrations
 
 Build a limited set of complete examples:
 
@@ -1441,21 +2036,23 @@ For Agent Chat, implement:
 
 Goal: Prove that simplify.dev can distribute complete, composable features rather than just visual components.
 
-Phase 5: Documentation and Registry Browser
+### Phase 6: Documentation and Registry Browser
 
 Implement:
 
 - Registry browsing.
 - Search and filters.
 - Asset detail pages.
+- Library detail pages.
 - Live previews.
 - Installation commands.
 - Documentation rendering.
 - Version information.
+- GitHub repository references.
 
-Goal: Make assets discoverable and understandable.
+Goal: Make assets and libraries discoverable and understandable.
 
-Phase 6: Theme Studio
+### Phase 7: Theme Studio
 
 Implement:
 
@@ -1468,35 +2065,34 @@ Implement:
 
 Goal: Allow developers to configure the actual design system used by their installed assets.
 
-Phase 7: Library Publishing
+### Phase 8: Library Publishing and Management
 
-Implement:
+Expand:
 
 - Library initialization.
 - Asset creation.
 - Manifest validation.
 - Library building.
 - Versioned publishing.
+- GitHub release synchronization.
+- Development snapshots.
+- Publishing history.
 - External registry support.
 - Publisher metadata.
 
-Goal: Allow simplify.dev and external developers to contribute reusable assets.
+Goal: Provide a complete and reliable library lifecycle for simplify.dev and external developers.
 
-Phase 8: Ecosystem Expansion
+### Phase 9: Ecosystem Expansion
 
 Expand into additional languages, frameworks, integrations, recipes, and templates.
 
 Each expansion should be supported by real implementations and appropriate tests.
 
-Goal: Grow the platform without weakening compatibility, performance, or implementation quality.
+Goal: Grow the platform without weakening compatibility, performance, or developer ownership.
 
----
+## 18. Product Boundaries
 
-17. Product Boundaries
-
-The following boundaries should guide implementation decisions.
-
-simplify.dev Is
+### simplify.dev Is
 
 - A registry-driven distribution platform.
 - A customizable UI and design system.
@@ -1505,12 +2101,14 @@ simplify.dev Is
 - A distribution system for reusable non-visual logic.
 - An integration ecosystem.
 - A documentation and configuration environment.
+- A GitHub-connected library publishing platform.
 - A multi-language and multi-framework platform.
 
-simplify.dev Is Not
+### simplify.dev Is Not
 
 - Just a component library.
 - Just a collection of static templates.
+- A replacement for GitHub.
 - A framework intended to replace React, Next.js, or other ecosystems.
 - A system that requires every feature to use the same backend.
 - A platform that forces all application logic into its own runtime.
@@ -1519,11 +2117,11 @@ simplify.dev Is Not
 
 The consuming application should retain control over its architecture, data, business rules, services, and deployment.
 
-simplify.dev provides reusable implementations and clear integration boundaries.
+Developers should retain ownership of their library source code and repository history.
 
----
+simplify.dev provides reusable implementations, distribution infrastructure, and clear integration boundaries.
 
-18. Long-Term Direction
+## 19. Long-Term Direction
 
 simplify.dev should become a place where developers can find and install meaningful pieces of software, understand how they work, customize their implementations, and connect them to existing applications.
 
@@ -1531,15 +2129,23 @@ The platform should make it practical to assemble substantial application functi
 
 A developer should be able to:
 
-1. Discover a suitable asset.
-2. Inspect its implementation and documentation.
-3. Preview its functionality.
-4. Configure its appearance and behaviour.
-5. Install it using a package, source, or hybrid mode.
-6. Install compatible integrations and dependencies.
-7. Connect application-specific services.
-8. Customize the implementation when necessary.
-9. Update or maintain it through the CLI.
+1. Create a library from an existing GitHub repository or start a new one.
+2. Organize the library into reusable assets.
+3. Develop and maintain its source code using normal Git workflows.
+4. Validate changes through GitHub Actions.
+5. Publish versioned releases to simplify.dev.
+6. Discover and inspect the published library.
+7. Preview its assets and documentation.
+8. Configure their appearance and behaviour.
+9. Install assets using a package, source, or hybrid mode.
+10. Install compatible integrations and dependencies.
+11. Connect application-specific services.
+12. Customize the implementation when necessary.
+13. Update or maintain it through the CLI.
+
+GitHub should provide the development, collaboration, and version-control foundation.
+
+simplify.dev should provide the registry, asset discovery, publishing infrastructure, installation experience, and ecosystem that make those libraries useful across projects.
 
 The TypeScript, React, and Next.js ecosystem will be the first implementation focus, while the registry and installation architecture will support additional languages and frameworks over time.
 
