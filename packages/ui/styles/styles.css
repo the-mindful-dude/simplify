@@ -1,0 +1,13 @@
+:root {
+  --sd-primary: #202020;
+  --sd-primary-foreground: #ffffff;
+  --sd-background: #ffffff;
+  --sd-foreground: #171717;
+  --sd-muted: #f5f5f5;
+  --sd-muted-foreground: #737373;
+  --sd-border: #e5e5e5;
+  --sd-ring: #737373;
+  --sd-radius-sm: 0.375rem;
+  --sd-radius-md: 0.625rem;
+  --sd-radius-lg: 0.875rem;
+}
