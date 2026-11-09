@@ -42,22 +42,22 @@ remain extensible to other languages and frameworks.
 
 ## 3. Locked Technical Decisions
 
-| Area | Decision |
-| --- | --- |
-| Package scope | `@simplify-dev/*` |
-| CLI executable | `simplify`, provided by `@simplify-dev/cli` |
-| Runtime | Node.js 20 LTS |
-| TypeScript | 5.x, strict |
-| React / Next.js | React 18.x / Next.js 14.x |
-| Package manager | pnpm 9.x workspaces |
-| Build orchestration | Turborepo |
-| Test runner | Vitest |
-| Lint / format | ESLint + Prettier |
-| Module format | ESM only |
-| Styling | CSS custom properties + CSS Modules |
-| Headless UI | Radix UI |
-| Registry distribution | Static versioned metadata/artifacts first |
-| GitHub authorization | GitHub App |
+| Area                  | Decision                                    |
+| --------------------- | ------------------------------------------- |
+| Package scope         | `@simplify-dev/*`                           |
+| CLI executable        | `simplify`, provided by `@simplify-dev/cli` |
+| Runtime               | Node.js 20 LTS                              |
+| TypeScript            | 5.x, strict                                 |
+| React / Next.js       | React 18.x / Next.js 14.x                   |
+| Package manager       | pnpm 9.x workspaces                         |
+| Build orchestration   | Turborepo                                   |
+| Test runner           | Vitest                                      |
+| Lint / format         | ESLint + Prettier                           |
+| Module format         | ESM only                                    |
+| Styling               | CSS custom properties + CSS Modules         |
+| Headless UI           | Radix UI                                    |
+| Registry distribution | Static versioned metadata/artifacts first   |
+| GitHub authorization  | GitHub App                                  |
 
 Exact versions are pinned in the repository configuration. Do not silently upgrade or
 downgrade the baseline; treat it as an architectural change.
@@ -201,16 +201,16 @@ be valid, buildable, and contain no fake implementations.
 
 Naming summary:
 
-| Kind | Convention |
-| --- | --- |
-| Workspace package | `@simplify-dev/<name>` |
-| Directory / file | kebab-case |
-| React component export | PascalCase |
-| Function / variable | camelCase |
-| Type / interface | PascalCase |
-| CSS module | `<component>.module.css` |
-| Design token | `--sd-<role>` |
-| Asset ID | `<category>/<name>` |
+| Kind                   | Convention               |
+| ---------------------- | ------------------------ |
+| Workspace package      | `@simplify-dev/<name>`   |
+| Directory / file       | kebab-case               |
+| React component export | PascalCase               |
+| Function / variable    | camelCase                |
+| Type / interface       | PascalCase               |
+| CSS module             | `<component>.module.css` |
+| Design token           | `--sd-<role>`            |
+| Asset ID               | `<category>/<name>`      |
 
 ## 7. Testing and Quality Gates
 

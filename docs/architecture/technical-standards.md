@@ -9,21 +9,21 @@ versioning standards for the simplify.dev monorepo. It resolves `TODO.md` sectio
 
 ## 2. Language and Runtime Baseline
 
-| Area | Standard |
-| --- | --- |
-| Primary language | TypeScript |
-| Runtime | Node.js 20 LTS |
-| TypeScript | 5.x, strict mode |
-| React | 18.x |
-| Next.js | 14.x |
-| Package manager | pnpm 9.x workspaces |
-| Module format | ESM only |
-| Build orchestration | Turborepo |
-| Test runner | Vitest |
-| Linting | ESLint |
-| Formatting | Prettier |
-| Headless UI foundation | Radix UI |
-| Styling | CSS custom properties + CSS Modules |
+| Area                   | Standard                            |
+| ---------------------- | ----------------------------------- |
+| Primary language       | TypeScript                          |
+| Runtime                | Node.js 20 LTS                      |
+| TypeScript             | 5.x, strict mode                    |
+| React                  | 18.x                                |
+| Next.js                | 14.x                                |
+| Package manager        | pnpm 9.x workspaces                 |
+| Module format          | ESM only                            |
+| Build orchestration    | Turborepo                           |
+| Test runner            | Vitest                              |
+| Linting                | ESLint                              |
+| Formatting             | Prettier                            |
+| Headless UI foundation | Radix UI                            |
+| Styling                | CSS custom properties + CSS Modules |
 
 Exact patch versions are pinned in the root `package.json`, `pnpm-lock.yaml`, and
 `.nvmrc`. Upgrades are deliberate changes that update this document when they alter
@@ -98,19 +98,19 @@ Hard rules:
 
 ## 7. Testing Strategy
 
-| Area | Required coverage |
-| --- | --- |
-| Schemas | Valid and invalid fixtures; compatibility tests. |
-| Registry | Lookup, indexing, immutability, artifact integrity. |
-| Resolver | Nested, missing, conflicting, circular, and optional dependencies. |
-| CLI | Commands without a real TTY; dry-run, conflicts, rollback, path safety. |
-| GitHub | Signature verification, idempotency, retries, lifecycle events. |
-| Tooling | Validation, build determinism, include/exclude rules. |
-| Logic | Unit tests without a React runtime. |
-| UI | Accessibility, keyboard, focus, themes, responsive behavior, visual regression. |
-| Blocks | Loading, empty, error, pending, success, disabled, streaming, cancellation. |
-| Integrations | Contract tests with controlled services. |
-| Installation | Package, source, hybrid, updates, removal, fresh and existing projects. |
+| Area         | Required coverage                                                               |
+| ------------ | ------------------------------------------------------------------------------- |
+| Schemas      | Valid and invalid fixtures; compatibility tests.                                |
+| Registry     | Lookup, indexing, immutability, artifact integrity.                             |
+| Resolver     | Nested, missing, conflicting, circular, and optional dependencies.              |
+| CLI          | Commands without a real TTY; dry-run, conflicts, rollback, path safety.         |
+| GitHub       | Signature verification, idempotency, retries, lifecycle events.                 |
+| Tooling      | Validation, build determinism, include/exclude rules.                           |
+| Logic        | Unit tests without a React runtime.                                             |
+| UI           | Accessibility, keyboard, focus, themes, responsive behavior, visual regression. |
+| Blocks       | Loading, empty, error, pending, success, disabled, streaming, cancellation.     |
+| Integrations | Contract tests with controlled services.                                        |
+| Installation | Package, source, hybrid, updates, removal, fresh and existing projects.         |
 
 Tests must not depend on real credentials or private services. Use controlled fakes and
 fixtures.

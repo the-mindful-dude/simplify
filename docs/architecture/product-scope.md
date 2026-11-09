@@ -12,15 +12,15 @@ CLI, GitHub integration, and web application.
 
 simplify.dev distributes seven related categories:
 
-| Category | Responsibility |
-| --- | --- |
-| UI Components | Reusable visual primitives with accessible behavior and stable APIs. |
-| Blocks | Functional interface compositions built from components and logic. |
-| Logic | Framework-independent behavior and state management. |
-| Integrations | Adapters that connect assets to external services and technologies. |
-| Recipes | Ready-to-configure combinations of existing assets. |
-| Templates | Application starting points composed from existing assets. |
-| Libraries | Distributable collections of related assets with their own identity and history. |
+| Category      | Responsibility                                                                   |
+| ------------- | -------------------------------------------------------------------------------- |
+| UI Components | Reusable visual primitives with accessible behavior and stable APIs.             |
+| Blocks        | Functional interface compositions built from components and logic.               |
+| Logic         | Framework-independent behavior and state management.                             |
+| Integrations  | Adapters that connect assets to external services and technologies.              |
+| Recipes       | Ready-to-configure combinations of existing assets.                              |
+| Templates     | Application starting points composed from existing assets.                       |
+| Libraries     | Distributable collections of related assets with their own identity and history. |
 
 Categories are not interchangeable. An implementation must declare exactly one category.
 A block must not be published as a component, and a recipe must not contain a duplicated
@@ -60,11 +60,11 @@ Dependency direction is defined in `technical-standards.md`.
 
 ## 5. Installation Modes
 
-| Mode | What is installed | Where implementation lives |
-| --- | --- | --- |
-| Package | A versioned package through the project's package manager. | Inside the installed package; consumed through its public API. |
-| Source | Versioned source files copied into the project. | Inside the consuming project; owned and editable by the developer. |
-| Hybrid | Source files plus declared package dependencies and configuration. | Source in the project, stable dependencies as packages. |
+| Mode    | What is installed                                                  | Where implementation lives                                         |
+| ------- | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Package | A versioned package through the project's package manager.         | Inside the installed package; consumed through its public API.     |
+| Source  | Versioned source files copied into the project.                    | Inside the consuming project; owned and editable by the developer. |
+| Hybrid  | Source files plus declared package dependencies and configuration. | Source in the project, stable dependencies as packages.            |
 
 Requirements:
 

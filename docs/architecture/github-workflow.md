@@ -52,14 +52,14 @@ published through GitHub. It resolves `TODO.md` section 1.2.
 
 ## 5. Version Mapping
 
-| GitHub concept | simplify.dev concept |
-| --- | --- |
-| Commit SHA | Exact source state for a snapshot or release. |
-| Branch push | Development snapshot when branch synchronization is enabled. |
-| Git tag, e.g. `v1.2.0` | Stable release candidate; must match the manifest version. |
-| GitHub release | Stable release marker and release-notes source. |
-| Pull request | Validation-only workflow; no publishing. |
-| Manual workflow dispatch | Explicit validation, synchronization, or publication. |
+| GitHub concept           | simplify.dev concept                                         |
+| ------------------------ | ------------------------------------------------------------ |
+| Commit SHA               | Exact source state for a snapshot or release.                |
+| Branch push              | Development snapshot when branch synchronization is enabled. |
+| Git tag, e.g. `v1.2.0`   | Stable release candidate; must match the manifest version.   |
+| GitHub release           | Stable release marker and release-notes source.              |
+| Pull request             | Validation-only workflow; no publishing.                     |
+| Manual workflow dispatch | Explicit validation, synchronization, or publication.        |
 
 Rules:
 

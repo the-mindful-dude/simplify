@@ -31,11 +31,11 @@ defines the product model and non-negotiable boundaries.
 
 ## Status
 
-| Document | Status |
-| --- | --- |
-| `product-scope.md` | Initial Phase 1 |
-| `github-workflow.md` | Initial Phase 1 |
+| Document                    | Status          |
+| --------------------------- | --------------- |
+| `product-scope.md`          | Initial Phase 1 |
+| `github-workflow.md`        | Initial Phase 1 |
 | `naming-and-identifiers.md` | Initial Phase 1 |
-| `technical-standards.md` | Initial Phase 1 |
+| `technical-standards.md`    | Initial Phase 1 |
 
 The documents are considered stable once Phase 2 tooling enforces their rules in CI.

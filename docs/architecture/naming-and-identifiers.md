@@ -17,11 +17,11 @@ locations change.
 
 Availability check performed for Phase 1:
 
-| Name | Result |
-| --- | --- |
-| `@simplify-dev/ui` | Available (registry returned 404 at check time). |
-| `@simplify-dev/cli` | Available (registry returned 404 at check time). |
-| `simplify` | Taken by an unrelated package; do not use as an npm package name. |
+| Name                | Result                                                            |
+| ------------------- | ----------------------------------------------------------------- |
+| `@simplify-dev/ui`  | Available (registry returned 404 at check time).                  |
+| `@simplify-dev/cli` | Available (registry returned 404 at check time).                  |
+| `simplify`          | Taken by an unrelated package; do not use as an npm package name. |
 
 Availability must be re-checked immediately before the first public release.
 
@@ -76,18 +76,18 @@ Rules:
 
 ## 6. Package and Module Naming
 
-| Kind | Convention | Example |
-| --- | --- | --- |
-| Workspace package | `@simplify-dev/<name>` | `@simplify-dev/registry` |
-| Directory | kebab-case | `packages/registry`, `asset-validator` |
-| TypeScript file | kebab-case | `chat-controller.ts` |
-| React component file | kebab-case | `agent-chat.tsx` |
-| Exported component | PascalCase | `AgentChat` |
-| Function or variable | camelCase | `resolveDependencies` |
-| Type or interface | PascalCase | `ChatTransport` |
-| Constant | UPPER_SNAKE_CASE or camelCase for local values | `DEFAULT_REGISTRY_URL` |
-| CSS module | `<component>.module.css` | `dialog.module.css` |
-| Design token | `--sd-<role>` | `--sd-primary` |
+| Kind                 | Convention                                     | Example                                |
+| -------------------- | ---------------------------------------------- | -------------------------------------- |
+| Workspace package    | `@simplify-dev/<name>`                         | `@simplify-dev/registry`               |
+| Directory            | kebab-case                                     | `packages/registry`, `asset-validator` |
+| TypeScript file      | kebab-case                                     | `chat-controller.ts`                   |
+| React component file | kebab-case                                     | `agent-chat.tsx`                       |
+| Exported component   | PascalCase                                     | `AgentChat`                            |
+| Function or variable | camelCase                                      | `resolveDependencies`                  |
+| Type or interface    | PascalCase                                     | `ChatTransport`                        |
+| Constant             | UPPER_SNAKE_CASE or camelCase for local values | `DEFAULT_REGISTRY_URL`                 |
+| CSS module           | `<component>.module.css`                       | `dialog.module.css`                    |
+| Design token         | `--sd-<role>`                                  | `--sd-primary`                         |
 
 Internal folders named `internal` are not exported. Package entry points are declared
 explicitly in `exports`.
