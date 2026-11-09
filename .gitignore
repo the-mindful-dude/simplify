@@ -34,3 +34,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# workspace build and cache output
+dist
+.turbo
+coverage
+
+# local simplify.dev state
+.simplify
+registry-local
+
+# environment files
+.env
+.env.*
+!.env.example
