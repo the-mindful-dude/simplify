@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "integrations/vercel-ai",
+  "category": "integrations",
+  "name": "Vercel AI",
+  "description": "Adapter for the Vercel AI SDK.",
+  "version": "1.0.0",
+  "publisher": "simplify.dev",
+  "status": "official",
+  "license": "MIT",
+  "targets": [{ "language": "typescript", "runtime": "node" }],
+  "implementations": [
+    {
+      "id": "node",
+      "target": { "language": "typescript", "runtime": "node" },
+      "mode": "package",
+      "entry": "dist/index.js"
+    }
+  ],
+  "dependencies": {
+    "packages": [
+      { "name": "ai", "version": "^3.4.0", "kind": "peer" },
+      { "name": "react", "version": "^18.3.1", "kind": "peer" }
+    ]
+  },
+  "installation": {
+    "modes": [
+      {
+        "mode": "package",
+        "packageName": "@simplify-dev/integration-vercel-ai"
+      },
+      {
+        "mode": "source",
+        "files": [
+          { "source": "src/index.ts", "target": "src/integrations/vercel-ai.ts" }
+        ]
+      }
+    ]
+  },
+  "documentation": {
+    "readme": "README.md",
+    "examples": ["examples/basic.ts"],
+    "changelog": "CHANGELOG.md"
+  }
+}

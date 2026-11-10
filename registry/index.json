@@ -1,0 +1,490 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "assets": [
+    {
+      "id": "ui/button",
+      "category": "ui",
+      "name": "Button",
+      "description": "Accessible button primitive with variants and sizes.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/input",
+      "category": "ui",
+      "name": "Input",
+      "description": "Accessible text input primitive with labels and validation states.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/select",
+      "category": "ui",
+      "name": "Select",
+      "description": "Accessible select/menu primitive with search and multi-select support.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/dialog",
+      "category": "ui",
+      "name": "Dialog",
+      "description": "Accessible modal dialog primitive with focus management and backdrop.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/drawer",
+      "category": "ui",
+      "name": "Drawer",
+      "description": "Accessible slide-over drawer primitive for side panels.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/tooltip",
+      "category": "ui",
+      "name": "Tooltip",
+      "description": "Accessible tooltip primitive with hover and focus triggers.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/dropdown-menu",
+      "category": "ui",
+      "name": "Dropdown Menu",
+      "description": "Accessible dropdown menu primitive with keyboard navigation.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/tabs",
+      "category": "ui",
+      "name": "Tabs",
+      "description": "Accessible tabbed interface primitive with keyboard navigation.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/data-table",
+      "category": "ui",
+      "name": "Data Table",
+      "description": "Accessible data table primitive with sorting, filtering, and pagination.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/scroll-area",
+      "category": "ui",
+      "name": "Scroll Area",
+      "description": "Accessible custom scrollbar scroll area primitive.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "ui/form-field",
+      "category": "ui",
+      "name": "Form Field",
+      "description": "Accessible form field primitive with labels, errors, and descriptions.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/agent-chat",
+      "category": "blocks",
+      "name": "Agent Chat",
+      "description": "Reusable agent conversation interfaces and logic.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/dashboard-shell",
+      "category": "blocks",
+      "name": "Dashboard Shell",
+      "description": "Responsive dashboard layout shell with navigation and widgets.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/application-navigation",
+      "category": "blocks",
+      "name": "Application Navigation",
+      "description": "Application navigation shell with sidebars, breadcrumbs, and menus.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/authentication-forms",
+      "category": "blocks",
+      "name": "Authentication Forms",
+      "description": "Login, registration, and password reset form block.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/notification-center",
+      "category": "blocks",
+      "name": "Notification Center",
+      "description": "In-app notification feed with read/unread state and preferences.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/file-manager",
+      "category": "blocks",
+      "name": "File Manager",
+      "description": "File and folder management block with upload, preview, and organization.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/multi-step-form",
+      "category": "blocks",
+      "name": "Multi-step Form",
+      "description": "Guided multi-step form block with validation and progress tracking.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/activity-feed",
+      "category": "blocks",
+      "name": "Activity Feed",
+      "description": "Chronological activity feed block with filtering and grouping.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/command-palette",
+      "category": "blocks",
+      "name": "Command Palette",
+      "description": "Search-driven command palette block for quick actions.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "blocks/onboarding-flow",
+      "category": "blocks",
+      "name": "Onboarding Flow",
+      "description": "Step-by-step onboarding block with progress tracking and completion.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }]
+    },
+    {
+      "id": "logic/chat-controller",
+      "category": "logic",
+      "name": "Chat Controller",
+      "description": "Framework-independent chat conversation state controller.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/form-validation-engine",
+      "category": "logic",
+      "name": "Form Validation Engine",
+      "description": "Declarative form validation engine with async rules.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/workflow-execution-engine",
+      "category": "logic",
+      "name": "Workflow Execution Engine",
+      "description": "Stateful workflow execution engine with branching and retries.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/pagination-state",
+      "category": "logic",
+      "name": "Pagination State",
+      "description": "Framework-independent pagination state management logic.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/search-and-filtering",
+      "category": "logic",
+      "name": "Search and Filtering",
+      "description": "Search, filter, and sort state management logic.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/file-upload-manager",
+      "category": "logic",
+      "name": "File Upload Manager",
+      "description": "Resumable file upload manager with progress tracking.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/retry-and-backoff-utilities",
+      "category": "logic",
+      "name": "Retry and Backoff Utilities",
+      "description": "Retry policies with exponential backoff and jitter.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "logic/conversation-state-management",
+      "category": "logic",
+      "name": "Conversation State Management",
+      "description": "Conversation state management for multi-turn agent interactions.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/vercel-ai",
+      "category": "integrations",
+      "name": "Vercel AI",
+      "description": "Adapter for the Vercel AI SDK.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/auth-providers",
+      "category": "integrations",
+      "name": "Auth Providers",
+      "description": "Authentication provider adapters (OAuth, SAML, OIDC).",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/postgresql",
+      "category": "integrations",
+      "name": "PostgreSQL",
+      "description": "PostgreSQL database integration adapter.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/sqlite",
+      "category": "integrations",
+      "name": "SQLite",
+      "description": "SQLite database integration adapter.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/object-storage",
+      "category": "integrations",
+      "name": "Object Storage",
+      "description": "S3-compatible object storage integration adapter.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/payment-providers",
+      "category": "integrations",
+      "name": "Payment Providers",
+      "description": "Payment provider adapters (Stripe, PayPal, LemonSqueezy).",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/external-apis",
+      "category": "integrations",
+      "name": "External APIs",
+      "description": "HTTP client integration for external REST APIs.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "integrations/queue-systems",
+      "category": "integrations",
+      "name": "Queue Systems",
+      "description": "Message queue integration adapters (SQS, RabbitMQ, Redis).",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "runtime": "node" }]
+    },
+    {
+      "id": "recipes/agent-chat-postgres",
+      "category": "recipes",
+      "name": "Agent Chat Postgres",
+      "description": "Pre-integrated agent chat with PostgreSQL persistence.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "node" }]
+    },
+    {
+      "id": "templates/saas-starter",
+      "category": "templates",
+      "name": "SaaS Starter",
+      "description": "Pre-integrated SaaS application template with auth, billing, and dashboard.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "status": "official",
+      "targets": [{ "language": "typescript", "framework": "react", "runtime": "node" }]
+    }
+  ],
+  "libraries": [
+    {
+      "id": "ui",
+      "name": "simplify/ui",
+      "description": "Accessible UI primitive components.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": [
+        "ui/button", "ui/input", "ui/select", "ui/dialog", "ui/drawer",
+        "ui/tooltip", "ui/dropdown-menu", "ui/tabs", "ui/data-table",
+        "ui/scroll-area", "ui/form-field"
+      ]
+    },
+    {
+      "id": "blocks",
+      "name": "simplify/blocks",
+      "description": "Functional React block compositions.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": [
+        "blocks/agent-chat", "blocks/dashboard-shell", "blocks/application-navigation",
+        "blocks/authentication-forms", "blocks/notification-center", "blocks/file-manager",
+        "blocks/multi-step-form", "blocks/activity-feed", "blocks/command-palette",
+        "blocks/onboarding-flow"
+      ]
+    },
+    {
+      "id": "logic",
+      "name": "simplify/logic",
+      "description": "Framework-independent feature logic.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": [
+        "logic/chat-controller", "logic/form-validation-engine",
+        "logic/workflow-execution-engine", "logic/pagination-state",
+        "logic/search-and-filtering", "logic/file-upload-manager",
+        "logic/retry-and-backoff-utilities", "logic/conversation-state-management"
+      ]
+    },
+    {
+      "id": "integrations",
+      "name": "simplify/integrations",
+      "description": "Adapters to external services.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": [
+        "integrations/vercel-ai", "integrations/auth-providers",
+        "integrations/postgresql", "integrations/sqlite",
+        "integrations/object-storage", "integrations/payment-providers",
+        "integrations/external-apis", "integrations/queue-systems"
+      ]
+    },
+    {
+      "id": "recipes",
+      "name": "simplify/recipes",
+      "description": "Pre-integrated asset combinations.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": ["recipes/agent-chat-postgres"]
+    },
+    {
+      "id": "templates",
+      "name": "simplify/templates",
+      "description": "Application starting points.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": ["templates/saas-starter"]
+    },
+    {
+      "id": "official",
+      "name": "simplify/official",
+      "description": "All official simplify.dev assets.",
+      "version": "1.0.0",
+      "publisher": "simplify.dev",
+      "assets": [
+        "ui/button", "ui/input", "ui/select", "ui/dialog", "ui/drawer",
+        "ui/tooltip", "ui/dropdown-menu", "ui/tabs", "ui/data-table",
+        "ui/scroll-area", "ui/form-field",
+        "blocks/agent-chat", "blocks/dashboard-shell", "blocks/application-navigation",
+        "blocks/authentication-forms", "blocks/notification-center", "blocks/file-manager",
+        "blocks/multi-step-form", "blocks/activity-feed", "blocks/command-palette",
+        "blocks/onboarding-flow",
+        "logic/chat-controller", "logic/form-validation-engine",
+        "logic/workflow-execution-engine", "logic/pagination-state",
+        "logic/search-and-filtering", "logic/file-upload-manager",
+        "logic/retry-and-backoff-utilities", "logic/conversation-state-management",
+        "integrations/vercel-ai", "integrations/auth-providers",
+        "integrations/postgresql", "integrations/sqlite",
+        "integrations/object-storage", "integrations/payment-providers",
+        "integrations/external-apis", "integrations/queue-systems",
+        "recipes/agent-chat-postgres", "templates/saas-starter"
+      ]
+    }
+  ]
+}

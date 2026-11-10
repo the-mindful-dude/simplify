@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "recipes/agent-chat-postgres",
+  "category": "recipes",
+  "name": "Agent Chat Postgres",
+  "description": "Pre-integrated agent chat with PostgreSQL persistence.",
+  "version": "1.0.0",
+  "publisher": "simplify.dev",
+  "status": "official",
+  "license": "MIT",
+  "targets": [
+    { "language": "typescript", "framework": "react", "runtime": "browser" },
+    { "language": "typescript", "runtime": "node" }
+  ],
+  "implementations": [
+    {
+      "id": "react",
+      "target": { "language": "typescript", "framework": "react", "runtime": "browser" },
+      "mode": "source",
+      "entry": "src/agent-chat-postgres.tsx"
+    },
+    {
+      "id": "node",
+      "target": { "language": "typescript", "runtime": "node" },
+      "mode": "source",
+      "entry": "src/index.ts"
+    }
+  ],
+  "dependencies": {
+    "registry": [
+      { "id": "blocks/agent-chat", "version": "1.0.0" },
+      { "id": "integrations/postgresql", "version": "1.0.0" },
+      { "id": "logic/chat-controller", "version": "1.0.0" }
+    ],
+    "packages": [
+      { "name": "react", "version": "^18.3.1", "kind": "peer" },
+      { "name": "react-dom", "version": "^18.3.1", "kind": "peer" }
+    ]
+  },
+  "installation": {
+    "modes": [
+      {
+        "mode": "source",
+        "files": [
+          { "source": "src/agent-chat-postgres.tsx", "target": "src/components/recipes/agent-chat-postgres.tsx" },
+          { "source": "src/index.ts", "target": "src/lib/recipes/agent-chat-postgres.ts" }
+        ]
+      }
+    ]
+  },
+  "documentation": {
+    "readme": "README.md",
+    "examples": ["examples/basic.tsx"],
+    "changelog": "CHANGELOG.md"
+  }
+}

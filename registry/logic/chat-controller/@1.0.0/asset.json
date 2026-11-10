@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "logic/chat-controller",
+  "category": "logic",
+  "name": "Chat Controller",
+  "description": "Framework-independent chat conversation state controller.",
+  "version": "1.0.0",
+  "publisher": "simplify.dev",
+  "status": "official",
+  "license": "MIT",
+  "targets": [{ "language": "typescript", "runtime": "node" }],
+  "implementations": [
+    {
+      "id": "node",
+      "target": { "language": "typescript", "runtime": "node" },
+      "mode": "source",
+      "entry": "src/chat-controller.ts"
+    }
+  ],
+  "dependencies": {
+    "packages": []
+  },
+  "installation": {
+    "modes": [
+      {
+        "mode": "source",
+        "files": [
+          { "source": "src/chat-controller.ts", "target": "src/lib/chat-controller.ts" }
+        ]
+      }
+    ]
+  },
+  "documentation": {
+    "readme": "README.md",
+    "examples": ["examples/basic.ts"],
+    "changelog": "CHANGELOG.md"
+  }
+}

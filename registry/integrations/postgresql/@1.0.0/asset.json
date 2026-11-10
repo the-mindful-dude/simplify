@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "integrations/postgresql",
+  "category": "integrations",
+  "name": "PostgreSQL",
+  "description": "PostgreSQL database integration adapter.",
+  "version": "1.0.0",
+  "publisher": "simplify.dev",
+  "status": "official",
+  "license": "MIT",
+  "targets": [{ "language": "typescript", "runtime": "node" }],
+  "implementations": [
+    {
+      "id": "node",
+      "target": { "language": "typescript", "runtime": "node" },
+      "mode": "package",
+      "entry": "dist/index.js"
+    }
+  ],
+  "dependencies": {
+    "packages": [
+      { "name": "pg", "version": "^8.12.0", "kind": "peer" },
+      { "name": "@types/pg", "version": "^8.11.0", "kind": "development" }
+    ]
+  },
+  "installation": {
+    "modes": [
+      {
+        "mode": "package",
+        "packageName": "@simplify-dev/integration-postgresql"
+      },
+      {
+        "mode": "source",
+        "files": [
+          { "source": "src/index.ts", "target": "src/integrations/postgresql.ts" }
+        ]
+      }
+    ]
+  },
+  "documentation": {
+    "readme": "README.md",
+    "examples": ["examples/basic.ts"],
+    "changelog": "CHANGELOG.md"
+  }
+}

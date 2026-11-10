@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "ui/button",
+  "category": "ui",
+  "name": "Button",
+  "description": "Accessible button primitive with variants and sizes.",
+  "version": "1.0.0",
+  "publisher": "simplify.dev",
+  "status": "official",
+  "license": "MIT",
+  "targets": [{ "language": "typescript", "framework": "react", "runtime": "browser" }],
+  "implementations": [
+    {
+      "id": "react",
+      "target": { "language": "typescript", "framework": "react", "runtime": "browser" },
+      "mode": "source",
+      "entry": "src/button.tsx"
+    }
+  ],
+  "dependencies": {
+    "packages": [
+      { "name": "react", "version": "^18.3.1", "kind": "peer" },
+      { "name": "react-dom", "version": "^18.3.1", "kind": "peer" },
+      { "name": "@radix-ui/react-button", "version": "^1.1.0", "kind": "runtime" }
+    ]
+  },
+  "installation": {
+    "modes": [
+      {
+        "mode": "source",
+        "files": [
+          { "source": "src/button.tsx", "target": "src/components/ui/button.tsx" }
+        ]
+      }
+    ]
+  },
+  "documentation": {
+    "readme": "README.md",
+    "examples": ["examples/basic.tsx", "examples/variants.tsx"],
+    "changelog": "CHANGELOG.md"
+  },
+  "preview": {
+    "entry": "preview/button-preview.tsx",
+    "scenarios": ["default", "loading", "disabled"]
+  }
+}
