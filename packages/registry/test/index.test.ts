@@ -31,7 +31,7 @@ const assetPaths = [
 ] as const;
 
 const expectedIntegrity: Record<string, string> = {
-  'ui/button': 'sha256-9eAWEclQg3l7gUPOOZkynPRj44dhYdPvMj8yY7v50ok=',
+  'ui/button': 'sha256-lfy0SVjc4xOCRhvWHAA8M95iw4NYQSjvU1adDCivbZA=',
 };
 
 const requiredAssetFields = [
