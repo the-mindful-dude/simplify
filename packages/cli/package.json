@@ -29,7 +29,10 @@
   },
   "dependencies": {
     "@simplify-dev/registry": "workspace:*",
-    "@simplify-dev/tooling": "workspace:*"
+    "@simplify-dev/schemas": "workspace:*",
+    "@simplify-dev/tooling": "workspace:*",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   },
   "publishConfig": {
     "access": "public"

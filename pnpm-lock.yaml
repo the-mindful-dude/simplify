@@ -104,9 +104,18 @@ importers:
       '@simplify-dev/registry':
         specifier: workspace:*
         version: link:../registry
+      '@simplify-dev/schemas':
+        specifier: workspace:*
+        version: link:../../schemas
       '@simplify-dev/tooling':
         specifier: workspace:*
         version: link:../tooling
+      ajv:
+        specifier: ^8.17.1
+        version: 8.20.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.20.0)
 
   packages/github:
     dependencies:
