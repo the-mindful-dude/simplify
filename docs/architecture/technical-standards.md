@@ -1,11 +1,11 @@
 # Technical Standards
 
-Status: Initial Phase 1 decision. Source of truth: `docs/MODEL.md`.
+Status: Approved. Source of truth: `docs/MODEL.md`.
 
 ## 1. Purpose
 
 This document defines the language, tooling, module boundaries, quality gates, and
-versioning standards for the simplify.dev monorepo. It resolves `TODO.md` section 1.4.
+versioning standards for the simplify.dev monorepo.
 
 ## 2. Language and Runtime Baseline
 

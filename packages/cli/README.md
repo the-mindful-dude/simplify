@@ -19,4 +19,4 @@ The `simplify` command-line application.
 
 ## Status
 
-Phase 2 placeholder. Commands are implemented from Phase 6 onward.
+Foundation scaffold. The command surface is not implemented yet.

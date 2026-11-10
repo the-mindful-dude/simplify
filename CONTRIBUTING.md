@@ -1,7 +1,7 @@
 # Contributing to simplify.dev
 
-Read [`AGENTS.md`](./AGENTS.md), [`docs/MODEL.md`](./docs/MODEL.md), and
-[`docs/architecture/`](./docs/architecture/) before making changes.
+Read [`docs/MODEL.md`](./docs/MODEL.md) and [`docs/architecture/`](./docs/architecture/)
+before making changes.
 
 ## Development Setup
 
@@ -64,7 +64,8 @@ Pull requests must pass the same checks in CI.
 - Published versions are immutable.
 - Never commit secrets, credentials, environment values, or generated local data.
 
-See [`AGENTS.md`](./AGENTS.md) for the complete rule set.
+See [`docs/MODEL.md`](./docs/MODEL.md) and [`docs/architecture/`](./docs/architecture/)
+for the complete rule set.
 
 ## Commit Style
 

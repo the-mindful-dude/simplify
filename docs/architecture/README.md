@@ -16,11 +16,11 @@ defines the product model and non-negotiable boundaries.
    registry, and repository identifiers.
 6. [`technical-standards.md`](./technical-standards.md) — languages, tooling, module
    boundaries, quality gates, and versioning.
-7. [`../../TODO.md`](../../TODO.md) — implementation roadmap.
 
 ## Documentation Rules
 
-- Architecture documents describe decisions that affect more than one package or phase.
+- Architecture documents describe decisions that affect more than one package or contract
+  area.
 - Documents must not contradict `docs/MODEL.md`. If they do, `docs/MODEL.md` wins and the
   conflict must be resolved explicitly.
 - Implementation details that are local to a single package belong in that package's
@@ -31,11 +31,11 @@ defines the product model and non-negotiable boundaries.
 
 ## Status
 
-| Document                    | Status          |
-| --------------------------- | --------------- |
-| `product-scope.md`          | Initial Phase 1 |
-| `github-workflow.md`        | Initial Phase 1 |
-| `naming-and-identifiers.md` | Initial Phase 1 |
-| `technical-standards.md`    | Initial Phase 1 |
+| Document                    | Status  |
+| --------------------------- | ------- |
+| `product-scope.md`          | Initial |
+| `github-workflow.md`        | Initial |
+| `naming-and-identifiers.md` | Initial |
+| `technical-standards.md`    | Initial |
 
-The documents are considered stable once Phase 2 tooling enforces their rules in CI.
+The documents are considered stable once workspace tooling enforces their rules in CI.

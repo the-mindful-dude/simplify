@@ -18,4 +18,4 @@ Framework-independent feature logic.
 
 ## Status
 
-Phase 2 placeholder. Logic implementation begins in Phase 13.
+Foundation scaffold. Framework-independent logic is not implemented yet.

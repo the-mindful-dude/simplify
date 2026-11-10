@@ -18,4 +18,4 @@ schemas/
 
 ## Status
 
-Phase 2 placeholder. Schemas are implemented in Phase 3.
+Foundation scaffold. Schema contracts are not implemented yet.

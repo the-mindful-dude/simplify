@@ -16,4 +16,4 @@ Framework-independent design tokens and generated outputs.
 
 ## Status
 
-Phase 2 placeholder. Token model and generation begin in Phase 11.
+Foundation scaffold. Token definitions and generators are not implemented yet.

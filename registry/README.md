@@ -20,4 +20,4 @@ registry/
 
 ## Status
 
-Phase 2 placeholder. Official assets are introduced with their implementation phases.
+Foundation scaffold. Official assets are not published yet.

@@ -21,4 +21,4 @@ Accessible React components built on semantic design tokens.
 
 ## Status
 
-Phase 2 placeholder. Component implementation begins in Phase 12.
+Foundation scaffold. The component surface is not implemented yet.

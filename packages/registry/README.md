@@ -17,4 +17,4 @@ Registry contracts, asset resolution, and the registry client.
 
 ## Status
 
-Phase 2 placeholder. Public contracts are introduced in Phase 3 and Phase 5.
+Foundation scaffold. Public registry contracts are not implemented yet.

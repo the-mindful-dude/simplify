@@ -30,7 +30,6 @@ pnpm clean          # remove build output and dependencies
 | Path                   | Responsibility                                       |
 | ---------------------- | ---------------------------------------------------- |
 | `apps/web`             | Registry browser, documentation, Theme Studio.       |
-| `apps/registry-api`    | Reserved hosted registry service.                    |
 | `packages/registry`    | Registry contracts, resolver, and client.            |
 | `packages/github`      | GitHub App, repositories, webhooks, publishing.      |
 | `packages/cli`         | `simplify` command-line application.                 |
@@ -48,6 +47,10 @@ pnpm clean          # remove build output and dependencies
 Do not commit environment files. Local environment values belong in `.env.local` or your
 shell environment. Commit only declarative examples such as `.env.example`.
 
+Next.js loads `.env.local` automatically. Container runs use the values supplied by
+`docker-compose.yml` or a local `.env` file. Shell variables take precedence over file
+values. Never place credentials in `.env.example`, source code, or container images.
+
 ## Monorepo Rules
 
 - Packages are ESM-only and expose deliberate `exports`.
@@ -57,5 +60,20 @@ shell environment. Commit only declarative examples such as `.env.example`.
 
 ## CI
 
-GitHub Actions runs formatting, linting, type-checking, tests, and builds. The same
-commands must pass locally before committing.
+GitHub Actions runs formatting, linting, type-checking, tests, builds, and a container
+build. The same commands must pass locally before committing.
+
+## Containers
+
+The production image builds `apps/web` from the repository root with a multi-stage
+Dockerfile and Next.js standalone output.
+
+```bash
+pnpm docker:build        # build the production web image
+pnpm docker:up           # run the production web service on PORT (default 3000)
+pnpm docker:down         # stop the services
+pnpm docker:dev          # run the web development server on DEV_PORT (default 3001)
+```
+
+The development profile mounts the repository and keeps container-owned dependencies in
+anonymous volumes. Rebuild the profile after changing workspace manifests.

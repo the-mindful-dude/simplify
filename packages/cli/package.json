@@ -1,7 +1,6 @@
 {
   "name": "@simplify-dev/cli",
   "version": "0.0.0",
-  "private": true,
   "type": "module",
   "bin": {
     "simplify": "./dist/cli.js"
@@ -25,11 +24,14 @@
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
     "clean": "rm -rf dist"
   },
   "dependencies": {
     "@simplify-dev/registry": "workspace:*",
     "@simplify-dev/tooling": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

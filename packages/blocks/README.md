@@ -18,4 +18,4 @@ Reusable functional React compositions.
 
 ## Status
 
-Phase 2 placeholder. Block implementation begins in Phase 14.
+Foundation scaffold. The block surface is not implemented yet.

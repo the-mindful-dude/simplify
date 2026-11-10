@@ -13,13 +13,17 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
+    "test": "vitest run --config vitest.shared.ts && turbo run test",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo run build && changeset publish",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "turbo run clean && rm -rf node_modules .turbo"
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "docker:build": "docker compose build web",
+    "docker:up": "docker compose up --build web",
+    "docker:down": "docker compose down",
+    "docker:dev": "docker compose --profile dev up --build web-dev"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.10",

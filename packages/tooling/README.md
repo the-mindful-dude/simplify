@@ -17,4 +17,4 @@ Asset validation, library building, and preview runtime utilities.
 
 ## Status
 
-Phase 2 placeholder. Validation and build tooling begin in Phase 7.
+Foundation scaffold. Validation and build tooling are not implemented yet.

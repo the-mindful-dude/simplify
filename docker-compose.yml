@@ -1,0 +1,58 @@
+name: simplify
+
+services:
+  web:
+    image: simplify-dev/web:local
+    build:
+      context: .
+      target: runner
+    init: true
+    restart: unless-stopped
+    ports:
+      - '${PORT:-3000}:3000'
+    environment:
+      NODE_ENV: production
+      PORT: '3000'
+      HOSTNAME: 0.0.0.0
+      NEXT_TELEMETRY_DISABLED: '1'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  web-dev:
+    profiles: ['dev']
+    image: simplify-dev/web-dev:local
+    build:
+      context: .
+      target: dev
+    init: true
+    command:
+      - sh
+      - -c
+      - pnpm --filter @simplify-dev/web... build && pnpm --filter @simplify-dev/web dev
+    ports:
+      - '${DEV_PORT:-3001}:3000'
+    environment:
+      NODE_ENV: development
+      PORT: '3000'
+      HOSTNAME: 0.0.0.0
+      NEXT_TELEMETRY_DISABLED: '1'
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/blocks/node_modules
+      - /app/packages/interaction/node_modules
+      - /app/packages/registry/node_modules
+      - /app/packages/tokens/node_modules
+      - /app/packages/ui/node_modules

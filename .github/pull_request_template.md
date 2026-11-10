@@ -6,7 +6,7 @@ Describe the change and the problem it solves.
 
 - [ ] The change is limited to the stated task.
 - [ ] No unrelated refactors are included.
-- [ ] Architecture boundaries in `AGENTS.md` and `docs/MODEL.md` are respected.
+- [ ] Architecture boundaries in `docs/MODEL.md` and `docs/architecture/` are respected.
 
 ## Verification
 
@@ -18,5 +18,4 @@ Describe the change and the problem it solves.
 
 ## Notes
 
-Link the relevant `TODO.md` phase or task, and call out any contract, manifest, or
-documentation changes.
+Describe the scope and call out any contract, manifest, or documentation changes.

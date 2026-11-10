@@ -18,4 +18,4 @@ GitHub App authorization, repository association, webhooks, and publishing coord
 
 ## Status
 
-Phase 2 placeholder. Implementation begins in Phase 4.
+Foundation scaffold. GitHub integration contracts are not implemented yet.

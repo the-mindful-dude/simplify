@@ -7,5 +7,5 @@ if (command === '--version' || command === '-v') {
 } else {
   console.log('simplify <command>');
   console.log('');
-  console.log('Commands are introduced in Phase 6.');
+  console.log('Commands are not implemented yet.');
 }

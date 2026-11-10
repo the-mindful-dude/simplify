@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
     "clean": "rm -rf .next dist"
   },
   "dependencies": {

@@ -12,4 +12,4 @@ The simplify.dev registry browser, documentation application, and Theme Studio.
 
 ## Status
 
-Phase 2 placeholder. The application is built in Phase 15 and Phase 16.
+Foundation scaffold. The registry browser and documentation are not implemented yet.

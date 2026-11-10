@@ -1,11 +1,11 @@
 # Product Scope
 
-Status: Initial Phase 1 decision. Source of truth: `docs/MODEL.md`.
+Status: Approved. Source of truth: `docs/MODEL.md`.
 
 ## 1. Purpose
 
-This document defines the initial product scope for simplify.dev. It resolves the
-questions in `TODO.md` section 1.1 and establishes the vocabulary used by the registry,
+This document defines the initial product scope for simplify.dev. It establishes the
+vocabulary used by the registry,
 CLI, GitHub integration, and web application.
 
 ## 2. Asset Categories

@@ -1,10 +1,10 @@
 # Naming and Public Identifiers
 
-Status: Initial Phase 1 decision. Source of truth: `docs/MODEL.md`.
+Status: Approved. Source of truth: `docs/MODEL.md`.
 
 ## 1. Purpose
 
-This document defines public and internal identifiers. It resolves `TODO.md` section 1.3.
+This document defines public and internal identifiers.
 Identifiers must remain stable even if product branding, registry URLs, or repository
 locations change.
 
@@ -15,7 +15,7 @@ locations change.
   `@simplify-dev/registry`, `@simplify-dev/cli`.
 - Workspace packages use the same scope as their published counterparts.
 
-Availability check performed for Phase 1:
+Availability check performed before adoption:
 
 | Name                | Result                                                            |
 | ------------------- | ----------------------------------------------------------------- |

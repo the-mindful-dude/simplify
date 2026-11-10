@@ -1,7 +1,6 @@
 {
   "name": "@simplify-dev/ui",
   "version": "0.0.0",
-  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +19,7 @@
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -29,5 +28,8 @@
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

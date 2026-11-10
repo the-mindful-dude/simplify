@@ -1,11 +1,11 @@
 # GitHub-First Library Workflow
 
-Status: Initial Phase 1 decision. Source of truth: `docs/MODEL.md`.
+Status: Approved. Source of truth: `docs/MODEL.md`.
 
 ## 1. Purpose
 
 This document defines how libraries are created, maintained, validated, versioned, and
-published through GitHub. It resolves `TODO.md` section 1.2.
+published through GitHub.
 
 ## 2. Principles
 
