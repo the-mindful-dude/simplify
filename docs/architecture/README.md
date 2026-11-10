@@ -16,6 +16,8 @@ defines the product model and non-negotiable boundaries.
    registry, and repository identifiers.
 6. [`technical-standards.md`](./technical-standards.md) — languages, tooling, module
    boundaries, quality gates, and versioning.
+7. [`../specifications/`](../specifications/) — public manifest, installation, versioning,
+   configuration, and registry index contracts.
 
 ## Documentation Rules
 

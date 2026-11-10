@@ -5,6 +5,7 @@ import * as cli from '../packages/cli/src/index.js';
 import * as github from '../packages/github/src/index.js';
 import * as interaction from '../packages/interaction/src/index.js';
 import * as registry from '../packages/registry/src/index.js';
+import * as schemas from '../schemas/src/index.js';
 import * as tokens from '../packages/tokens/src/index.js';
 import * as tooling from '../packages/tooling/src/index.js';
 import * as ui from '../packages/ui/src/index.js';
@@ -15,6 +16,7 @@ const publicEntries = {
   github,
   interaction,
   registry,
+  schemas,
   tokens,
   tooling,
   ui,

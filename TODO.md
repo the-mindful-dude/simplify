@@ -102,82 +102,82 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 
 ### 3.1 Define the Registry Data Model
 
-- [ ] Define the registry's core asset identity model. Every asset must have a stable ID, category, name, version, and publisher.
-- [ ] Define the library model, including library identity, description, maintainers, assets, versions, and licensing.
-- [ ] Define the relationship between library versions and individual asset versions.
-- [ ] Define how a library references its canonical source repository.
-- [ ] Define the repository association model, including GitHub repository identity, owner, name, and URL.
-- [ ] Define how a published library version references its exact source commit and optional Git tag or GitHub release.
-- [ ] Define asset categories and validate that each category has the required metadata.
-- [ ] Define language, framework, runtime, and platform target descriptors.
-- [ ] Define compatibility requirements, including supported version ranges.
-- [ ] Define installation modes and their supported capabilities.
-- [ ] Define documentation, example, preview, and changelog references.
-- [ ] Define official, community, deprecated, and reviewed asset statuses.
-- [ ] Define metadata schema versioning and backward-compatibility rules.
-- [ ] Ensure the registry can represent multiple implementations of one logical asset.
+- [x] Define the registry's core asset identity model. Every asset must have a stable ID, category, name, version, and publisher.
+- [x] Define the library model, including library identity, description, maintainers, assets, versions, and licensing.
+- [x] Define the relationship between library versions and individual asset versions.
+- [x] Define how a library references its canonical source repository.
+- [x] Define the repository association model, including GitHub repository identity, owner, name, and URL.
+- [x] Define how a published library version references its exact source commit and optional Git tag or GitHub release.
+- [x] Define asset categories and validate that each category has the required metadata.
+- [x] Define language, framework, runtime, and platform target descriptors.
+- [x] Define compatibility requirements, including supported version ranges.
+- [x] Define installation modes and their supported capabilities.
+- [x] Define documentation, example, preview, and changelog references.
+- [x] Define official, community, deprecated, and reviewed asset statuses.
+- [x] Define metadata schema versioning and backward-compatibility rules.
+- [x] Ensure the registry can represent multiple implementations of one logical asset.
 
 ### 3.2 Define Dependency Specifications
 
-- [ ] Define registry dependencies for assets that require other simplify.dev assets.
-- [ ] Define package dependencies for external package-manager dependencies.
-- [ ] Define peer dependencies and optional dependencies.
-- [ ] Support version constraints for registry and package dependencies.
-- [ ] Define dependency compatibility rules across language and framework targets.
-- [ ] Define conflict detection for assets requiring incompatible dependency versions.
-- [ ] Define circular dependency detection and reject invalid dependency graphs.
-- [ ] Define how optional integrations and alternative implementations are represented.
-- [ ] Define how recipes declare and resolve their component assets without duplicating them.
+- [x] Define registry dependencies for assets that require other simplify.dev assets.
+- [x] Define package dependencies for external package-manager dependencies.
+- [x] Define peer dependencies and optional dependencies.
+- [x] Support version constraints for registry and package dependencies.
+- [x] Define dependency compatibility rules across language and framework targets.
+- [x] Define conflict detection for assets requiring incompatible dependency versions.
+- [x] Define circular dependency detection and reject invalid dependency graphs.
+- [x] Define how optional integrations and alternative implementations are represented.
+- [x] Define how recipes declare and resolve their component assets without duplicating them.
 
 ### 3.3 Define Installation and Configuration Metadata
 
-- [ ] Define source-to-target file mappings for source installations.
-- [ ] Define package installation metadata for package-based assets.
-- [ ] Define generated configuration files and supported configuration transformations.
-- [ ] Define environment-variable declarations, including descriptions, required status, and example values.
-- [ ] Define database migration and schema references without allowing silent destructive database operations.
-- [ ] Define setup instructions and post-installation requirements as declarative metadata.
-- [ ] Reject arbitrary registry-provided executable installation scripts by default.
-- [ ] Define how assets declare required runtime capabilities, such as browser, Node.js, server, or edge execution.
+- [x] Define source-to-target file mappings for source installations.
+- [x] Define package installation metadata for package-based assets.
+- [x] Define generated configuration files and supported configuration transformations.
+- [x] Define environment-variable declarations, including descriptions, required status, and example values.
+- [x] Define database migration and schema references without allowing silent destructive database operations.
+- [x] Define setup instructions and post-installation requirements as declarative metadata.
+- [x] Reject arbitrary registry-provided executable installation scripts by default.
+- [x] Define how assets declare required runtime capabilities, such as browser, Node.js, server, or edge execution.
 
 ### 3.4 Define Library and Repository Manifests
 
-- [ ] Define the root `library.json` manifest schema.
-- [ ] Define the asset manifest schema for each initial asset category.
-- [ ] Define how a library manifest references its asset manifests.
-- [ ] Define how manifests map asset implementation files to their repository locations.
-- [ ] Define how libraries declare their package dependencies and registry dependencies.
-- [ ] Define how library versions are represented and validated.
-- [ ] Define how the publishing configuration controls included and excluded files.
-- [ ] Define default exclusions for secrets, environment files, Git internals, dependencies, and generated build outputs.
-- [ ] Define how documentation, examples, previews, and changelogs are referenced.
-- [ ] Define how the schema supports monorepositories containing multiple assets.
-- [ ] Keep the manifest independent of any specific repository directory layout.
-- [ ] Define how future multi-repository libraries could be represented without requiring that capability in the initial implementation.
+- [x] Define the root `library.json` manifest schema.
+- [x] Define the asset manifest schema for each initial asset category.
+- [x] Define how a library manifest references its asset manifests.
+- [x] Define how manifests map asset implementation files to their repository locations.
+- [x] Define how libraries declare their package dependencies and registry dependencies.
+- [x] Define how library versions are represented and validated.
+- [x] Define how the publishing configuration controls included and excluded files.
+- [x] Define default exclusions for secrets, environment files, Git internals, dependencies, and generated build outputs.
+- [x] Define how documentation, examples, previews, and changelogs are referenced.
+- [x] Define how the schema supports monorepositories containing multiple assets.
+- [x] Keep the manifest independent of any specific repository directory layout.
+- [x] Define how future multi-repository libraries could be represented without requiring that capability in the initial implementation.
 
 ### 3.5 Define Versioning and Publication Contracts
 
-- [ ] Define Semantic Versioning requirements for stable library releases.
-- [ ] Define the relationship between Git tags and library manifest versions.
-- [ ] Define development snapshot identifiers using branch and commit information.
-- [ ] Define immutable publication records.
-- [ ] Define how a published version records its source commit SHA.
-- [ ] Define how a library can publish a new version without modifying an existing version.
-- [ ] Define deprecation, withdrawal, and compromised-release procedures.
-- [ ] Define how registry metadata distinguishes stable releases from development snapshots.
-- [ ] Define idempotency rules for repeated publishing requests.
+- [x] Define Semantic Versioning requirements for stable library releases.
+- [x] Define the relationship between Git tags and library manifest versions.
+- [x] Define development snapshot identifiers using branch and commit information.
+- [x] Define immutable publication records.
+- [x] Define how a published version records its source commit SHA.
+- [x] Define how a library can publish a new version without modifying an existing version.
+- [x] Define deprecation, withdrawal, and compromised-release procedures.
+- [x] Define how registry metadata distinguishes stable releases from development snapshots.
+- [x] Define idempotency rules for repeated publishing requests.
 
 ### 3.6 Implement Schema Validation
 
-- [ ] Implement schemas for library manifests, asset manifests, project configuration, and installation metadata.
-- [ ] Add runtime validation for registry responses and configuration files.
-- [ ] Add validation for asset IDs, package identifiers, versions, paths, and dependency declarations.
-- [ ] Validate that referenced files and documentation resources exist.
-- [ ] Validate that each installation mode has the metadata necessary to execute it safely.
-- [ ] Validate repository publishing configuration and file inclusion rules.
-- [ ] Add schema tests using valid and invalid manifests.
-- [ ] Add schema compatibility tests to prevent accidental breaking changes.
-- [ ] Publish schema documentation and TypeScript types for asset authors.
+- [x] Implement schemas for library manifests, asset manifests, project configuration, and installation metadata.
+- [x] Add runtime validation for registry responses and configuration files.
+- [x] Add validation for asset IDs, package identifiers, versions, paths, and dependency declarations.
+- [x] Validate that referenced files and documentation resources exist.
+- [x] Validate that each installation mode has the metadata necessary to execute it safely.
+- [x] Validate repository publishing configuration and file inclusion rules.
+- [x] Add schema tests using valid and invalid manifests.
+- [x] Add schema compatibility tests to prevent accidental breaking changes.
+- [x] Publish schema documentation and TypeScript types for asset authors.
 
 ## Phase 4 — GitHub Integration Foundation
 

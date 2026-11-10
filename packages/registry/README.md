@@ -17,4 +17,5 @@ Registry contracts, asset resolution, and the registry client.
 
 ## Status
 
-Foundation scaffold. Public registry contracts are not implemented yet.
+The schema contracts and boundary validation are implemented. Registry storage, indexing,
+artifact distribution, and dependency resolution follow in later work.
