@@ -257,84 +257,84 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 
 ### 5.1 Implement the Initial Registry
 
-- [ ] Define a canonical source layout for official registry assets.
-- [ ] Implement registry metadata loading and validation.
-- [ ] Implement asset lookup by stable ID and version.
-- [ ] Implement library lookup and asset enumeration.
-- [ ] Implement registry indexing by category, language, framework, and publisher.
-- [ ] Implement immutable versioned asset metadata and source references.
-- [ ] Implement retrieval of asset files and associated documentation.
-- [ ] Implement storage for immutable published artifacts or source snapshots.
-- [ ] Associate each published artifact with its repository identity and source commit SHA.
-- [ ] Implement a registry client API that can be used by the CLI and web application.
-- [ ] Separate registry storage details from the client and resolver interfaces so the storage backend can change later.
-- [ ] Start with a static, versioned registry distribution where practical.
-- [ ] Add dynamic hosted registry services when publishing, discovery, or access-control requirements justify them.
+- [x] Define a canonical source layout for official registry assets.
+- [x] Implement registry metadata loading and validation.
+- [x] Implement asset lookup by stable ID and version.
+- [x] Implement library lookup and asset enumeration.
+- [x] Implement registry indexing by category, language, framework, and publisher.
+- [x] Implement immutable versioned asset metadata and source references.
+- [x] Implement retrieval of asset files and associated documentation.
+- [x] Implement storage for immutable published artifacts or source snapshots.
+- [x] Associate each published artifact with its repository identity and source commit SHA.
+- [x] Implement a registry client API that can be used by the CLI and web application.
+- [x] Separate registry storage details from the client and resolver interfaces so the storage backend can change later.
+- [x] Start with a static, versioned registry distribution where practical.
+- [x] Add dynamic hosted registry services when publishing, discovery, or access-control requirements justify them.
 
 ### 5.2 Implement Dependency Resolution
 
-- [ ] Resolve an asset's complete registry dependency graph.
-- [ ] Resolve compatible asset versions based on the consuming project's target environment.
-- [ ] Resolve package dependencies and their version constraints.
-- [ ] Detect missing dependencies and incompatible versions.
-- [ ] Detect circular dependencies.
-- [ ] Detect duplicate assets and conflicting file targets.
-- [ ] Support optional dependencies and alternative integrations.
-- [ ] Resolve recipe dependencies into a single installation plan.
-- [ ] Preserve explicit version selections and produce deterministic resolution results.
-- [ ] Add tests for nested dependencies, conflicting versions, missing assets, and alternative integrations.
+- [x] Resolve an asset's complete registry dependency graph.
+- [x] Resolve compatible asset versions based on the consuming project's target environment.
+- [x] Resolve package dependencies and their version constraints.
+- [x] Detect missing dependencies and incompatible versions.
+- [x] Detect circular dependencies.
+- [x] Detect duplicate assets and conflicting file targets.
+- [x] Support optional dependencies and alternative integrations.
+- [x] Resolve recipe dependencies into a single installation plan.
+- [x] Preserve explicit version selections and produce deterministic resolution results.
+- [x] Add tests for nested dependencies, conflicting versions, missing assets, and alternative integrations.
 
 ### 5.3 Define Registry Distribution and Caching
 
-- [ ] Define a versioned URL convention for metadata and source files.
-- [ ] Separate registry indexes, manifests, and file artifacts so they can be cached independently.
-- [ ] Add content hashes or equivalent integrity metadata for distributed files.
-- [ ] Add caching rules for immutable asset versions.
-- [ ] Define registry cache invalidation for mutable discovery indexes.
-- [ ] Ensure installations of pinned versions do not depend on the latest registry index remaining available.
-- [ ] Ensure published artifacts remain available even if the original GitHub repository changes or becomes inaccessible.
-- [ ] Treat stored artifacts as distribution snapshots, not as the canonical source repository.
+- [x] Define a versioned URL convention for metadata and source files.
+- [x] Separate registry indexes, manifests, and file artifacts so they can be cached independently.
+- [x] Add content hashes or equivalent integrity metadata for distributed files.
+- [x] Add caching rules for immutable asset versions.
+- [x] Define registry cache invalidation for mutable discovery indexes.
+- [x] Ensure installations of pinned versions do not depend on the latest registry index remaining available.
+- [x] Ensure published artifacts remain available even if the original GitHub repository changes or becomes inaccessible.
+- [x] Treat stored artifacts as distribution snapshots, not as the canonical source repository.
 
 ## Phase 6 — CLI Foundation and Project Detection
 
 ### 6.1 Build the CLI Application
 
-- [ ] Create the CLI executable and configure its public command name.
-- [ ] Implement command parsing, options, help output, and version output.
-- [ ] Establish consistent output formatting for success, warnings, errors, and installation summaries.
-- [ ] Implement structured error types and meaningful error messages.
-- [ ] Add interactive prompts only where user decisions are necessary.
-- [ ] Support non-interactive execution for CI and scripted workflows.
-- [ ] Add verbose and debug modes without exposing secrets.
-- [ ] Ensure CLI commands can be tested without launching a real terminal.
-- [ ] Ensure commands can run locally and inside GitHub Actions.
-- [ ] Support machine-readable output for automation where appropriate.
+- [x] Create the CLI executable and configure its public command name.
+- [x] Implement command parsing, options, help output, and version output.
+- [x] Establish consistent output formatting for success, warnings, errors, and installation summaries.
+- [x] Implement structured error types and meaningful error messages.
+- [x] Add interactive prompts only where user decisions are necessary.
+- [x] Support non-interactive execution for CI and scripted workflows.
+- [x] Add verbose and debug modes without exposing secrets.
+- [x] Ensure CLI commands can be tested without launching a real terminal.
+- [x] Ensure commands can run locally and inside GitHub Actions.
+- [x] Support machine-readable output for automation where appropriate.
 
 ### 6.2 Implement Project Detection
 
-- [ ] Detect the current project root and verify that it is a valid project directory.
-- [ ] Detect TypeScript and JavaScript projects.
-- [ ] Detect React and Next.js applications.
-- [ ] Identify package managers from lockfiles and project metadata.
-- [ ] Detect installed framework and runtime versions.
-- [ ] Detect common source directories and application roots.
-- [ ] Read TypeScript configuration and identify import aliases.
-- [ ] Detect monorepo workspaces and identify the appropriate target application.
-- [ ] Detect whether the project uses an existing simplify.dev configuration.
-- [ ] Report unsupported or ambiguous project configurations instead of silently making assumptions.
+- [x] Detect the current project root and verify that it is a valid project directory.
+- [x] Detect TypeScript and JavaScript projects.
+- [x] Detect React and Next.js applications.
+- [x] Identify package managers from lockfiles and project metadata.
+- [x] Detect installed framework and runtime versions.
+- [x] Detect common source directories and application roots.
+- [x] Read TypeScript configuration and identify import aliases.
+- [x] Detect monorepo workspaces and identify the appropriate target application.
+- [x] Detect whether the project uses an existing simplify.dev configuration.
+- [x] Report unsupported or ambiguous project configurations instead of silently making assumptions.
 
 ### 6.3 Implement Project Configuration
 
-- [ ] Define the `simplify.config.json` schema.
-- [ ] Implement the `simplify init` command.
-- [ ] Generate a minimal configuration using detected project information.
-- [ ] Support configurable asset paths for UI, blocks, logic, integrations, hooks, and styles.
-- [ ] Support package-manager selection and automatic detection.
-- [ ] Support default installation modes and optional per-category overrides.
-- [ ] Support custom registries and registry aliases.
-- [ ] Validate configuration when loading it.
-- [ ] Support configuration overrides for monorepo applications and custom source roots.
-- [ ] Provide useful configuration errors with file and field references.
+- [x] Define the `simplify.config.json` schema.
+- [x] Implement the `simplify init` command.
+- [x] Generate a minimal configuration using detected project information.
+- [x] Support configurable asset paths for UI, blocks, logic, integrations, hooks, and styles.
+- [x] Support package-manager selection and automatic detection.
+- [x] Support default installation modes and optional per-category overrides.
+- [x] Support custom registries and registry aliases.
+- [x] Validate configuration when loading it.
+- [x] Support configuration overrides for monorepo applications and custom source roots.
+- [x] Provide useful configuration errors with file and field references.
 
 ## Phase 7 — Library Authoring and Local Development
 
