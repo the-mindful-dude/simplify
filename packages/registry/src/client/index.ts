@@ -70,7 +70,12 @@ export class RegistryClient {
     return join(this.libraryDirectory(libraryId, version), 'manifest.json');
   }
 
-  private assetFilePath(category: string, assetId: string, version: string, sourcePath: string): string {
+  private assetFilePath(
+    category: string,
+    assetId: string,
+    version: string,
+    sourcePath: string,
+  ): string {
     return join(this.assetDirectory(category, assetId, version), sourcePath);
   }
 
@@ -141,7 +146,10 @@ export class RegistryClient {
   async getAsset(assetId: string, version?: string): Promise<AssetManifest | null> {
     const category = categoryFromAssetId(assetId);
     if (!category) {
-      throw new RegistryClientError(`Invalid asset ID: "${assetId}". Expected "<category>/<name>".`, 'INVALID_ASSET_ID');
+      throw new RegistryClientError(
+        `Invalid asset ID: "${assetId}". Expected "<category>/<name>".`,
+        'INVALID_ASSET_ID',
+      );
     }
 
     const resolvedVersion = version ?? (await this.resolveAssetVersion(assetId));
@@ -150,7 +158,9 @@ export class RegistryClient {
     }
 
     try {
-      return await this.readJsonFile<AssetManifest>(this.assetManifestPath(category, assetId, resolvedVersion));
+      return await this.readJsonFile<AssetManifest>(
+        this.assetManifestPath(category, assetId, resolvedVersion),
+      );
     } catch (error) {
       if ((error as RegistryClientError).code === 'REGISTRY_FILE_NOT_FOUND') {
         return null;
@@ -186,7 +196,10 @@ export class RegistryClient {
     }
   }
 
-  async listAssets(category?: AssetCategory, status?: AssetStatus): Promise<RegistryAssetSummary[]> {
+  async listAssets(
+    category?: AssetCategory,
+    status?: AssetStatus,
+  ): Promise<RegistryAssetSummary[]> {
     const index = await this.getRegistryIndex();
     return index.assets.filter((summary) => {
       if (category !== undefined && summary.category !== category) {
@@ -204,14 +217,13 @@ export class RegistryClient {
     return [...index.libraries];
   }
 
-  async getAssetFile(
-    assetId: string,
-    version: string,
-    sourcePath: string,
-  ): Promise<Uint8Array> {
+  async getAssetFile(assetId: string, version: string, sourcePath: string): Promise<Uint8Array> {
     const category = categoryFromAssetId(assetId);
     if (!category) {
-      throw new RegistryClientError(`Invalid asset ID: "${assetId}". Expected "<category>/<name>".`, 'INVALID_ASSET_ID');
+      throw new RegistryClientError(
+        `Invalid asset ID: "${assetId}". Expected "<category>/<name>".`,
+        'INVALID_ASSET_ID',
+      );
     }
 
     if (!isSafeRelativePath(sourcePath)) {

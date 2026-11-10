@@ -42,7 +42,10 @@
       {
         "mode": "source",
         "files": [
-          { "source": "src/agent-chat-postgres.tsx", "target": "src/components/recipes/agent-chat-postgres.tsx" },
+          {
+            "source": "src/agent-chat-postgres.tsx",
+            "target": "src/components/recipes/agent-chat-postgres.tsx"
+          },
           { "source": "src/index.ts", "target": "src/lib/recipes/agent-chat-postgres.ts" }
         ]
       }

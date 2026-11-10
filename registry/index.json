@@ -401,9 +401,17 @@
       "version": "1.0.0",
       "publisher": "simplify.dev",
       "assets": [
-        "ui/button", "ui/input", "ui/select", "ui/dialog", "ui/drawer",
-        "ui/tooltip", "ui/dropdown-menu", "ui/tabs", "ui/data-table",
-        "ui/scroll-area", "ui/form-field"
+        "ui/button",
+        "ui/input",
+        "ui/select",
+        "ui/dialog",
+        "ui/drawer",
+        "ui/tooltip",
+        "ui/dropdown-menu",
+        "ui/tabs",
+        "ui/data-table",
+        "ui/scroll-area",
+        "ui/form-field"
       ]
     },
     {
@@ -413,9 +421,15 @@
       "version": "1.0.0",
       "publisher": "simplify.dev",
       "assets": [
-        "blocks/agent-chat", "blocks/dashboard-shell", "blocks/application-navigation",
-        "blocks/authentication-forms", "blocks/notification-center", "blocks/file-manager",
-        "blocks/multi-step-form", "blocks/activity-feed", "blocks/command-palette",
+        "blocks/agent-chat",
+        "blocks/dashboard-shell",
+        "blocks/application-navigation",
+        "blocks/authentication-forms",
+        "blocks/notification-center",
+        "blocks/file-manager",
+        "blocks/multi-step-form",
+        "blocks/activity-feed",
+        "blocks/command-palette",
         "blocks/onboarding-flow"
       ]
     },
@@ -426,10 +440,14 @@
       "version": "1.0.0",
       "publisher": "simplify.dev",
       "assets": [
-        "logic/chat-controller", "logic/form-validation-engine",
-        "logic/workflow-execution-engine", "logic/pagination-state",
-        "logic/search-and-filtering", "logic/file-upload-manager",
-        "logic/retry-and-backoff-utilities", "logic/conversation-state-management"
+        "logic/chat-controller",
+        "logic/form-validation-engine",
+        "logic/workflow-execution-engine",
+        "logic/pagination-state",
+        "logic/search-and-filtering",
+        "logic/file-upload-manager",
+        "logic/retry-and-backoff-utilities",
+        "logic/conversation-state-management"
       ]
     },
     {
@@ -439,10 +457,14 @@
       "version": "1.0.0",
       "publisher": "simplify.dev",
       "assets": [
-        "integrations/vercel-ai", "integrations/auth-providers",
-        "integrations/postgresql", "integrations/sqlite",
-        "integrations/object-storage", "integrations/payment-providers",
-        "integrations/external-apis", "integrations/queue-systems"
+        "integrations/vercel-ai",
+        "integrations/auth-providers",
+        "integrations/postgresql",
+        "integrations/sqlite",
+        "integrations/object-storage",
+        "integrations/payment-providers",
+        "integrations/external-apis",
+        "integrations/queue-systems"
       ]
     },
     {
@@ -468,22 +490,45 @@
       "version": "1.0.0",
       "publisher": "simplify.dev",
       "assets": [
-        "ui/button", "ui/input", "ui/select", "ui/dialog", "ui/drawer",
-        "ui/tooltip", "ui/dropdown-menu", "ui/tabs", "ui/data-table",
-        "ui/scroll-area", "ui/form-field",
-        "blocks/agent-chat", "blocks/dashboard-shell", "blocks/application-navigation",
-        "blocks/authentication-forms", "blocks/notification-center", "blocks/file-manager",
-        "blocks/multi-step-form", "blocks/activity-feed", "blocks/command-palette",
+        "ui/button",
+        "ui/input",
+        "ui/select",
+        "ui/dialog",
+        "ui/drawer",
+        "ui/tooltip",
+        "ui/dropdown-menu",
+        "ui/tabs",
+        "ui/data-table",
+        "ui/scroll-area",
+        "ui/form-field",
+        "blocks/agent-chat",
+        "blocks/dashboard-shell",
+        "blocks/application-navigation",
+        "blocks/authentication-forms",
+        "blocks/notification-center",
+        "blocks/file-manager",
+        "blocks/multi-step-form",
+        "blocks/activity-feed",
+        "blocks/command-palette",
         "blocks/onboarding-flow",
-        "logic/chat-controller", "logic/form-validation-engine",
-        "logic/workflow-execution-engine", "logic/pagination-state",
-        "logic/search-and-filtering", "logic/file-upload-manager",
-        "logic/retry-and-backoff-utilities", "logic/conversation-state-management",
-        "integrations/vercel-ai", "integrations/auth-providers",
-        "integrations/postgresql", "integrations/sqlite",
-        "integrations/object-storage", "integrations/payment-providers",
-        "integrations/external-apis", "integrations/queue-systems",
-        "recipes/agent-chat-postgres", "templates/saas-starter"
+        "logic/chat-controller",
+        "logic/form-validation-engine",
+        "logic/workflow-execution-engine",
+        "logic/pagination-state",
+        "logic/search-and-filtering",
+        "logic/file-upload-manager",
+        "logic/retry-and-backoff-utilities",
+        "logic/conversation-state-management",
+        "integrations/vercel-ai",
+        "integrations/auth-providers",
+        "integrations/postgresql",
+        "integrations/sqlite",
+        "integrations/object-storage",
+        "integrations/payment-providers",
+        "integrations/external-apis",
+        "integrations/queue-systems",
+        "recipes/agent-chat-postgres",
+        "templates/saas-starter"
       ]
     }
   ]

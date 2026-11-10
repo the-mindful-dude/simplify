@@ -28,9 +28,7 @@
     "modes": [
       {
         "mode": "source",
-        "files": [
-          { "source": "src/button.tsx", "target": "src/components/ui/button.tsx" }
-        ]
+        "files": [{ "source": "src/button.tsx", "target": "src/components/ui/button.tsx" }]
       }
     ]
   },

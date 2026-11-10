@@ -42,8 +42,7 @@ export interface AssetEntry extends RegistryAssetSummary {
   readonly integrity: string;
 }
 
-export const integrityPattern =
-  '^sha256-[A-Za-z0-9+/]+={0,2}$';
+export const integrityPattern = '^sha256-[A-Za-z0-9+/]+={0,2}$';
 
 export const assetEntrySchema = {
   ...registryAssetSummarySchema,

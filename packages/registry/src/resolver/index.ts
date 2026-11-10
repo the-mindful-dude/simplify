@@ -72,11 +72,7 @@ export class ResolutionError extends Error {
   readonly code: string;
   readonly details: Readonly<Record<string, unknown>>;
 
-  constructor(
-    code: string,
-    message: string,
-    details: Readonly<Record<string, unknown>> = {},
-  ) {
+  constructor(code: string, message: string, details: Readonly<Record<string, unknown>> = {}) {
     super(message);
     this.name = 'ResolutionError';
     this.code = code;
@@ -205,15 +201,7 @@ function parseRange(range: string): ParsedRange | null {
       minor: Number(match[3] ?? '0'),
       patch: Number(match[4] ?? '0'),
     };
-    const operator = (match[1] ?? '') as
-      | '>='
-      | '<='
-      | '^'
-      | '~'
-      | '>'
-      | '<'
-      | '='
-      | '';
+    const operator = (match[1] ?? '') as '>=' | '<=' | '^' | '~' | '>' | '<' | '=' | '';
 
     switch (operator) {
       case '^': {
@@ -351,10 +339,7 @@ export class DependencyResolver {
   private readonly loadAsset: AssetManifestLoader;
   private readonly options: Readonly<ResolverOptions>;
 
-  constructor(
-    loadAsset: AssetManifestLoader,
-    options: Readonly<ResolverOptions> = {},
-  ) {
+  constructor(loadAsset: AssetManifestLoader, options: Readonly<ResolverOptions> = {}) {
     this.loadAsset = loadAsset;
     this.options = options;
   }
@@ -391,11 +376,9 @@ export class DependencyResolver {
       try {
         const manifest = await this.loadAsset(id);
         if (!manifest) {
-          throw new ResolutionError(
-            'MISSING_ASSET',
-            `Registry asset "${id}" was not found.`,
-            { assetId: id },
-          );
+          throw new ResolutionError('MISSING_ASSET', `Registry asset "${id}" was not found.`, {
+            assetId: id,
+          });
         }
 
         const registryDeps = [...(manifest.dependencies?.registry ?? [])];
@@ -480,20 +463,13 @@ export class DependencyResolver {
     };
   }
 
-  async resolveAssetGraph(
-    assetId: string,
-    version: string,
-  ): Promise<DependencyGraph> {
+  async resolveAssetGraph(assetId: string, version: string): Promise<DependencyGraph> {
     const nodes: GraphNode[] = [];
     const edges: GraphEdge[] = [];
     const visited = new Set<string>();
     const visiting = new Set<string>();
 
-    const visit = async (
-      id: string,
-      versionConstraint?: string,
-      from?: string,
-    ): Promise<void> => {
+    const visit = async (id: string, versionConstraint?: string, from?: string): Promise<void> => {
       if (visited.has(id)) {
         return;
       }
@@ -596,9 +572,7 @@ export class DependencyResolver {
               type: 'version',
               message: `Incompatible version constraints for "${targetId}": ${rangeString(
                 left ?? { lower: null, upper: null, exact: null },
-              )} vs ${rangeString(
-                right ?? { lower: null, upper: null, exact: null },
-              )}.`,
+              )} vs ${rangeString(right ?? { lower: null, upper: null, exact: null })}.`,
               details: {
                 dependencyId: targetId,
                 left: rangeString(left ?? { lower: null, upper: null, exact: null }),
@@ -609,27 +583,27 @@ export class DependencyResolver {
         }
       }
 
-    const node = nodeById.get(targetId);
-    if (node) {
-      const nodeVersion = parseVersion(node.version);
-      if (nodeVersion) {
-        for (const edge of incoming) {
-          const parsed = parseRange(edge.versionConstraint);
-          if (parsed && !satisfies(nodeVersion, parsed)) {
-            conflicts.push({
-              type: 'version',
-              message: `Resolved version "${node.version}" of "${targetId}" does not satisfy constraint "${edge.versionConstraint}" required by "${edge.from}".`,
-              details: {
-                dependencyId: targetId,
-                resolvedVersion: node.version,
-                requiredBy: edge.from,
-                constraint: edge.versionConstraint,
-              },
-            });
+      const node = nodeById.get(targetId);
+      if (node) {
+        const nodeVersion = parseVersion(node.version);
+        if (nodeVersion) {
+          for (const edge of incoming) {
+            const parsed = parseRange(edge.versionConstraint);
+            if (parsed && !satisfies(nodeVersion, parsed)) {
+              conflicts.push({
+                type: 'version',
+                message: `Resolved version "${node.version}" of "${targetId}" does not satisfy constraint "${edge.versionConstraint}" required by "${edge.from}".`,
+                details: {
+                  dependencyId: targetId,
+                  resolvedVersion: node.version,
+                  requiredBy: edge.from,
+                  constraint: edge.versionConstraint,
+                },
+              });
+            }
           }
         }
       }
-    }
     }
 
     return conflicts;

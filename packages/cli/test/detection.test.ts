@@ -43,7 +43,14 @@ describe('ProjectDetector', () => {
         schemaVersion: 1,
         installation: {
           defaultMode: 'source',
-          paths: { ui: 'ui', blocks: 'blocks', logic: 'logic', integrations: 'integrations', hooks: 'hooks', styles: 'styles' },
+          paths: {
+            ui: 'ui',
+            blocks: 'blocks',
+            logic: 'logic',
+            integrations: 'integrations',
+            hooks: 'hooks',
+            styles: 'styles',
+          },
         },
       });
       const detector = new ProjectDetector();
@@ -66,12 +73,8 @@ describe('ProjectDetector', () => {
 
     it('throws DetectionError when no project files exist', () => {
       const detector = new ProjectDetector();
-      expect(() => detector.detectProjectRoot(tempDir)).toThrow(
-        /No project root found/,
-      );
-      expect(() => detector.detectProjectRoot(tempDir)).toThrow(
-        DetectionError,
-      );
+      expect(() => detector.detectProjectRoot(tempDir)).toThrow(/No project root found/);
+      expect(() => detector.detectProjectRoot(tempDir)).toThrow(DetectionError);
     });
 
     it('uses process.cwd() when cwd is not provided', () => {
@@ -377,7 +380,14 @@ describe('ProjectDetector', () => {
         schemaVersion: 1,
         installation: {
           defaultMode: 'source',
-          paths: { ui: 'ui', blocks: 'blocks', logic: 'logic', integrations: 'integrations', hooks: 'hooks', styles: 'styles' },
+          paths: {
+            ui: 'ui',
+            blocks: 'blocks',
+            logic: 'logic',
+            integrations: 'integrations',
+            hooks: 'hooks',
+            styles: 'styles',
+          },
         },
       });
       const detector = new ProjectDetector();
@@ -428,13 +438,10 @@ describe('ProjectDetector', () => {
       process.chdir(tempDir);
       try {
         const detector = new ProjectDetector();
-        expect(() => detector.detectAll()).toThrow(
-          /No project root found/,
-        );
+        expect(() => detector.detectAll()).toThrow(/No project root found/);
       } finally {
         process.chdir(originalCwd);
       }
     });
   });
 });
-

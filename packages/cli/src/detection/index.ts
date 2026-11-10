@@ -59,24 +59,16 @@ export class ProjectDetector {
   }
 
   private readPackageJson(): Record<string, unknown> | undefined {
-    return this.readJsonFile<Record<string, unknown>>(
-      path.join(this.getRoot(), 'package.json'),
-    );
+    return this.readJsonFile<Record<string, unknown>>(path.join(this.getRoot(), 'package.json'));
   }
 
   private readTsConfig(): Record<string, unknown> | undefined {
-    return this.readJsonFile<Record<string, unknown>>(
-      path.join(this.getRoot(), 'tsconfig.json'),
-    );
+    return this.readJsonFile<Record<string, unknown>>(path.join(this.getRoot(), 'tsconfig.json'));
   }
 
   private getDependencies(pkg: Record<string, unknown>): string[] {
     const deps: string[] = [];
-    for (const field of [
-      'dependencies',
-      'devDependencies',
-      'peerDependencies',
-    ]) {
+    for (const field of ['dependencies', 'devDependencies', 'peerDependencies']) {
       const value = pkg[field];
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         for (const key of Object.keys(value as Record<string, unknown>)) {
@@ -128,11 +120,7 @@ export class ProjectDetector {
     const root = this.getRoot();
     const pkg = this.readPackageJson();
 
-    const nextConfigFiles = [
-      'next.config.js',
-      'next.config.mjs',
-      'next.config.ts',
-    ];
+    const nextConfigFiles = ['next.config.js', 'next.config.mjs', 'next.config.ts'];
     for (const configFile of nextConfigFiles) {
       if (fs.existsSync(path.join(root, configFile))) {
         return 'next';
@@ -221,15 +209,8 @@ export class ProjectDetector {
     return versions;
   }
 
-  private getDependencyVersion(
-    pkg: Record<string, unknown>,
-    depName: string,
-  ): string | undefined {
-    for (const field of [
-      'dependencies',
-      'devDependencies',
-      'peerDependencies',
-    ]) {
+  private getDependencyVersion(pkg: Record<string, unknown>, depName: string): string | undefined {
+    for (const field of ['dependencies', 'devDependencies', 'peerDependencies']) {
       const value = pkg[field];
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         const fieldMap = value as Record<string, unknown>;
@@ -275,9 +256,7 @@ export class ProjectDetector {
     }
 
     const aliases: Record<string, string> = {};
-    for (const [alias, targets] of Object.entries(
-      paths as Record<string, unknown>,
-    )) {
+    for (const [alias, targets] of Object.entries(paths as Record<string, unknown>)) {
       if (
         targets &&
         Array.isArray(targets) &&
@@ -316,11 +295,7 @@ export class ProjectDetector {
     const pkg = this.readPackageJson();
     if (pkg) {
       const workspaces = pkg.workspaces;
-      if (
-        workspaces &&
-        typeof workspaces === 'object' &&
-        !Array.isArray(workspaces)
-      ) {
+      if (workspaces && typeof workspaces === 'object' && !Array.isArray(workspaces)) {
         const wsObj = workspaces as Record<string, unknown>;
         if ('packages' in wsObj) {
           const packages = wsObj.packages;

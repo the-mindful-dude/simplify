@@ -133,7 +133,9 @@ function fixtureFor(filePath: string): string | Buffer {
   if (key === `${registryRoot}/assets/ui/ui/button/@1.0.0/src/button.tsx`) {
     return Buffer.from('export const Button = () => null;\n');
   }
-  const error = new Error(`ENOENT: no such file or directory, open '${key}'`) as NodeJS.ErrnoException;
+  const error = new Error(
+    `ENOENT: no such file or directory, open '${key}'`,
+  ) as NodeJS.ErrnoException;
   error.code = 'ENOENT';
   error.errno = -2;
   error.path = key;
@@ -266,7 +268,7 @@ describe('RegistryClient', () => {
 
   it('throws a descriptive error when the index file is missing', async () => {
     const error = new Error(
-      'ENOENT: no such file or directory, open \'/mock/registry/index.json\'',
+      "ENOENT: no such file or directory, open '/mock/registry/index.json'",
     ) as NodeJS.ErrnoException;
     error.code = 'ENOENT';
     mockReadFile.mockRejectedValue(error);

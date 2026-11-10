@@ -50,9 +50,7 @@ function createAssetManifest(overrides: Partial<AssetManifest>): AssetManifest {
       modes: [
         {
           mode: 'source',
-          files: [
-            { source: 'src/button.tsx', target: 'src/components/ui/button.tsx' },
-          ],
+          files: [{ source: 'src/button.tsx', target: 'src/components/ui/button.tsx' }],
         },
       ],
     },
@@ -61,8 +59,7 @@ function createAssetManifest(overrides: Partial<AssetManifest>): AssetManifest {
 }
 
 function createLoader(assets: Record<string, AssetManifest>): AssetManifestLoader {
-  return async (id: string): Promise<AssetManifest | undefined> =>
-    assets[id] ?? undefined;
+  return async (id: string): Promise<AssetManifest | undefined> => assets[id] ?? undefined;
 }
 
 describe('DependencyResolver', () => {
@@ -77,14 +74,10 @@ describe('DependencyResolver', () => {
 
       const result = await resolver.resolve(['ui/button'], projectConfiguration);
 
-      expect(result.assets).toEqual([
-        { id: 'ui/button', version: '1.0.0', category: 'ui' },
-      ]);
+      expect(result.assets).toEqual([{ id: 'ui/button', version: '1.0.0', category: 'ui' }]);
       expect(result.registryDependencies).toEqual([]);
       expect(result.packageDependencies).toEqual([]);
-      expect(result.installationModes).toEqual([
-        { assetId: 'ui/button', mode: 'source' },
-      ]);
+      expect(result.installationModes).toEqual([{ assetId: 'ui/button', mode: 'source' }]);
       expect(result.fileMappings).toEqual([
         {
           source: 'src/button.tsx',
@@ -102,7 +95,9 @@ describe('DependencyResolver', () => {
         category: 'logic',
         version: '1.0.0',
         installation: {
-          modes: [{ mode: 'source', files: [{ source: 'src/utils.tsx', target: 'src/lib/utils.tsx' }] }],
+          modes: [
+            { mode: 'source', files: [{ source: 'src/utils.tsx', target: 'src/lib/utils.tsx' }] },
+          ],
         },
       });
       const card = createAssetManifest({
@@ -113,7 +108,12 @@ describe('DependencyResolver', () => {
           registry: [{ id: 'logic/utils', version: '^1.0.0' }],
         },
         installation: {
-          modes: [{ mode: 'source', files: [{ source: 'src/card.tsx', target: 'src/components/blocks/card.tsx' }] }],
+          modes: [
+            {
+              mode: 'source',
+              files: [{ source: 'src/card.tsx', target: 'src/components/blocks/card.tsx' }],
+            },
+          ],
         },
       });
       const button = createAssetManifest({
@@ -131,16 +131,15 @@ describe('DependencyResolver', () => {
 
       const result = await resolver.resolve(['ui/button'], projectConfiguration);
 
-      expect(
-        result.assets.map((asset) => `${asset.id}@${asset.version}`).sort(),
-      ).toEqual([
+      expect(result.assets.map((asset) => `${asset.id}@${asset.version}`).sort()).toEqual([
         'blocks/card@1.0.0',
         'logic/utils@1.0.0',
         'ui/button@1.0.0',
       ]);
-      expect(
-        result.registryDependencies.map((dep) => `${dep.id}@${dep.version}`).sort(),
-      ).toEqual(['blocks/card@^1.0.0', 'logic/utils@^1.0.0']);
+      expect(result.registryDependencies.map((dep) => `${dep.id}@${dep.version}`).sort()).toEqual([
+        'blocks/card@^1.0.0',
+        'logic/utils@^1.0.0',
+      ]);
     });
 
     it('includes package dependencies', async () => {
@@ -149,14 +148,10 @@ describe('DependencyResolver', () => {
         category: 'ui',
         version: '1.0.0',
         dependencies: {
-          packages: [
-            { name: 'radix-ui', version: '^1.0.0', kind: 'runtime' },
-          ],
+          packages: [{ name: 'radix-ui', version: '^1.0.0', kind: 'runtime' }],
         },
       });
-      const resolver = new DependencyResolver(
-        createLoader({ 'ui/button': button }),
-      );
+      const resolver = new DependencyResolver(createLoader({ 'ui/button': button }));
 
       const result = await resolver.resolve(['ui/button'], projectConfiguration);
 
@@ -210,7 +205,9 @@ describe('DependencyResolver', () => {
         category: 'logic',
         version: '1.0.0',
         installation: {
-          modes: [{ mode: 'source', files: [{ source: 'src/utils.tsx', target: 'src/lib/utils.tsx' }] }],
+          modes: [
+            { mode: 'source', files: [{ source: 'src/utils.tsx', target: 'src/lib/utils.tsx' }] },
+          ],
         },
       });
       const card = createAssetManifest({
@@ -221,7 +218,12 @@ describe('DependencyResolver', () => {
           registry: [{ id: 'logic/utils', version: '^1.0.0' }],
         },
         installation: {
-          modes: [{ mode: 'source', files: [{ source: 'src/card.tsx', target: 'src/components/blocks/card.tsx' }] }],
+          modes: [
+            {
+              mode: 'source',
+              files: [{ source: 'src/card.tsx', target: 'src/components/blocks/card.tsx' }],
+            },
+          ],
         },
       });
       const button = createAssetManifest({
@@ -256,13 +258,11 @@ describe('DependencyResolver', () => {
           registry: [{ id: 'logic/missing', version: '^1.0.0' }],
         },
       });
-      const resolver = new DependencyResolver(
-        createLoader({ 'ui/button': button }),
-      );
+      const resolver = new DependencyResolver(createLoader({ 'ui/button': button }));
 
-      await expect(
-        resolver.resolve(['ui/button'], projectConfiguration),
-      ).rejects.toBeInstanceOf(ResolutionError);
+      await expect(resolver.resolve(['ui/button'], projectConfiguration)).rejects.toBeInstanceOf(
+        ResolutionError,
+      );
     });
 
     it('rejects duplicate file targets across assets', async () => {
@@ -274,9 +274,7 @@ describe('DependencyResolver', () => {
           modes: [
             {
               mode: 'source',
-              files: [
-                { source: 'src/a.tsx', target: 'src/shared.tsx' },
-              ],
+              files: [{ source: 'src/a.tsx', target: 'src/shared.tsx' }],
             },
           ],
         },
@@ -289,9 +287,7 @@ describe('DependencyResolver', () => {
           modes: [
             {
               mode: 'source',
-              files: [
-                { source: 'src/b.tsx', target: 'src/shared.tsx' },
-              ],
+              files: [{ source: 'src/b.tsx', target: 'src/shared.tsx' }],
             },
           ],
         },
@@ -335,9 +331,11 @@ describe('DependencyResolver', () => {
 
       const graph = await resolver.resolveAssetGraph('ui/button', '1.0.0');
 
-      expect(
-        graph.nodes.map((node) => node.id).sort(),
-      ).toEqual(['blocks/card', 'logic/utils', 'ui/button']);
+      expect(graph.nodes.map((node) => node.id).sort()).toEqual([
+        'blocks/card',
+        'logic/utils',
+        'ui/button',
+      ]);
       expect(graph.edges).toContainEqual({
         from: 'ui/button',
         to: 'blocks/card',
@@ -415,14 +413,11 @@ describe('DependencyResolver', () => {
 
       const conflicts = resolver.detectConflicts(graph);
 
-      expect(conflicts.some((conflict) => conflict.type === 'version')).toBe(
-        true,
-      );
+      expect(conflicts.some((conflict) => conflict.type === 'version')).toBe(true);
       expect(
         conflicts.some(
           (conflict) =>
-            conflict.type === 'version' &&
-            conflict.details.dependencyId === 'logic/utils',
+            conflict.type === 'version' && conflict.details.dependencyId === 'logic/utils',
         ),
       ).toBe(true);
     });
@@ -442,9 +437,7 @@ describe('DependencyResolver', () => {
 
       const conflicts = resolver.detectConflicts(graph);
 
-      expect(conflicts.some((conflict) => conflict.type === 'version')).toBe(
-        true,
-      );
+      expect(conflicts.some((conflict) => conflict.type === 'version')).toBe(true);
     });
 
     it('returns no conflicts for compatible constraints', () => {

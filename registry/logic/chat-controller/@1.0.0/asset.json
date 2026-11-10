@@ -24,9 +24,7 @@
     "modes": [
       {
         "mode": "source",
-        "files": [
-          { "source": "src/chat-controller.ts", "target": "src/lib/chat-controller.ts" }
-        ]
+        "files": [{ "source": "src/chat-controller.ts", "target": "src/lib/chat-controller.ts" }]
       }
     ]
   },
