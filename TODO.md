@@ -340,57 +340,57 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 
 ### 7.1 Implement Library Scaffolding
 
-- [ ] Implement `simplify library init`.
-- [ ] Generate a valid library manifest and initial directory structure.
-- [ ] Support library metadata, maintainer information, and license selection.
-- [ ] Support libraries containing multiple asset categories.
-- [ ] Generate examples and documentation scaffolding.
-- [ ] Provide a minimal asset authoring example for each supported initial category.
-- [ ] Allow developers to initialize a library inside an existing repository without replacing its existing files.
-- [ ] Support initializing a new repository-ready library structure.
-- [ ] Ensure generated files are compatible with the GitHub-first publishing workflow.
-- [ ] Include a README explaining the library structure and development workflow.
+- [x] Implement `simplify library init`.
+- [x] Generate a valid library manifest and initial directory structure.
+- [x] Support library metadata, maintainer information, and license selection.
+- [x] Support libraries containing multiple asset categories.
+- [x] Generate examples and documentation scaffolding.
+- [x] Provide a minimal asset authoring example for each supported initial category.
+- [x] Allow developers to initialize a library inside an existing repository without replacing its existing files.
+- [x] Support initializing a new repository-ready library structure.
+- [x] Ensure generated files are compatible with the GitHub-first publishing workflow.
+- [x] Include a README explaining the library structure and development workflow.
 
 ### 7.2 Implement Asset Creation
 
-- [ ] Implement `simplify asset create`.
-- [ ] Allow authors to select the asset category.
-- [ ] Generate the appropriate manifest structure.
-- [ ] Generate implementation, test, documentation, and example directories where applicable.
-- [ ] Support language and framework target declarations.
-- [ ] Support installation-mode declarations.
-- [ ] Support registry and package dependencies.
-- [ ] Support preview metadata for compatible UI assets.
-- [ ] Allow assets to be added to an existing library.
-- [ ] Ensure adding an asset does not require changes to the registry implementation.
+- [x] Implement `simplify asset create`.
+- [x] Allow authors to select the asset category.
+- [x] Generate the appropriate manifest structure.
+- [x] Generate implementation, test, documentation, and example directories where applicable.
+- [x] Support language and framework target declarations.
+- [x] Support installation-mode declarations.
+- [x] Support registry and package dependencies.
+- [x] Support preview metadata for compatible UI assets.
+- [x] Allow assets to be added to an existing library.
+- [x] Ensure adding an asset does not require changes to the registry implementation.
 
 ### 7.3 Implement Asset Validation
 
-- [ ] Implement `simplify asset validate`.
-- [ ] Validate manifest schemas and required metadata.
-- [ ] Verify referenced files and source mappings.
-- [ ] Validate dependency declarations and target compatibility.
-- [ ] Check for unsafe paths and unsupported installation instructions.
-- [ ] Verify that declared package dependencies are used or justified.
-- [ ] Check that required documentation and tests exist.
-- [ ] Validate library-level and asset-level version consistency.
-- [ ] Provide actionable validation errors with file paths and manifest field references.
-- [ ] Support validation of an individual asset or an entire library.
-- [ ] Ensure validation can run locally and in CI without publishing anything.
+- [x] Implement `simplify asset validate`.
+- [x] Validate manifest schemas and required metadata.
+- [x] Verify referenced files and source mappings.
+- [x] Validate dependency declarations and target compatibility.
+- [x] Check for unsafe paths and unsupported installation instructions.
+- [x] Verify that declared package dependencies are used or justified.
+- [x] Check that required documentation and tests exist.
+- [x] Validate library-level and asset-level version consistency.
+- [x] Provide actionable validation errors with file paths and manifest field references.
+- [x] Support validation of an individual asset or an entire library.
+- [x] Ensure validation can run locally and in CI without publishing anything.
 
 ### 7.4 Implement Library Building
 
-- [ ] Implement `simplify library build`.
-- [ ] Collect the library manifest and referenced asset manifests.
-- [ ] Resolve the files required by each published asset.
-- [ ] Apply include and exclude rules.
-- [ ] Exclude secrets, environment files, Git internals, dependencies, and unwanted build outputs.
-- [ ] Produce versioned registry metadata and distributable artifacts.
-- [ ] Generate integrity hashes for files and built artifacts.
-- [ ] Record the source commit SHA when available.
-- [ ] Verify that the generated artifacts can be consumed by the registry client and CLI.
-- [ ] Ensure builds are deterministic for the same source revision and configuration.
-- [ ] Keep building separate from publishing so authors can inspect artifacts before release.
+- [x] Implement `simplify library build`.
+- [x] Collect the library manifest and referenced asset manifests.
+- [x] Resolve the files required by each published asset.
+- [x] Apply include and exclude rules.
+- [x] Exclude secrets, environment files, Git internals, dependencies, and unwanted build outputs.
+- [x] Produce versioned registry metadata and distributable artifacts.
+- [x] Generate integrity hashes for files and built artifacts.
+- [x] Record the source commit SHA when available.
+- [x] Verify that the generated artifacts can be consumed by the registry client and CLI.
+- [x] Ensure builds are deterministic for the same source revision and configuration.
+- [x] Keep building separate from publishing so authors can inspect artifacts before release.
 
 ## Phase 8 — GitHub-First Library Creation and Publishing
 
