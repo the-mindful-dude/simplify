@@ -28,6 +28,37 @@ services:
       retries: 3
       start_period: 20s
 
+  registry-api:
+    image: simplify-dev/web:local
+    build:
+      context: .
+      target: runner
+    init: true
+    restart: unless-stopped
+    command:
+      - node
+      - apps/registry-api/dist/server.js
+    ports:
+      - '${REGISTRY_API_PORT:-3002}:3002'
+    environment:
+      NODE_ENV: production
+      PORT: '3002'
+      HOSTNAME: 0.0.0.0
+      NEXT_TELEMETRY_DISABLED: '1'
+      GITHUB_APP_WEBHOOK_SECRET: '${GITHUB_APP_WEBHOOK_SECRET}'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3002/healthz').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
   web-dev:
     profiles: ['dev']
     image: simplify-dev/web-dev:local

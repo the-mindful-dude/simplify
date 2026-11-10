@@ -1,0 +1,32 @@
+{
+  "name": "@simplify-dev/registry-api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
+    "start": "node dist/server.js",
+    "dev": "node dist/server.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@simplify-dev/github": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

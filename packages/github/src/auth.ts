@@ -79,9 +79,15 @@ export function createGitHubAppClient(config: GitHubAppConfig): GitHubAppClient 
         const { data } = await appOctokit.rest.apps.getInstallation({
           installation_id: installationId,
         });
+        const account = (data.account ?? {}) as {
+          readonly login?: string;
+          readonly name?: string;
+          readonly slug?: string;
+        };
         return {
           installationId: data.id,
-          account: data.account.login,
+          account:
+            account.login ?? account.name ?? account.slug ?? String(data.account?.id ?? data.id),
           suspended: data.suspended_at !== null,
         };
       } catch (error) {
@@ -93,9 +99,7 @@ export function createGitHubAppClient(config: GitHubAppConfig): GitHubAppClient 
       }
     },
 
-    async listInstallationRepositories(
-      installationId: number,
-    ): Promise<GitHubRepositorySummary[]> {
+    async listInstallationRepositories(installationId: number): Promise<GitHubRepositorySummary[]> {
       try {
         const octokit = installationOctokit(installationId);
         const repositories = await octokit.paginate(
@@ -106,10 +110,7 @@ export function createGitHubAppClient(config: GitHubAppConfig): GitHubAppClient 
           toRepositorySummary(repository as RepositoryPayload),
         );
       } catch (error) {
-        throw authFailure(
-          `Could not list repositories for installation ${installationId}.`,
-          error,
-        );
+        throw authFailure(`Could not list repositories for installation ${installationId}.`, error);
       }
     },
 
@@ -140,13 +141,11 @@ export function createGitHubAppClient(config: GitHubAppConfig): GitHubAppClient 
       branch: string,
     ): Promise<string> {
       try {
-        const { data } = await installationOctokit(installationId).rest.repos.getBranch(
-          {
-            owner,
-            repo: name,
-            branch,
-          },
-        );
+        const { data } = await installationOctokit(installationId).rest.repos.getBranch({
+          owner,
+          repo: name,
+          branch,
+        });
         return data.commit.sha;
       } catch (error) {
         throw new GitHubIntegrationError(

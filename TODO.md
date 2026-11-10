@@ -183,75 +183,75 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 
 ### 4.1 Design the GitHub Integration Architecture
 
-- [ ] Define the responsibilities of the GitHub App, GitHub Actions workflow, simplify.dev CLI, and registry publishing service.
-- [ ] Establish GitHub as the authoritative source for connected library source code and Git history.
-- [ ] Define how simplify.dev identifies a repository independently of its current owner or name.
-- [ ] Define how a repository is linked to a library.
-- [ ] Define how repository renames, transfers, deletion, and access revocation are handled.
-- [ ] Define the GitHub events simplify.dev needs to process.
-- [ ] Define how webhook events and GitHub Actions publication requests reach the same publishing pipeline.
-- [ ] Ensure GitHub integration does not become a dependency of the core registry asset model.
-- [ ] Define how the integration can support additional Git hosting providers in the future.
+- [x] Define the responsibilities of the GitHub App, GitHub Actions workflow, simplify.dev CLI, and registry publishing service.
+- [x] Establish GitHub as the authoritative source for connected library source code and Git history.
+- [x] Define how simplify.dev identifies a repository independently of its current owner or name.
+- [x] Define how a repository is linked to a library.
+- [x] Define how repository renames, transfers, deletion, and access revocation are handled.
+- [x] Define the GitHub events simplify.dev needs to process.
+- [x] Define how webhook events and GitHub Actions publication requests reach the same publishing pipeline.
+- [x] Ensure GitHub integration does not become a dependency of the core registry asset model.
+- [x] Define how the integration can support additional Git hosting providers in the future.
 
 ### 4.2 Register and Configure the GitHub App
 
-- [ ] Create the simplify.dev GitHub App.
-- [ ] Define the minimum required repository permissions.
-- [ ] Request only the permissions required for repository metadata, contents, webhook events, and publishing-related workflows.
-- [ ] Configure installation and callback URLs.
-- [ ] Configure webhook endpoints and event subscriptions.
-- [ ] Implement secure GitHub App authentication.
-- [ ] Implement installation token generation and expiration handling.
-- [ ] Store GitHub App credentials securely.
-- [ ] Ensure credentials are never exposed to browser clients.
-- [ ] Implement GitHub App installation verification.
-- [ ] Implement GitHub App disconnection and permission-revocation handling.
-- [ ] Document the requested permissions and why they are necessary.
+- [x] Create the simplify.dev GitHub App.
+- [x] Define the minimum required repository permissions.
+- [x] Request only the permissions required for repository metadata, contents, webhook events, and publishing-related workflows.
+- [x] Configure installation and callback URLs.
+- [x] Configure webhook endpoints and event subscriptions.
+- [x] Implement secure GitHub App authentication.
+- [x] Implement installation token generation and expiration handling.
+- [x] Store GitHub App credentials securely.
+- [x] Ensure credentials are never exposed to browser clients.
+- [x] Implement GitHub App installation verification.
+- [x] Implement GitHub App disconnection and permission-revocation handling.
+- [x] Document the requested permissions and why they are necessary.
 
 ### 4.3 Implement GitHub Account and Repository Connections
 
-- [ ] Implement GitHub account connection from simplify.dev.
-- [ ] Implement GitHub App installation status retrieval.
-- [ ] Retrieve repositories accessible to the installation.
-- [ ] Implement repository selection.
-- [ ] Retrieve repository identity, owner, name, visibility, default branch, and URL.
-- [ ] Implement repository-to-library association.
-- [ ] Prevent one repository from being accidentally linked to conflicting library records.
-- [ ] Display connected repository information in the simplify.dev account and library management interfaces.
-- [ ] Implement repository disconnection.
-- [ ] Handle repository permission changes and revoked installations.
-- [ ] Implement clear error states for inaccessible, deleted, renamed, or transferred repositories.
+- [x] Implement GitHub account connection from simplify.dev.
+- [x] Implement GitHub App installation status retrieval.
+- [x] Retrieve repositories accessible to the installation.
+- [x] Implement repository selection.
+- [x] Retrieve repository identity, owner, name, visibility, default branch, and URL.
+- [x] Implement repository-to-library association.
+- [x] Prevent one repository from being accidentally linked to conflicting library records.
+- [x] Display connected repository information in the simplify.dev account and library management interfaces.
+- [x] Implement repository disconnection.
+- [x] Handle repository permission changes and revoked installations.
+- [x] Implement clear error states for inaccessible, deleted, renamed, or transferred repositories.
 
 ### 4.4 Implement Repository Metadata Synchronization
 
-- [ ] Define the repository metadata stored by simplify.dev.
-- [ ] Implement repository metadata retrieval.
-- [ ] Track the repository's default branch.
-- [ ] Track the latest observed commit SHA.
-- [ ] Track repository visibility and access status.
-- [ ] Track repository URL and owner/name changes.
-- [ ] Implement metadata synchronization after relevant webhook events.
-- [ ] Implement manual metadata refresh.
-- [ ] Ensure repeated synchronization does not create duplicate records.
-- [ ] Keep repository metadata separate from immutable published-version records.
+- [x] Define the repository metadata stored by simplify.dev.
+- [x] Implement repository metadata retrieval.
+- [x] Track the repository's default branch.
+- [x] Track the latest observed commit SHA.
+- [x] Track repository visibility and access status.
+- [x] Track repository URL and owner/name changes.
+- [x] Implement metadata synchronization after relevant webhook events.
+- [x] Implement manual metadata refresh.
+- [x] Ensure repeated synchronization does not create duplicate records.
+- [x] Keep repository metadata separate from immutable published-version records.
 
 ### 4.5 Implement Webhook Infrastructure
 
-- [ ] Implement a webhook endpoint for GitHub events.
-- [ ] Verify webhook signatures.
-- [ ] Validate event payloads before processing.
-- [ ] Store webhook delivery identifiers to prevent duplicate processing.
-- [ ] Implement idempotent webhook handlers.
-- [ ] Handle retries and out-of-order event delivery.
-- [ ] Process push events.
-- [ ] Process tag creation events.
-- [ ] Process GitHub release publication events.
-- [ ] Process repository rename and transfer events.
-- [ ] Process repository deletion events.
-- [ ] Process GitHub App installation and permission changes.
-- [ ] Record webhook processing status and failures.
-- [ ] Implement safe retry and recovery mechanisms.
-- [ ] Ensure webhook processing never turns an ordinary push into an unintended stable release.
+- [x] Implement a webhook endpoint for GitHub events.
+- [x] Verify webhook signatures.
+- [x] Validate event payloads before processing.
+- [x] Store webhook delivery identifiers to prevent duplicate processing.
+- [x] Implement idempotent webhook handlers.
+- [x] Handle retries and out-of-order event delivery.
+- [x] Process push events.
+- [x] Process tag creation events.
+- [x] Process GitHub release publication events.
+- [x] Process repository rename and transfer events.
+- [x] Process repository deletion events.
+- [x] Process GitHub App installation and permission changes.
+- [x] Record webhook processing status and failures.
+- [x] Implement safe retry and recovery mechanisms.
+- [x] Ensure webhook processing never turns an ordinary push into an unintended stable release.
 
 ## Phase 5 — Registry Storage and Dependency Resolution
 

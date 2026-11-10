@@ -1,7 +1,4 @@
-import {
-  exchangeWebFlowCode,
-  getWebFlowAuthorizationUrl,
-} from '@octokit/oauth-methods';
+import { exchangeWebFlowCode, getWebFlowAuthorizationUrl } from '@octokit/oauth-methods';
 
 import { GitHubIntegrationError } from './errors.js';
 

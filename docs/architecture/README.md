@@ -18,6 +18,8 @@ defines the product model and non-negotiable boundaries.
    boundaries, quality gates, and versioning.
 7. [`../specifications/`](../specifications/) — public manifest, installation, versioning,
    configuration, and registry index contracts.
+8. [`github-integration.md`](./github-integration.md) — GitHub App, repository
+   connections, webhooks, and publishing pipeline responsibilities.
 
 ## Documentation Rules
 

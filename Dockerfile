@@ -9,7 +9,7 @@ WORKDIR /app
 
 FROM base AS pruner
 COPY . .
-RUN pnpm dlx turbo@2.3.3 prune @simplify-dev/web --docker
+RUN pnpm dlx turbo@2.3.3 prune @simplify-dev/web @simplify-dev/registry-api --docker
 
 FROM base AS deps
 COPY --from=pruner /app/out/json/ ./
@@ -19,7 +19,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 FROM deps AS builder
 COPY --from=pruner /app/out/full/ ./
 COPY --from=pruner /app/tsconfig.base.json ./tsconfig.base.json
-RUN pnpm turbo run build --filter=@simplify-dev/web...
+RUN pnpm turbo run build --filter=@simplify-dev/web... --filter=@simplify-dev/registry-api...
 
 FROM base AS dev
 COPY --from=deps /app ./
@@ -37,9 +37,11 @@ WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs \
   && useradd --system --uid 1001 --gid nodejs nextjs
 
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/registry-api/dist ./apps/registry-api/dist
 
 USER nextjs
 EXPOSE 3000

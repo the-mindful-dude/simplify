@@ -1,9 +1,5 @@
 import { GitHubIntegrationError } from './errors.js';
-import type {
-  GitHubAppClient,
-  RepositoryLink,
-  RepositoryLinkStore,
-} from './ports.js';
+import type { GitHubAppClient, RepositoryLink, RepositoryLinkStore } from './ports.js';
 
 export interface RepositoryMetadataServiceOptions {
   readonly appClient: GitHubAppClient;

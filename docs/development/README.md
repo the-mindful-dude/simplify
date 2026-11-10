@@ -27,20 +27,21 @@ pnpm clean          # remove build output and dependencies
 
 ## Workspace Map
 
-| Path                   | Responsibility                                       |
-| ---------------------- | ---------------------------------------------------- |
-| `apps/web`             | Registry browser, documentation, Theme Studio.       |
-| `packages/registry`    | Registry contracts, resolver, and client.            |
-| `packages/github`      | GitHub App, repositories, webhooks, publishing.      |
-| `packages/cli`         | `simplify` command-line application.                 |
-| `packages/tokens`      | Design tokens and generated outputs.                 |
-| `packages/ui`          | React components and styles.                         |
-| `packages/interaction` | Framework-independent feature logic.                 |
-| `packages/blocks`      | Functional React compositions.                       |
-| `packages/tooling`     | Asset validation, library building, preview runtime. |
-| `registry/`            | Official asset source layout.                        |
-| `schemas/`             | Shared JSON schemas and generated types.             |
-| `docs/architecture/`   | Architecture decisions and contracts.                |
+| Path                   | Responsibility                                          |
+| ---------------------- | ------------------------------------------------------- |
+| `apps/web`             | Registry browser, documentation, Theme Studio.          |
+| `apps/registry-api`    | Hosted registry API service, including GitHub webhooks. |
+| `packages/registry`    | Registry contracts, resolver, and client.               |
+| `packages/github`      | GitHub App, repositories, webhooks, publishing.         |
+| `packages/cli`         | `simplify` command-line application.                    |
+| `packages/tokens`      | Design tokens and generated outputs.                    |
+| `packages/ui`          | React components and styles.                            |
+| `packages/interaction` | Framework-independent feature logic.                    |
+| `packages/blocks`      | Functional React compositions.                          |
+| `packages/tooling`     | Asset validation, library building, preview runtime.    |
+| `registry/`            | Official asset source layout.                           |
+| `schemas/`             | Shared JSON schemas and generated types.                |
+| `docs/architecture/`   | Architecture decisions and contracts.                   |
 
 ## Environment Variables
 

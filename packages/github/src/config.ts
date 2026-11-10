@@ -40,10 +40,7 @@ export function loadGitHubAppConfig(env: NodeJS.ProcessEnv = process.env): GitHu
   const rawAppId = readRequired(env, 'GITHUB_APP_ID');
   const appId = Number(rawAppId);
   if (!Number.isSafeInteger(appId) || appId <= 0) {
-    throw new GitHubIntegrationError(
-      'config_invalid',
-      'GITHUB_APP_ID must be a positive integer.',
-    );
+    throw new GitHubIntegrationError('config_invalid', 'GITHUB_APP_ID must be a positive integer.');
   }
 
   return {
