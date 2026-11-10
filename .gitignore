@@ -19,9 +19,6 @@ build/
 .DS_Store
 *.pem
 
-# local agent guidance
-AGENTS.md
-
 # debug
 npm-debug.log*
 yarn-debug.log*
