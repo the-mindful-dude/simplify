@@ -14,6 +14,8 @@ RUN pnpm dlx turbo@2.3.3 prune @simplify-dev/web @simplify-dev/registry-api --do
 FROM base AS deps
 COPY --from=pruner /app/out/json/ ./
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY .npmrc ./
+RUN printf 'engine-strict=false\n' >> .npmrc
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 FROM deps AS builder
