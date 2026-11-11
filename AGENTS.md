@@ -1,4 +1,3 @@
-````txt
 # AGENTS.md
 
 Mandatory instructions for all AI agents, coordinators, subagents, and contributors working in the simplify.dev repository.
