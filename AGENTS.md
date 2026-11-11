@@ -538,31 +538,17 @@ The coordinator plans, delegates, reviews, verifies, tracks, and delivers. Subag
 
 The coordinator must:
 
-* Read the task and relevant sources of truth.
+* Read the task and relevant sources of truth; inspect repository state and establish the verification baseline.
 
-* Inspect repository state and establish the verification baseline.
+* Identify responsibilities, boundaries, dependencies, and acceptance criteria; design the implementation plan and divide the work into clearly scoped tasks.
 
-* Identify responsibilities, boundaries, dependencies, and acceptance criteria.
+* Delegate all implementation work to dedicated subagents; review actual changes and subagent reports.
 
-* Design the implementation plan and execution order.
+* Identify incomplete work, defects, and architectural violations; delegate corrections and integration work.
 
-* Divide the work into clearly scoped tasks.
+* Run repository-level quality gates; update `TODO.md` only after verified completion.
 
-* Delegate all implementation work to dedicated subagents.
-
-* Review actual changes and subagent reports.
-
-* Identify incomplete work, defects, and architectural violations.
-
-* Delegate corrections and integration work.
-
-* Run repository-level quality gates.
-
-* Update `TODO.md` only after verified completion.
-
-* Commit and push coherent changes.
-
-* Report actual results and remaining blockers.
+* Commit and push coherent changes; report actual results and remaining blockers.
 
 The coordinator is accountable for the final result and must independently verify subagent work.
 
@@ -684,7 +670,7 @@ Every task must follow this sequence:
 
 ### 9.1 Completion Is Strictly Evidence-Based
 
-A task, subtask, phase, or milestone may be marked complete only when:
+A task may be marked complete only when:
 
 * Every requirement and acceptance criterion is satisfied.
 
@@ -710,17 +696,11 @@ Never:
 
 * Mark partially implemented work complete.
 
-* Skip difficult requirements.
+* Skip difficult requirements or reduce acceptance criteria for convenience.
 
-* Reduce acceptance criteria for convenience.
+* Mark a parent task complete while child tasks remain incomplete.
 
-* Mark a parent task complete while required child tasks remain incomplete.
-
-* Mark tests complete without executing them.
-
-* Claim completion based on a subagent report alone.
-
-* Remove requirements simply to make progress appear greater.
+* Mark tests complete without executing them; claim completion based on a subagent report alone; or remove requirements to make progress appear greater.
 
 ### 9.2 Acceptance Criteria and Evidence
 
@@ -792,21 +772,7 @@ Visual regression coverage is required for important UI components and blocks.
 
 ### Test Integrity
 
-Never hide defects by:
-
-* Deleting or disabling failing tests without valid justification.
-
-* Weakening assertions to accommodate incorrect behavior.
-
-* Replacing meaningful tests with trivial tests.
-
-* Mocking the exact behavior a test must verify.
-
-* Suppressing type errors instead of fixing their cause.
-
-* Excluding broken packages from quality gates without justification.
-
-* Treating skipped or unexecuted tests as passing.
+Never hide defects by deleting/disabling failing tests, weakening assertions, replacing meaningful tests with trivial ones, mocking the exact behavior a test must verify, suppressing type errors, excluding broken packages from quality gates, or treating skipped tests as passing.
 
 When a test exposes a defect, fix the implementation. When a test itself is incorrect, update it with a clear justification while preserving intended coverage.
 
@@ -818,57 +784,27 @@ Agents must investigate and fix every defect they discover, including pre-existi
 
 This applies to:
 
-* Runtime bugs and incorrect behavior.
+* Runtime bugs and incorrect behavior; type, build, test, lint, and formatting errors; broken imports and exports.
 
-* Type, build, test, lint, and formatting errors.
+* Circular dependencies and architecture violations; security weaknesses and unsafe filesystem operations; invalid schemas, manifests, and configuration.
 
-* Broken imports and exports.
+* Broken interfaces and integrations; incorrect error handling; duplicated or contradictory business logic; dead code and unhandled relevant edge cases.
 
-* Circular dependencies and architecture violations.
-
-* Security weaknesses and unsafe filesystem operations.
-
-* Invalid schemas, manifests, and configuration.
-
-* Broken interfaces and integrations.
-
-* Incorrect error handling.
-
-* Duplicated or contradictory business logic.
-
-* Dead code and unhandled relevant edge cases.
-
-* Incorrect or misleading documentation.
-
-* Missing required tests.
-
-* Any reproducible issue that compromises correctness, security, maintainability, or expected behavior.
+* Incorrect or misleading documentation; missing required tests; any reproducible issue that compromises correctness, security, maintainability, or expected behavior.
 
 Do not dismiss an issue because it predates the current task or falls outside its original scope.
 
 For every discovered defect:
 
-* Establish or reproduce the problem.
+* Establish or reproduce the problem; identify root cause and affected modules; determine the correct architectural owner.
 
-* Identify its root cause and affected modules.
+* Assess security and regression risks; design a proper fix; delegate implementation to an appropriate subagent.
 
-* Determine the correct architectural owner.
-
-* Assess security and regression risks.
-
-* Design a proper fix.
-
-* Delegate implementation to an appropriate subagent.
-
-* Add or update tests.
-
-* Verify the fix and run regression checks.
-
-* Integrate and document significant changes.
+* Add or update tests; verify the fix and run regression checks; integrate and document significant changes.
 
 Do not hide symptoms through broad suppressions, unsafe casts, disabled checks, discarded exceptions, weakened validation, or fake success responses.
 
-A defect may remain unresolved only when a genuine external blocker, explicit decision, or safety concern prevents a responsible fix. Record the exact issue, impact, attempted solutions, and required action. Keep affected completion criteria incomplete.
+A defect may remain unresolved only when a genuine external blocker, explicit decision, or safety concern prevents a responsible fix. Record the exact issue, impact, attempted solutions, and required action; keep affected completion criteria incomplete.
 
 Do not use "pre-existing issue" or "outside scope" as excuses to knowingly leave defects unresolved.
 
@@ -942,11 +878,11 @@ This repository requires incremental, reviewable history.
 
 ### Branching
 
-* Do not work directly on `main`.
+* Do not work directly on `main` (except trivial changes such as typo/doc fixes or one-line tweaks).
 
-* Create a descriptive branch for each major task, phase, package, or independent feature.
+* Create a new branch for: major features, new packages/modules, refactors touching many files, and security fixes.
 
-* Reuse the current feature branch for small fixes within the same scope.
+* Do not create a branch for every change. Reuse an existing feature branch for small tweaks, related follow-up work, or background changes within the same scope.
 
 * Inspect the working tree before switching branches.
 
@@ -1046,51 +982,31 @@ If any applicable requirement remains unsatisfied, the task must remain incomple
 
 Every agent must follow these principles:
 
-* Understand and inspect before acting.
+* Understand and inspect before acting; read sources of truth before implementation.
 
-* Read the sources of truth before implementation.
+* Design module boundaries before writing code; keep modules cohesive, focused, and loosely coupled.
 
-* Design module boundaries before writing code.
-
-* Keep modules cohesive, focused, and loosely coupled.
-
-* Keep framework-independent logic isolated from UI and framework dependencies.
-
-* Use explicit contracts and deliberate public interfaces.
+* Keep framework-independent logic isolated from UI and framework dependencies; use explicit contracts and deliberate public interfaces.
 
 * Avoid unnecessary packages, dependencies, abstractions, and infrastructure.
 
-* Implement complete behavior, including relevant failure cases.
+* Implement complete behavior, including relevant failure cases; never mark partially implemented work complete.
 
-* Delegate all implementation work to dedicated subagents.
+* Delegate all implementation work to dedicated subagents; never allow the coordinator to bypass its responsibilities or implement directly.
 
-* Never allow the coordinator to bypass its responsibilities or implement directly.
+* Independently review all delegated work; fix discovered defects, including pre-existing issues.
 
-* Independently review all delegated work.
+* Never hide failures or weaken tests; never claim verification that was not performed.
 
-* Fix discovered defects, including pre-existing issues.
+* Keep documentation and architecture contracts accurate; preserve user work and Git history.
 
-* Never hide failures or weaken tests to create the appearance of success.
-
-* Never mark partially implemented work complete.
-
-* Never claim verification that was not performed.
-
-* Keep documentation and architecture contracts accurate.
-
-* Preserve user work and Git history.
-
-* Commit coherent changes and push after every commit.
-
-* Report blockers and incomplete work honestly.
+* Commit coherent changes and push after every commit; report blockers and incomplete work honestly.
 
 * Prioritize correctness, security, professionalism, maintainability, and scalability over the appearance of speed or progress.
 
 The coordinator is accountable for the final result. Subagents are accountable for their assigned implementations.
 
-A task is complete only when it is fully implemented, properly integrated, independently reviewed, and verified against its actual requirements.
-
-When something is broken, fix it. When something is incomplete, finish it. When something violates the architecture, correct it. When something cannot responsibly be completed, document the exact blocker and leave it incomplete.
+A task is complete only when fully implemented, integrated, independently reviewed, and verified against its actual requirements.
 
 Never choose the appearance of completion over actual completion.
 
