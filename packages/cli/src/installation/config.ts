@@ -1,9 +1,9 @@
-import type { ProjectConfiguration, ProjectInstallationPaths } from '@simplify-dev/schemas';
 import { projectConfigurationSchema } from '@simplify-dev/schemas';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import type { ProjectConfiguration, ProjectInstallationPaths } from '@simplify-dev/schemas';
 
 export const CONFIG_FILE_NAME = 'simplify.config.json';
 
@@ -26,7 +26,7 @@ export interface ValidationResult<T> {
   readonly issues: readonly ValidationIssue[];
 }
 
-const DEFAULT_PATHS: ProjectInstallationPaths = {
+const DEFAULT_PATHS = {
   ui: '@/components/ui',
   blocks: '@/components/blocks',
   logic: '@/lib',
@@ -35,32 +35,29 @@ const DEFAULT_PATHS: ProjectInstallationPaths = {
   styles: '@/styles',
 };
 
-const DEFAULT_MODE: ProjectConfiguration['installation']['defaultMode'] = 'hybrid';
+const DEFAULT_MODE = 'hybrid' as const;
 
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
-
 const projectConfigurationValidator = ajv.compile(projectConfigurationSchema);
 
-function toIssues(errors: readonly unknown[] | null | undefined): ValidationIssue[] {
+function toIssues(errors: unknown[]): readonly ValidationIssue[] {
   if (!errors) {
     return [];
   }
-
   return errors.map((error) => {
     const instancePath =
       typeof error === 'object' && error !== null && 'instancePath' in error
-        ? String((error as { readonly instancePath: string }).instancePath)
+        ? String(error.instancePath)
         : '';
     const message =
       typeof error === 'object' && error !== null && 'message' in error
-        ? String((error as { readonly message: string }).message)
+        ? String(error.message)
         : 'Schema validation failed.';
     const keyword =
       typeof error === 'object' && error !== null && 'keyword' in error
-        ? String((error as { readonly keyword: string }).keyword)
+        ? String(error.keyword)
         : 'unknown';
-
     return {
       path: instancePath.length > 0 ? instancePath : '/',
       message: message.length > 0 ? message : 'Schema validation failed.',
@@ -69,41 +66,40 @@ function toIssues(errors: readonly unknown[] | null | undefined): ValidationIssu
   });
 }
 
-function validateWith<T>(value: unknown): ValidationResult<T> {
+function validateWith(value: unknown): ValidationResult<ProjectConfiguration> {
   if (projectConfigurationValidator(value)) {
-    return { valid: true, value: value as T, issues: [] };
+    return {
+      valid: true,
+      value: value as unknown as ProjectConfiguration,
+      issues: [],
+    };
   }
-
   const errors = projectConfigurationValidator.errors;
-  return { valid: false, issues: toIssues(errors) };
+  return { valid: false, issues: toIssues(errors ?? []) };
 }
 
 export function validateConfig(config: unknown): ValidationResult<ProjectConfiguration> {
-  return validateWith<ProjectConfiguration>(config);
+  return validateWith(config);
 }
 
 export function loadConfig(cwd?: string): ProjectConfiguration {
   const root = cwd ?? process.cwd();
   const filePath = join(root, CONFIG_FILE_NAME);
-
   if (!existsSync(filePath)) {
     throw new Error(`No ${CONFIG_FILE_NAME} found in "${root}".`);
   }
-
   let raw: string;
   try {
     raw = readFileSync(filePath, 'utf8');
   } catch (error) {
     throw new Error(`Failed to read ${CONFIG_FILE_NAME} in "${root}": ${error}`);
   }
-
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
   } catch (error) {
     throw new Error(`Failed to parse ${CONFIG_FILE_NAME} in "${root}": ${error}`);
   }
-
   const result = validateConfig(parsed);
   if (!result.valid || !result.value) {
     const issues = result.issues
@@ -111,7 +107,6 @@ export function loadConfig(cwd?: string): ProjectConfiguration {
       .join(', ');
     throw new Error(`Invalid ${CONFIG_FILE_NAME} in "${root}": ${issues}`);
   }
-
   return result.value;
 }
 
