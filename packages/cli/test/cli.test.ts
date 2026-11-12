@@ -1,4 +1,6 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { existsSync, mkdirSync, writeFileSync, unlinkSync, rmdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { run, parseArgs, CliError, success, error, info, warning } from '../src/cli.js';
 import { RegistryClient } from '@simplify-dev/registry';
@@ -6,8 +8,24 @@ import { RegistryClient } from '@simplify-dev/registry';
 vi.mock('@simplify-dev/registry', () => {
   const getAsset = vi.fn();
   const getRegistryIndex = vi.fn();
+  const DependencyResolver = vi.fn().mockImplementation(() => ({
+    resolve: vi.fn().mockResolvedValue({
+      assets: [],
+      registryDependencies: [],
+      packageDependencies: [],
+      installationModes: [],
+      fileMappings: [],
+      environmentVariables: [],
+      configurationChanges: [],
+    }),
+    resolveAssetGraph: vi.fn().mockResolvedValue({ nodes: [], edges: [] }),
+    detectCycles: vi.fn().mockReturnValue(false),
+    detectConflicts: vi.fn().mockReturnValue([]),
+  }));
   return {
     RegistryClient: vi.fn().mockImplementation(() => ({ getAsset, getRegistryIndex })),
+    DependencyResolver,
+    getRegistryIndex,
   };
 });
 
@@ -47,16 +65,57 @@ const registryIndex = {
 let logSpy: ReturnType<typeof vi.spyOn>;
 let errorSpy: ReturnType<typeof vi.spyOn>;
 
+const CONFIG_PATH = join(process.cwd(), 'simplify.config.json');
+const TEST_CONFIG = JSON.stringify(
+  {
+    schemaVersion: 1,
+    packageManager: 'pnpm',
+    registry: { url: 'https://registry.simplify.dev' },
+    installation: {
+      defaultMode: 'source',
+      paths: {
+        ui: '@/components/ui',
+        blocks: '@/components/blocks',
+        logic: '@/lib',
+        integrations: '@/integrations',
+        hooks: '@/hooks',
+        styles: '@/styles',
+      },
+    },
+  },
+  null,
+  2,
+);
+
 beforeEach(() => {
   sharedClient.getAsset.mockReset();
   sharedClient.getRegistryIndex.mockReset();
   logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
   errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  if (!existsSync(CONFIG_PATH)) {
+    mkdirSync(process.cwd(), { recursive: true });
+    writeFileSync(CONFIG_PATH, TEST_CONFIG);
+  }
 });
 
 afterEach(() => {
   logSpy.mockRestore();
   errorSpy.mockRestore();
+  if (existsSync(CONFIG_PATH)) {
+    unlinkSync(CONFIG_PATH);
+  }
+  const lockDir = join(process.cwd(), '.simplify');
+  if (existsSync(lockDir)) {
+    const lockFile = join(lockDir, 'lock.json');
+    if (existsSync(lockFile)) {
+      unlinkSync(lockFile);
+    }
+    try {
+      rmdirSync(lockDir);
+    } catch {
+      // ignore if not empty or already removed
+    }
+  }
 });
 
 describe('parseArgs', () => {
