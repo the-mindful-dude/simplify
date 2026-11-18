@@ -4,10 +4,14 @@ GitHub App authorization, repository association, webhooks, and publishing coord
 
 ## Responsibilities
 
-- `authorization/` — GitHub App authentication, installation tokens, and permissions.
-- `repositories/` — repository discovery, metadata synchronization, and library links.
-- `webhooks/` — signature verification, idempotent event handling, and retries.
-- `publishing/` — publishing pipeline coordination and provenance recording.
+- `config.ts`, `auth.ts`, `oauth.ts` — GitHub App configuration, installation tokens,
+  authorization, and OAuth helpers.
+- `repositories.ts`, `metadata.ts` — repository discovery, library links, and metadata
+  synchronization.
+- `webhooks/` — signature verification and idempotent event handling.
+- `publishing/` — publishing credentials, authentication, attempts, and provenance recording.
+- `memory.ts` — in-memory repository, webhook delivery, and publishing stores for development
+  and tests.
 
 ## Boundaries
 
@@ -18,4 +22,9 @@ GitHub App authorization, repository association, webhooks, and publishing coord
 
 ## Status
 
-Foundation scaffold. GitHub integration contracts are not implemented yet.
+GitHub App configuration, authentication, OAuth helpers, repository discovery and links,
+metadata synchronization, webhook signature/event handling, and publishing authentication,
+attempt tracking, and provenance recording are implemented. Stores are in-memory; durable
+storage and hosted registry submission are pending. See
+[`docs/development/github-integration.md`](../../docs/development/github-integration.md) for
+the end-to-end workflow and current limitations.

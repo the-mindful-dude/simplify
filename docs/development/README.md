@@ -52,6 +52,9 @@ Next.js loads `.env.local` automatically. Container runs use the values supplied
 `docker-compose.yml` or a local `.env` file. Shell variables take precedence over file
 values. Never place credentials in `.env.example`, source code, or container images.
 
+GitHub App environment variables, repository connections, workflow generation, and
+publishing are documented in [GitHub Integration](./github-integration.md).
+
 ## Monorepo Rules
 
 - Packages are ESM-only and expose deliberate `exports`.

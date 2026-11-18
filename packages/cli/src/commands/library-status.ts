@@ -7,7 +7,53 @@ import {
   RepositoryMetadataService,
   InMemoryRepositoryLinkStore,
   type GitHubAppClient,
+  type PublishingAttempt,
+  type PublishingAttemptKind,
 } from '@simplify-dev/github';
+import { publishingAttemptStore, publishingProvenanceStore } from '../publishing.js';
+
+const ATTEMPT_KINDS: readonly PublishingAttemptKind[] = [
+  'synchronization',
+  'validation',
+  'build',
+  'publish',
+];
+
+function describeAttempt(attempt: PublishingAttempt): string {
+  const parts: string[] = [attempt.status];
+  if (attempt.source?.branch) {
+    parts.push(`branch ${attempt.source.branch}`);
+  }
+  if (attempt.source?.commitSha) {
+    parts.push(`commit ${attempt.source.commitSha}`);
+  }
+  if (attempt.source?.tag) {
+    parts.push(`tag ${attempt.source.tag}`);
+  }
+  if (attempt.source?.intendedVersion) {
+    parts.push(`version ${attempt.source.intendedVersion}`);
+  }
+  if (attempt.reusedExisting) {
+    parts.push('idempotent no-op');
+  }
+  if (attempt.failure) {
+    parts.push(
+      `${attempt.failure.code ?? 'FAILED'}: ${attempt.failure.message}`,
+      ...(attempt.failure.details ? [attempt.failure.details] : []),
+    );
+  }
+  return parts.join(' · ');
+}
+
+function latestAttemptsByKind(
+  attempts: readonly PublishingAttempt[],
+): Readonly<Record<PublishingAttemptKind, PublishingAttempt | undefined>> {
+  const latest = {} as Record<PublishingAttemptKind, PublishingAttempt | undefined>;
+  for (const kind of ATTEMPT_KINDS) {
+    latest[kind] = attempts.find((attempt) => attempt.kind === kind);
+  }
+  return latest;
+}
 
 async function createAppClient(): Promise<GitHubAppClient> {
   let config;
@@ -147,6 +193,10 @@ export const libraryStatusCommand: Command = {
       return;
     }
 
+    const attempts = await publishingAttemptStore.list({ libraryId, limit: 50 });
+    const latestAttempts = latestAttemptsByKind(attempts);
+    const latestPublication = await publishingProvenanceStore.latestForLibrary(libraryId);
+
     if (json) {
       console.log(
         JSON.stringify(
@@ -164,6 +214,11 @@ export const libraryStatusCommand: Command = {
               linkedAt: link.linkedAt,
               latestCommitSha: link.latestCommitSha,
               metadataUpdatedAt: link.metadataUpdatedAt,
+            },
+            publishing: {
+              latestAttempts,
+              latestPublication,
+              historyScope: 'process',
             },
           },
           null,
@@ -186,6 +241,36 @@ export const libraryStatusCommand: Command = {
     if (link.metadataUpdatedAt) {
       info(`  Metadata updated at: ${link.metadataUpdatedAt}`, json);
     }
+
+    success('Publishing status:', json);
+    if (attempts.length === 0) {
+      info('  No publishing attempts recorded in this process.', json);
+    } else {
+      for (const kind of ATTEMPT_KINDS) {
+        const attempt = latestAttempts[kind];
+        if (attempt) {
+          info(`  Latest ${kind}: ${describeAttempt(attempt)}`, json);
+        }
+      }
+    }
+    if (latestPublication) {
+      info(`  Latest published version: ${latestPublication.version}`, json);
+      info(
+        `  Published by: ${latestPublication.publisher.publisher} (${latestPublication.credentialKind})`,
+        json,
+      );
+      info(`  Published at: ${latestPublication.publishedAt}`, json);
+    }
+    const workflowUrl =
+      latestPublication?.workflowRun?.url ??
+      ATTEMPT_KINDS.map((kind) => latestAttempts[kind]?.workflowRun?.url).find(Boolean);
+    if (workflowUrl) {
+      info(`  Workflow run: ${workflowUrl}`, json);
+    }
+    info(
+      '  Retry: re-run "simplify library sync" or "simplify library publish" (idempotent and retry-safe).',
+      json,
+    );
 
     switch (link.status) {
       case 'inaccessible':

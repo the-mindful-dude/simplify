@@ -7,11 +7,24 @@ import {
   loadGitHubAppConfig,
   GitHubConnectionService,
   InMemoryRepositoryLinkStore,
+  PublishingAuthenticationError,
   type GitHubAppClient,
+  type InstallationToken,
+  type PublishingAuthContext,
 } from '@simplify-dev/github';
 import { buildLibrary, validateLibrary, type BuildResult } from '@simplify-dev/tooling';
 import { validatePublicationRecord, type PublicationRecord } from '@simplify-dev/registry';
 import type { LibraryManifest } from '@simplify-dev/schemas';
+import {
+  publishingAttemptService,
+  publishingAuthService,
+  publishingProvenanceStore,
+  publishingRepositoryFromLink,
+  publishingSourceFromLink,
+  readPublishingEnvironment,
+  readPublishingTokenScope,
+  resolvePublishingPublisher,
+} from '../publishing.js';
 
 const LIBRARY_MANIFEST_PATH = 'simplify/library.json';
 const GITHUB_API = 'https://api.github.com';
@@ -143,15 +156,20 @@ async function resolveTagCommitSha(
   owner: string,
   name: string,
   tag: string,
+  installationToken?: InstallationToken,
 ): Promise<string> {
-  let token;
-  try {
-    token = await appClient.createInstallationToken(installationId);
-  } catch (err) {
-    throw new CliError(
-      `Failed to create GitHub installation token: ${(err as Error).message}`,
-      'TOKEN_FAILED',
-    );
+  let token: InstallationToken;
+  if (installationToken) {
+    token = installationToken;
+  } else {
+    try {
+      token = await appClient.createInstallationToken(installationId);
+    } catch (err) {
+      throw new CliError(
+        `Failed to create GitHub installation token: ${(err as Error).message}`,
+        'TOKEN_FAILED',
+      );
+    }
   }
 
   const headers = {
@@ -293,6 +311,9 @@ export const libraryPublishCommand: Command = {
       );
     }
 
+    const environment = readPublishingEnvironment();
+    const publisher = resolvePublishingPublisher(environment);
+
     const tagOption =
       typeof rawOptions.tag === 'string' && rawOptions.tag.length > 0 ? rawOptions.tag : undefined;
     const versionOption =
@@ -387,11 +408,28 @@ export const libraryPublishCommand: Command = {
       );
     }
 
+    let installationToken: InstallationToken;
+    try {
+      installationToken = await appClient.createInstallationToken(installationId);
+    } catch (err) {
+      throw new CliError(
+        `Failed to create GitHub installation token: ${(err as Error).message}`,
+        'TOKEN_FAILED',
+      );
+    }
+
     info(`Resolving commit SHA for tag ${tag} of ${link.owner}/${link.name}...`, json);
 
     let commitSha: string;
     try {
-      commitSha = await resolveTagCommitSha(appClient, installationId, link.owner, link.name, tag);
+      commitSha = await resolveTagCommitSha(
+        appClient,
+        installationId,
+        link.owner,
+        link.name,
+        tag,
+        installationToken,
+      );
     } catch (err) {
       if (err instanceof CliError) {
         throw err;
@@ -402,25 +440,131 @@ export const libraryPublishCommand: Command = {
       );
     }
 
+    const repository = publishingRepositoryFromLink(link);
+    const authorizationRequest = {
+      libraryId,
+      repository,
+      commitSha,
+      tag,
+      intendedVersion: version,
+    };
+    const publishToken = process.env.SIMPLIFY_PUBLISH_TOKEN?.trim();
+    const fallbackScope = readPublishingTokenScope();
+    let authContext: PublishingAuthContext;
+    try {
+      if (publishToken) {
+        authContext = await publishingAuthService.authenticatePublishToken({
+          token: publishToken,
+          request: authorizationRequest,
+          authorized: { libraryId, repository },
+          ...(fallbackScope ? { fallbackScope } : {}),
+          publisher,
+        });
+      } else {
+        authContext = await publishingAuthService.authenticateInstallationToken({
+          token: installationToken,
+          request: authorizationRequest,
+          authorized: { libraryId, repository },
+          publisher,
+        });
+      }
+    } catch (err) {
+      if (err instanceof PublishingAuthenticationError) {
+        throw new CliError(
+          `Publishing authentication failed: ${err.message}`,
+          'PUBLISHING_UNAUTHORIZED',
+        );
+      }
+      throw new CliError(
+        `Publishing authentication failed: ${(err as Error).message}`,
+        'PUBLISHING_UNAUTHORIZED',
+      );
+    }
+    info(
+      `Authenticated publisher ${authContext.publisher.publisher} using ${authContext.credentialKind} (${authContext.verification}).`,
+      json,
+    );
+
+    const source = publishingSourceFromLink(link, {
+      ...(environment.branch ? { branch: environment.branch } : {}),
+      commitSha,
+      tag,
+      intendedVersion: version,
+    });
+    const workflowRun = environment.workflowRun;
+    const publishIdempotencyKey = `publish:${libraryId}:${version}:${commitSha}`;
+    const existingPublishAttempt = await publishingAttemptService.findSuccessful(
+      libraryId,
+      'publish',
+      publishIdempotencyKey,
+    );
+    if (existingPublishAttempt) {
+      throw new CliError(
+        `Version "${version}" of library "${libraryId}" already has a successful publish attempt ` +
+          'for this commit. Published versions are immutable and retries do not create duplicates.',
+        'ALREADY_PUBLISHED',
+      );
+    }
+
     info(`Validating library and assets in ${targetDir} before publication...`, json);
+
+    const validationAttempt = await publishingAttemptService.begin({
+      libraryId,
+      kind: 'validation',
+      source,
+      publisher: authContext.publisher,
+      credentialKind: authContext.credentialKind,
+      ...(workflowRun ? { workflowRun } : {}),
+      idempotencyKey: `validation:${libraryId}:${version}:${commitSha}`,
+      ...(dryRun ? { dryRun: true } : {}),
+    });
 
     let validation;
     try {
       validation = await validateLibrary(targetDir);
     } catch (err) {
-      throw new CliError(
-        `Library validation failed: ${(err as Error).message}`,
-        'VALIDATION_FAILED',
-      );
+      const message = `Library validation failed: ${(err as Error).message}`;
+      await publishingAttemptService.fail(validationAttempt.attemptId, {
+        code: 'VALIDATION_FAILED',
+        message,
+      });
+      throw new CliError(message, 'VALIDATION_FAILED');
     }
+    const validationResult = {
+      valid: validation.valid,
+      issues: validation.issues.map((issue) => ({
+        path: issue.path,
+        message: issue.message,
+        keyword: issue.keyword,
+      })),
+    };
     if (!validation.valid) {
       const issues = validation.issues
         .map((issue) => `  - ${issue.path}: ${issue.message} (${issue.keyword})`)
         .join('\n');
+      await publishingAttemptService.fail(validationAttempt.attemptId, {
+        code: 'VALIDATION_FAILED',
+        message: 'Library validation failed.',
+        details: issues,
+      });
       throw new CliError(`Library validation failed:\n${issues}`, 'VALIDATION_FAILED');
     }
+    await publishingAttemptService.succeed(validationAttempt.attemptId, {
+      validation: validationResult,
+    });
 
     info('Building immutable publication artifact...', json);
+
+    const buildAttempt = await publishingAttemptService.begin({
+      libraryId,
+      kind: 'build',
+      source,
+      publisher: authContext.publisher,
+      credentialKind: authContext.credentialKind,
+      ...(workflowRun ? { workflowRun } : {}),
+      idempotencyKey: `build:${libraryId}:${version}:${commitSha}`,
+      ...(dryRun ? { dryRun: true } : {}),
+    });
 
     let result: BuildResult;
     try {
@@ -430,22 +574,45 @@ export const libraryPublishCommand: Command = {
         dryRun,
       });
     } catch (err) {
-      throw new CliError(`Failed to build library: ${(err as Error).message}`, 'BUILD_FAILED');
+      const message = `Failed to build library: ${(err as Error).message}`;
+      await publishingAttemptService.fail(buildAttempt.attemptId, {
+        code: 'BUILD_FAILED',
+        message,
+      });
+      throw new CliError(message, 'BUILD_FAILED');
     }
 
     const publicationRecord: PublicationRecord = result.publicationRecord;
     if (publicationRecord.version !== version) {
-      throw new CliError(
-        `Built publication version "${publicationRecord.version}" does not match requested version "${version}".`,
-        'BUILD_FAILED',
-      );
+      const message = `Built publication version "${publicationRecord.version}" does not match requested version "${version}".`;
+      await publishingAttemptService.fail(buildAttempt.attemptId, {
+        code: 'BUILD_FAILED',
+        message,
+      });
+      throw new CliError(message, 'BUILD_FAILED');
     }
+    await publishingAttemptService.succeed(buildAttempt.attemptId, {
+      artifact: {
+        url: publicationRecord.artifact.url,
+        integrity: publicationRecord.artifact.integrity,
+      },
+    });
 
     if (dryRun) {
       info(`[dry-run] Would publish version ${version} from commit ${commitSha}.`, json);
       info('Dry-run complete. No changes were made.', json);
       return;
     }
+
+    const publishAttempt = await publishingAttemptService.begin({
+      libraryId,
+      kind: 'publish',
+      source,
+      publisher: authContext.publisher,
+      credentialKind: authContext.credentialKind,
+      ...(workflowRun ? { workflowRun } : {}),
+      idempotencyKey: publishIdempotencyKey,
+    });
 
     let registryUrl: string;
     let submitted: boolean;
@@ -454,22 +621,52 @@ export const libraryPublishCommand: Command = {
       registryUrl = submission.registryUrl;
       submitted = submission.submitted;
     } catch (err) {
+      const message = `Failed to submit publication to the registry: ${(err as Error).message}`;
+      await publishingAttemptService.fail(publishAttempt.attemptId, {
+        code: err instanceof CliError ? err.code : 'PUBLISH_FAILED',
+        message,
+      });
       if (err instanceof CliError) {
         throw err;
       }
-      throw new CliError(
-        `Failed to submit publication to the registry: ${(err as Error).message}`,
-        'PUBLISH_FAILED',
-      );
+      throw new CliError(message, 'PUBLISH_FAILED');
     }
 
     await publishedVersionStore.record(libraryId, version, publicationRecord);
+    await publishingProvenanceStore.record({
+      publicationId: publishAttempt.attemptId,
+      libraryId,
+      version,
+      repository,
+      commitSha,
+      tag,
+      publisher: authContext.publisher,
+      credentialKind: authContext.credentialKind,
+      verification: authContext.verification,
+      publishedAt: new Date().toISOString(),
+      ...(workflowRun ? { workflowRun } : {}),
+    });
+    await publishingAttemptService.succeed(publishAttempt.attemptId, {
+      validation: validationResult,
+      artifact: {
+        url: publicationRecord.artifact.url,
+        integrity: publicationRecord.artifact.integrity,
+      },
+      resultUrl: registryUrl,
+    });
 
     success(`Published library "${libraryId}" version ${version} from commit ${commitSha}`, json);
     info(`Registry URL: ${registryUrl}`, json);
     info(`Tag: ${tag}`, json);
     info(`Commit: ${commitSha}`, json);
     info(`Immutable: true`, json);
+    info(
+      `Publisher: ${authContext.publisher.publisher} (${authContext.credentialKind}, ${authContext.verification})`,
+      json,
+    );
+    if (workflowRun?.url) {
+      info(`Workflow run: ${workflowRun.url}`, json);
+    }
     if (json) {
       console.log(
         JSON.stringify(
@@ -481,6 +678,11 @@ export const libraryPublishCommand: Command = {
             registryUrl,
             submitted,
             immutable: publicationRecord.immutable,
+            attemptId: publishAttempt.attemptId,
+            publisher: authContext.publisher,
+            credentialKind: authContext.credentialKind,
+            verification: authContext.verification,
+            workflowRun,
           },
           null,
           2,

@@ -11,6 +11,12 @@ import {
 } from '@simplify-dev/github';
 import { validateDevelopmentSnapshot, type DevelopmentSnapshot } from '@simplify-dev/registry';
 import type { LibraryManifest } from '@simplify-dev/schemas';
+import {
+  publishingAttemptService,
+  publishingSourceFromLink,
+  readPublishingEnvironment,
+  resolvePublishingPublisher,
+} from '../publishing.js';
 
 const LIBRARY_MANIFEST_PATH = 'simplify/library.json';
 
@@ -143,6 +149,8 @@ export const librarySyncCommand: Command = {
         'MISSING_ARGUMENT',
       );
     }
+    const environment = readPublishingEnvironment();
+    const publisher = resolvePublishingPublisher(environment);
     const branch =
       typeof rawOptions.branch === 'string' && rawOptions.branch.length > 0
         ? rawOptions.branch
@@ -193,6 +201,10 @@ export const librarySyncCommand: Command = {
       );
     }
     const syncBranch = branch ?? link.defaultBranch;
+    const baseSource = publishingSourceFromLink(link, {
+      branch: syncBranch,
+      ...(environment.commitSha ? { commitSha: environment.commitSha } : {}),
+    });
     info(`Reading latest commit from branch ${syncBranch} of ${link.owner}/${link.name}...`, json);
     let commitSha: string;
     try {
@@ -204,18 +216,48 @@ export const librarySyncCommand: Command = {
       );
     } catch (err) {
       const githubErr = err as { readonly code?: string; readonly message: string };
-      throw new CliError(
-        `Failed to read latest commit for branch ${syncBranch}: ${githubErr.message}`,
-        'FETCH_COMMIT_FAILED',
-      );
+      const message = `Failed to read latest commit for branch ${syncBranch}: ${githubErr.message}`;
+      const failedAttempt = await publishingAttemptService.begin({
+        libraryId,
+        kind: 'synchronization',
+        source: baseSource,
+        publisher,
+        ...(environment.workflowRun ? { workflowRun: environment.workflowRun } : {}),
+        idempotencyKey: `synchronization:${libraryId}:${syncBranch}:fetch`,
+        ...(dryRun ? { dryRun: true } : {}),
+      });
+      await publishingAttemptService.fail(failedAttempt.attemptId, {
+        code: 'FETCH_COMMIT_FAILED',
+        message,
+      });
+      throw new CliError(message, 'FETCH_COMMIT_FAILED');
     }
+    const source = { ...baseSource, commitSha };
+    const idempotencyKey = `synchronization:${libraryId}:${syncBranch}:${commitSha}`;
+    const attempt = await publishingAttemptService.begin({
+      libraryId,
+      kind: 'synchronization',
+      source,
+      publisher,
+      ...(environment.workflowRun ? { workflowRun: environment.workflowRun } : {}),
+      idempotencyKey,
+      ...(dryRun ? { dryRun: true } : {}),
+    });
     const alreadySynced = await developmentSnapshotStore.has(libraryId, syncBranch, commitSha);
     if (alreadySynced) {
+      await publishingAttemptService.succeed(attempt.attemptId, { reusedExisting: true });
       info(`Development snapshot already up to date: ${syncBranch}@${commitSha}`, json);
       if (json) {
         console.log(
           JSON.stringify(
-            { libraryId, branch: syncBranch, commitSha, status: 'up-to-date', created: false },
+            {
+              libraryId,
+              branch: syncBranch,
+              commitSha,
+              status: 'up-to-date',
+              created: false,
+              attemptId: attempt.attemptId,
+            },
             null,
             2,
           ),
@@ -231,15 +273,34 @@ export const librarySyncCommand: Command = {
       kind: 'development',
     };
     const validation = validateDevelopmentSnapshot(snapshot);
+    const attemptValidation = {
+      valid: validation.valid,
+      issues: validation.issues.map((issue) => ({
+        path: issue.path,
+        message: issue.message,
+        keyword: issue.keyword,
+      })),
+    };
     if (!validation.valid) {
+      await publishingAttemptService.fail(attempt.attemptId, {
+        code: 'INVALID_SNAPSHOT',
+        message: 'Generated development snapshot is invalid.',
+        details: attemptValidation.issues
+          .map((issue) => `${issue.path}: ${issue.message}`)
+          .join('; '),
+      });
       throw new CliError('Generated development snapshot is invalid.', 'INVALID_SNAPSHOT');
     }
     if (dryRun) {
+      await publishingAttemptService.succeed(attempt.attemptId, {
+        validation: attemptValidation,
+      });
       info(`[dry-run] Would create development snapshot ${syncBranch}@${commitSha}.`, json);
       info('Dry-run complete. No changes were made.', json);
       return;
     }
     await developmentSnapshotStore.record(snapshot);
+    await publishingAttemptService.succeed(attempt.attemptId, { validation: attemptValidation });
     const latest = await developmentSnapshotStore.latestForBranch(libraryId, syncBranch);
     success(`Synchronized development snapshot: ${syncBranch}@${commitSha}`, json);
     info(`Library: ${libraryId}`, json);
@@ -259,6 +320,8 @@ export const librarySyncCommand: Command = {
             status: 'synced',
             created: true,
             latestSnapshot: latest,
+            attemptId: attempt.attemptId,
+            workflowRun: environment.workflowRun,
           },
           null,
           2,

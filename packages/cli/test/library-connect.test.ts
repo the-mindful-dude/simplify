@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { libraryConnectCommand } from '../src/commands/library-connect.js';
 import { libraryDisconnectCommand } from '../src/commands/library-disconnect.js';
 import { libraryStatusCommand } from '../src/commands/library-status.js';
+import { publishingAttemptStore, resetPublishingState } from '../src/publishing.js';
 import type { CommandContext } from '../src/cli.js';
 
 const links = new Map<string, any>();
@@ -13,7 +14,8 @@ const links = new Map<string, any>();
 const mockGetRepository = vi.fn();
 const mockListInstallationRepositories = vi.fn();
 
-vi.mock('@simplify-dev/github', () => {
+vi.mock('@simplify-dev/github', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@simplify-dev/github')>();
   const createGitHubAppClient = vi.fn((): any => ({
     getRepository: mockGetRepository,
     listInstallationRepositories: mockListInstallationRepositories,
@@ -104,6 +106,7 @@ vi.mock('@simplify-dev/github', () => {
   }
 
   return {
+    ...actual,
     createGitHubAppClient,
     loadGitHubAppConfig,
     GitHubConnectionService,
@@ -160,6 +163,7 @@ async function writeManifest(dir: string, manifest: unknown): Promise<void> {
 
 beforeEach(async () => {
   links.clear();
+  resetPublishingState();
   testDir = await fs.mkdtemp(join(tmpdir(), 'simplify-connect-'));
   logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
   errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -417,6 +421,52 @@ describe('library-status', () => {
     );
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('octocat/hello-world'));
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Status: active'));
+  });
+
+  it('displays the latest publishing attempt status and workflow run', async () => {
+    links.set('repo-1', {
+      ...repositorySummary,
+      libraryId: 'test-lib',
+      linkedAt: '2026-01-01T00:00:00.000Z',
+      status: 'active',
+    });
+    await publishingAttemptStore.save({
+      attemptId: 'attempt_1',
+      libraryId: 'test-lib',
+      kind: 'publish',
+      status: 'failed',
+      attemptNumber: 1,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      completedAt: '2026-01-01T00:01:00.000Z',
+      source: {
+        repositoryId: 'repo-1',
+        owner: 'octocat',
+        name: 'hello-world',
+        tag: 'v1.2.0',
+        intendedVersion: '1.2.0',
+      },
+      workflowRun: {
+        runId: '42',
+        url: 'https://github.com/octocat/hello-world/actions/runs/42',
+      },
+      failure: { code: 'PUBLISH_FAILED', message: 'Registry unavailable.' },
+    });
+    const context = makeContext({
+      args: ['test-lib'],
+      options: { ...baseOptions },
+    });
+
+    await libraryStatusCommand.handler(context);
+
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Latest publish: failed'));
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('PUBLISH_FAILED: Registry unavailable.'),
+    );
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Workflow run: https://github.com/octocat/hello-world/actions/runs/42',
+      ),
+    );
   });
 
   it('errors when the library is not connected', async () => {

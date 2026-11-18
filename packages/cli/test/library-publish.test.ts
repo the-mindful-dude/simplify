@@ -6,16 +6,23 @@ import { tmpdir } from 'node:os';
 import { loadGitHubAppConfig } from '@simplify-dev/github';
 import { libraryPublishCommand } from '../src/commands/library-publish.js';
 import { publishedVersionStore } from '../src/commands/library-publish.js';
+import {
+  publishingAttemptService,
+  publishingAttemptStore,
+  publishingProvenanceStore,
+  resetPublishingState,
+} from '../src/publishing.js';
 import type { CommandContext } from '../src/cli.js';
 
 const links = new Map<string, any>();
 const mockCreateInstallationToken = vi.fn().mockResolvedValue({
   token: 'installation-token-123',
-  expiresAt: '2026-01-02T00:00:00.000Z',
+  expiresAt: '2099-01-02T00:00:00.000Z',
 });
 const mockFetch = vi.fn();
 
-vi.mock('@simplify-dev/github', () => {
+vi.mock('@simplify-dev/github', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@simplify-dev/github')>();
   const createGitHubAppClient = vi.fn((): any => ({
     createInstallationToken: mockCreateInstallationToken,
   }));
@@ -44,6 +51,7 @@ vi.mock('@simplify-dev/github', () => {
     }
   }
   return {
+    ...actual,
     createGitHubAppClient,
     loadGitHubAppConfig: loadGitHubAppConfigMock,
     GitHubConnectionService,
@@ -165,14 +173,28 @@ async function writeManifest(dir: string, manifest: unknown): Promise<void> {
 beforeEach(async () => {
   links.clear();
   publishedVersionStore.clear();
+  resetPublishingState();
   testDir = await fs.mkdtemp(join(tmpdir(), 'simplify-publish-'));
   logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
   errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
   mockCreateInstallationToken.mockReset();
   mockCreateInstallationToken.mockResolvedValue({
     token: 'installation-token-123',
-    expiresAt: '2026-01-02T00:00:00.000Z',
+    expiresAt: '2099-01-02T00:00:00.000Z',
   });
+  vi.stubEnv('GITHUB_ACTOR', 'octocat');
+  vi.stubEnv('GITHUB_RUN_ID', '12345');
+  vi.stubEnv('GITHUB_RUN_ATTEMPT', '1');
+  vi.stubEnv('GITHUB_REPOSITORY', 'octocat/hello-world');
+  vi.stubEnv('GITHUB_SHA', 'abc123def4567890abc123def4567890abc12345');
+  vi.stubEnv('GITHUB_EVENT_NAME', 'push');
+  vi.stubEnv('GITHUB_REF', 'refs/tags/v1.2.0');
+  vi.stubEnv('GITHUB_WORKFLOW', 'simplify.dev library');
+  vi.stubEnv('SIMPLIFY_PUBLISH_TOKEN', '');
+  vi.stubEnv('SIMPLIFY_PUBLISH_LIBRARY_ID', '');
+  vi.stubEnv('SIMPLIFY_PUBLISH_REPOSITORY', '');
+  vi.stubEnv('SIMPLIFY_LIBRARY_ID', '');
+  vi.stubEnv('SIMPLIFY_PUBLISHER', '');
   mockFetch.mockReset();
   mockFetch.mockResolvedValue(
     mockFetchResponse({
@@ -207,6 +229,7 @@ afterEach(async () => {
   logSpy.mockRestore();
   errorSpy.mockRestore();
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
   await fs.rm(testDir, { recursive: true, force: true });
 });
 
@@ -248,6 +271,44 @@ describe('library-publish', () => {
 
     const isPublished = await publishedVersionStore.has('test-lib', '1.2.0');
     expect(isPublished).toBe(true);
+
+    const validationAttempt = await publishingAttemptStore.latest('test-lib', 'validation');
+    expect(validationAttempt?.status).toBe('successful');
+    expect(validationAttempt?.workflowRun?.runId).toBe('12345');
+
+    const buildAttempt = await publishingAttemptStore.latest('test-lib', 'build');
+    expect(buildAttempt?.status).toBe('successful');
+
+    const publishAttempt = await publishingAttemptStore.latest('test-lib', 'publish');
+    expect(publishAttempt?.status).toBe('successful');
+    expect(publishAttempt?.source?.tag).toBe('v1.2.0');
+    expect(publishAttempt?.source?.intendedVersion).toBe('1.2.0');
+    expect(publishAttempt?.workflowRun?.url).toBe(
+      'https://github.com/octocat/hello-world/actions/runs/12345',
+    );
+
+    const provenance = await publishingProvenanceStore.latestForLibrary('test-lib');
+    expect(provenance?.publisher.publisher).toBe('octocat');
+    expect(provenance?.repository.repositoryId).toBe('repo-1');
+    expect(provenance?.credentialKind).toBe('github-app-installation-token');
+    expect(provenance?.workflowRun?.runId).toBe('12345');
+  });
+
+  it('rejects a publishing token scoped to a different library', async () => {
+    vi.stubEnv('SIMPLIFY_PUBLISH_TOKEN', 'scoped-token');
+    vi.stubEnv('SIMPLIFY_PUBLISH_LIBRARY_ID', 'other-lib');
+    vi.stubEnv('SIMPLIFY_PUBLISH_REPOSITORY', 'octocat/hello-world');
+
+    const context = makeContext({
+      args: ['test-lib', 'v1.2.0'],
+      options: { ...baseOptions() },
+    });
+
+    await expect(libraryPublishCommand.handler(context)).rejects.toMatchObject({
+      code: 'PUBLISHING_UNAUTHORIZED',
+    });
+    expect(mockBuildLibrary).not.toHaveBeenCalled();
+    expect(await publishingProvenanceStore.latestForLibrary('test-lib')).toBeUndefined();
   });
 
   it('publishes using the --tag option instead of a positional argument', async () => {
@@ -329,6 +390,32 @@ describe('library-publish', () => {
     expect((error as Error).message).toContain('immutable');
     expect((error as Error).message).toContain('new version');
     expect(mockBuildLibrary).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects when a successful publish attempt already exists for the commit', async () => {
+    const attempt = await publishingAttemptService.begin({
+      libraryId: 'test-lib',
+      kind: 'publish',
+      source: {
+        commitSha: 'abc123def4567890abc123def4567890abc12345',
+        tag: 'v1.2.0',
+        intendedVersion: '1.2.0',
+      },
+      publisher: { publisher: 'octocat', type: 'user' },
+      credentialKind: 'github-app-installation-token',
+      idempotencyKey: 'publish:test-lib:1.2.0:abc123def4567890abc123def4567890abc12345',
+    });
+    await publishingAttemptService.succeed(attempt.attemptId);
+
+    const context = makeContext({
+      args: ['test-lib', 'v1.2.0'],
+      options: { ...baseOptions() },
+    });
+
+    await expect(libraryPublishCommand.handler(context)).rejects.toMatchObject({
+      code: 'ALREADY_PUBLISHED',
+    });
+    expect(mockBuildLibrary).not.toHaveBeenCalled();
   });
 
   it('errors when the library is not connected to a repository', async () => {

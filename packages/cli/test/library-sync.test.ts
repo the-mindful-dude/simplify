@@ -6,12 +6,14 @@ import { tmpdir } from 'node:os';
 import { loadGitHubAppConfig } from '@simplify-dev/github';
 import { librarySyncCommand } from '../src/commands/library-sync.js';
 import { developmentSnapshotStore } from '../src/commands/library-sync.js';
+import { publishingAttemptStore, resetPublishingState } from '../src/publishing.js';
 import type { CommandContext } from '../src/cli.js';
 
 const links = new Map<string, any>();
 const mockGetLatestCommitSha = vi.fn();
 
-vi.mock('@simplify-dev/github', () => {
+vi.mock('@simplify-dev/github', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@simplify-dev/github')>();
   const createGitHubAppClient = vi.fn((): any => ({
     getLatestCommitSha: mockGetLatestCommitSha,
     createInstallationToken: vi.fn(),
@@ -41,6 +43,7 @@ vi.mock('@simplify-dev/github', () => {
     }
   }
   return {
+    ...actual,
     createGitHubAppClient,
     loadGitHubAppConfig: loadGitHubAppConfigMock,
     GitHubConnectionService,
@@ -89,6 +92,7 @@ const repositoryLink = {
 beforeEach(async () => {
   links.clear();
   developmentSnapshotStore.clear();
+  resetPublishingState();
   testDir = await fs.mkdtemp(join(tmpdir(), 'simplify-sync-'));
   logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
   errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -146,6 +150,11 @@ describe('library-sync', () => {
     expect(snapshot!.commitSha).toBe('abc123def4567890abc123def4567890abc12345');
     expect(snapshot!.kind).toBe('development');
     expect(mockValidateDevelopmentSnapshot).toHaveBeenCalledTimes(1);
+
+    const attempt = await publishingAttemptStore.latest('test-lib', 'synchronization');
+    expect(attempt?.status).toBe('successful');
+    expect(attempt?.source?.commitSha).toBe('abc123def4567890abc123def4567890abc12345');
+    expect(attempt?.source?.branch).toBe('main');
   });
 
   it('synchronizes a configured branch when --branch is provided', async () => {
@@ -179,6 +188,23 @@ describe('library-sync', () => {
 
     const snapshot = await developmentSnapshotStore.latestForBranch('test-lib', 'main');
     expect(snapshot!.commitSha).toBe('abc123def4567890abc123def4567890abc12345');
+  });
+
+  it('records a failed synchronization attempt when commit lookup fails', async () => {
+    mockGetLatestCommitSha.mockRejectedValue(new Error('commit lookup failed'));
+    const context = makeContext({
+      args: ['test-lib'],
+      options: { ...baseOptions },
+    });
+
+    await expect(librarySyncCommand.handler(context)).rejects.toMatchObject({
+      code: 'FETCH_COMMIT_FAILED',
+    });
+
+    const attempt = await publishingAttemptStore.latest('test-lib', 'synchronization');
+    expect(attempt?.status).toBe('failed');
+    expect(attempt?.failure?.code).toBe('FETCH_COMMIT_FAILED');
+    expect(attempt?.failure?.message).toContain('commit lookup failed');
   });
 
   it('errors when the library is not connected to a repository', async () => {

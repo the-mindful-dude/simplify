@@ -25,6 +25,13 @@
 #   - Optional: SIMPLIFY_LIBRARY_ID to override the library id read from
 #     simplify/library.json.
 #
+# Publishing authentication:
+#   - The CLI prefers short-lived GitHub App installation tokens when available.
+#   - SIMPLIFY_PUBLISH_TOKEN is a scoped fallback. Store it as a GitHub Actions
+#     secret, never commit it, and scope it with SIMPLIFY_PUBLISH_LIBRARY_ID and
+#     SIMPLIFY_PUBLISH_REPOSITORY. Revoke or rotate a leaked token.
+#   - Credential values are never printed. Do not add commands that echo them.
+#
 # Security notes:
 #   - Pull request validation uses read-only permissions and does not publish.
 #   - Publish runs only on trusted tag/release events (never on pull_request),
@@ -139,6 +146,8 @@ jobs:
         env:
           SIMPLIFY_PUBLISH_TOKEN: ${{ secrets.SIMPLIFY_PUBLISH_TOKEN }}
           SIMPLIFY_LIBRARY_ID: ${{ vars.SIMPLIFY_LIBRARY_ID || secrets.SIMPLIFY_LIBRARY_ID || '' }}
+          SIMPLIFY_PUBLISH_LIBRARY_ID: ${{ vars.SIMPLIFY_LIBRARY_ID || secrets.SIMPLIFY_LIBRARY_ID || '' }}
+          SIMPLIFY_PUBLISH_REPOSITORY: ${{ github.repository }}
           GITHUB_INSTALLATION_ID: ${{ secrets.GITHUB_INSTALLATION_ID }}
           GITHUB_APP_ID: ${{ secrets.GITHUB_APP_ID }}
           GITHUB_APP_PRIVATE_KEY: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
