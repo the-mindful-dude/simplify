@@ -82,6 +82,9 @@ describe('library-init', () => {
     await expect(fs.access(join(testDir, 'README.md'))).resolves.toBeUndefined();
     await expect(fs.access(join(testDir, 'CHANGELOG.md'))).resolves.toBeUndefined();
     await expect(fs.access(join(testDir, 'package.json'))).resolves.toBeUndefined();
+    await expect(
+      fs.access(join(testDir, '.github', 'workflows', 'simplify.yml')),
+    ).resolves.toBeUndefined();
   });
 
   it('defaults category to library', async () => {

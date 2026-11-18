@@ -1,0 +1,166 @@
+/**
+ * Canonical GitHub Actions workflow template for simplify.dev libraries.
+ *
+ * Version: 1
+ * Keep `simplify-library.yml` in this directory in sync with this template.
+ */
+export const SIMPLIFY_LIBRARY_WORKFLOW_VERSION = 1 as const;
+
+export const DEFAULT_SIMPLIFY_WORKFLOW_PATH = '.github/workflows/simplify.yml';
+
+export const SIMPLIFY_LIBRARY_WORKFLOW_TEMPLATE = `# simplify.dev library workflow (v1)
+#
+# Canonical, copyable GitHub Actions workflow for simplify.dev libraries.
+# Usable in any repository containing a simplify.dev library manifest
+# (simplify/library.json), including repositories not created through simplify.dev.
+#
+# Interface (stable, v1):
+#   - Validate library: simplify asset validate --library
+#   - Build library:    simplify library-build
+#   - Publish library:  simplify library-publish <library-id> --tag <tag>
+#
+# Supported initial ecosystem setup:
+#   - Node.js 20 (actions/setup-node)
+#   - pnpm 9 (pnpm/action-setup)
+#   - simplify.dev CLI installed in CI via npm (pinned by SIMPLIFY_CLI_VERSION)
+#
+# Required permissions:
+#   - contents: read (workflow/job default). Validation runs read-only.
+#
+# Required secrets (publish job only, trusted tag/release runs):
+#   - SIMPLIFY_PUBLISH_TOKEN: scoped simplify.dev publishing credential.
+#   - GITHUB_INSTALLATION_ID / GitHub App configuration as required by
+#     \`simplify library-publish\` in your environment (see CLI docs). Configure as
+#     repository/organization secrets or variables; never commit credentials.
+#   - Optional: SIMPLIFY_LIBRARY_ID to override the library id read from
+#     simplify/library.json.
+#
+# Security notes:
+#   - Pull request validation uses read-only permissions and does not publish.
+#   - Publish runs only on trusted tag/release events (never on pull_request),
+#     so forked pull request workflows cannot access publishing credentials or
+#     publish stable/development versions.
+
+name: simplify.dev library
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: simplify-library-\${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pin the simplify.dev CLI version for reproducible, non-interactive CI runs.
+  SIMPLIFY_CLI_VERSION: '0.0.0'
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history is used when tag/history information is required.
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install simplify.dev CLI
+        run: npm install --global @simplify-dev/cli@\${SIMPLIFY_CLI_VERSION}
+
+      - name: Validate library manifests and assets
+        run: simplify asset validate --library
+
+      - name: Install dependencies
+        if: hashFiles('package.json') != ''
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install
+          fi
+
+      - name: Run library tests
+        if: hashFiles('package.json') != ''
+        run: pnpm run --if-present test
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    needs: validate
+    if: >-
+      github.event_name != 'pull_request' &&
+      (
+        (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+        (github.event_name == 'release' && github.event.action == 'published')
+      )
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history is used when tag/history information is required.
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install simplify.dev CLI
+        run: npm install --global @simplify-dev/cli@\${SIMPLIFY_CLI_VERSION}
+
+      - name: Build library
+        run: simplify library-build
+
+      - name: Publish library
+        env:
+          SIMPLIFY_PUBLISH_TOKEN: \${{ secrets.SIMPLIFY_PUBLISH_TOKEN }}
+          SIMPLIFY_LIBRARY_ID: \${{ vars.SIMPLIFY_LIBRARY_ID || secrets.SIMPLIFY_LIBRARY_ID || '' }}
+          GITHUB_INSTALLATION_ID: \${{ secrets.GITHUB_INSTALLATION_ID }}
+          GITHUB_APP_ID: \${{ secrets.GITHUB_APP_ID }}
+          GITHUB_APP_PRIVATE_KEY: \${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+          GITHUB_APP_CLIENT_ID: \${{ secrets.GITHUB_APP_CLIENT_ID }}
+          GITHUB_APP_CLIENT_SECRET: \${{ secrets.GITHUB_APP_CLIENT_SECRET }}
+          GITHUB_APP_WEBHOOK_SECRET: \${{ secrets.GITHUB_APP_WEBHOOK_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -n "\${SIMPLIFY_LIBRARY_ID}" ]; then
+            LIBRARY_ID="\${SIMPLIFY_LIBRARY_ID}"
+          else
+            LIBRARY_ID="$(node -p "JSON.parse(require('fs').readFileSync('simplify/library.json','utf8')).id")"
+          fi
+          simplify library-publish "\${LIBRARY_ID}" --tag "\${GITHUB_REF_NAME}"
+`;

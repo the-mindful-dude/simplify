@@ -3,6 +3,10 @@ import { dirname, join } from 'node:path';
 import type { Command } from './index.js';
 import { CliError, info, success, warning } from '../cli.js';
 import {
+  DEFAULT_SIMPLIFY_WORKFLOW_PATH,
+  SIMPLIFY_LIBRARY_WORKFLOW_TEMPLATE,
+} from '../workflows/simplify-library.js';
+import {
   createGitHubAppClient,
   loadGitHubAppConfig,
   GitHubConnectionService,
@@ -199,48 +203,6 @@ function packageJsonContent(options: {
   );
 }
 
-function githubWorkflowContent(): string {
-  return `# name: simplify.dev library validation and publishing
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  release:
-    types: [published]
-  workflow_dispatch:
-
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm --filter @simplify-dev/cli exec simplify asset validate
-      - run: pnpm --filter @simplify-dev/cli exec simplify library build
-
-  publish:
-    needs: validate
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm --filter @simplify-dev/cli exec simplify library publish
-    env:
-      SIMPLIFY_PUBLISH_TOKEN: \${{ secrets.SIMPLIFY_PUBLISH_TOKEN }}
-`;
-}
-
 async function generateScaffold(
   targetDir: string,
   options: {
@@ -266,7 +228,7 @@ async function generateScaffold(
   const readmePath = join(targetDir, 'README.md');
   const changelogPath = join(targetDir, 'CHANGELOG.md');
   const packageJsonPath = join(targetDir, 'package.json');
-  const workflowPath = join(targetDir, '.github', 'workflows', 'simplify.yml');
+  const workflowPath = join(targetDir, DEFAULT_SIMPLIFY_WORKFLOW_PATH);
 
   const files: readonly { readonly path: string; readonly content: string }[] = [
     { path: manifestPath, content: `${JSON.stringify(manifest, null, 2)}\n` },
@@ -292,7 +254,7 @@ async function generateScaffold(
         license: options.license,
       }),
     },
-    { path: workflowPath, content: githubWorkflowContent() },
+    { path: workflowPath, content: SIMPLIFY_LIBRARY_WORKFLOW_TEMPLATE },
   ];
 
   if (options.dryRun) {

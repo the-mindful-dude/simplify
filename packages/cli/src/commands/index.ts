@@ -27,6 +27,7 @@ import { libraryInitCommand } from './library-init.js';
 import { libraryPublishCommand } from './library-publish.js';
 import { libraryStatusCommand } from './library-status.js';
 import { librarySyncCommand } from './library-sync.js';
+import { libraryWorkflowCommand } from './library-workflow.js';
 import { listCommand } from './list.js';
 
 export {
@@ -44,6 +45,7 @@ export {
   libraryPublishCommand,
   libraryStatusCommand,
   librarySyncCommand,
+  libraryWorkflowCommand,
   listCommand,
 };
 
@@ -56,6 +58,7 @@ export const commands: readonly Command[] = [
   libraryStatusCommand,
   librarySyncCommand,
   libraryPublishCommand,
+  libraryWorkflowCommand,
   addCommand,
   assetCreateCommand,
   infoCommand,
