@@ -28,6 +28,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@simplify-dev/github": "workspace:*",
     "@simplify-dev/registry": "workspace:*",
     "@simplify-dev/schemas": "workspace:*",
     "@simplify-dev/tooling": "workspace:*",

@@ -101,6 +101,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@simplify-dev/github':
+        specifier: workspace:*
+        version: link:../github
       '@simplify-dev/registry':
         specifier: workspace:*
         version: link:../registry

@@ -20,7 +20,13 @@ import { doctorCommand } from './doctor.js';
 import { infoCommand } from './info.js';
 import { initCommand } from './init.js';
 import { libraryBuildCommand } from './library-build.js';
+import { libraryConnectCommand } from './library-connect.js';
+import { libraryCreateCommand } from './library-create.js';
+import { libraryDisconnectCommand } from './library-disconnect.js';
 import { libraryInitCommand } from './library-init.js';
+import { libraryPublishCommand } from './library-publish.js';
+import { libraryStatusCommand } from './library-status.js';
+import { librarySyncCommand } from './library-sync.js';
 import { listCommand } from './list.js';
 
 export {
@@ -31,13 +37,25 @@ export {
   infoCommand,
   initCommand,
   libraryBuildCommand,
+  libraryConnectCommand,
+  libraryCreateCommand,
+  libraryDisconnectCommand,
   libraryInitCommand,
+  libraryPublishCommand,
+  libraryStatusCommand,
+  librarySyncCommand,
   listCommand,
 };
 
 export const commands: readonly Command[] = [
   initCommand,
   libraryInitCommand,
+  libraryConnectCommand,
+  libraryCreateCommand,
+  libraryDisconnectCommand,
+  libraryStatusCommand,
+  librarySyncCommand,
+  libraryPublishCommand,
   addCommand,
   assetCreateCommand,
   infoCommand,
