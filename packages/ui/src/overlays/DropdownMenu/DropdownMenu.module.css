@@ -1,0 +1,124 @@
+.trigger {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sd-spacing-2);
+  padding: var(--sd-spacing-2) var(--sd-spacing-4);
+  border: 1px solid var(--sd-color-border);
+  border-radius: var(--sd-radius-md);
+  background: var(--sd-color-surface-raised);
+  color: var(--sd-color-foreground);
+  font-family: var(--sd-font-family-sans);
+  font-size: var(--sd-font-size-sm);
+  cursor: pointer;
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--sd-color-border-focus);
+  outline-offset: 2px;
+}
+
+.content {
+  z-index: var(--sd-z-index-dropdown);
+  box-sizing: border-box;
+  min-width: 12rem;
+  padding: var(--sd-spacing-1);
+  border: 1px solid var(--sd-color-border-strong);
+  border-radius: var(--sd-radius-md);
+  background: var(--sd-color-surface-overlay);
+  box-shadow: 0 12px 32px var(--sd-color-overlay);
+  color: var(--sd-color-foreground);
+  font-family: var(--sd-font-family-sans);
+  animation: sd-menu-in var(--sd-motion-duration-fast) var(--sd-motion-ease-out);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: var(--sd-spacing-2);
+  padding: var(--sd-spacing-2) var(--sd-spacing-3);
+  border-radius: var(--sd-radius-sm);
+  color: var(--sd-color-foreground);
+  font-size: var(--sd-font-size-sm);
+  line-height: var(--sd-font-leading-tight);
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item[data-highlighted] {
+  background: var(--sd-color-accent-muted);
+}
+
+.item[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.destructive {
+  color: var(--sd-color-danger);
+}
+
+.destructive[data-highlighted] {
+  background: var(--sd-color-danger-surface);
+}
+
+.label {
+  padding: var(--sd-spacing-2) var(--sd-spacing-3);
+  color: var(--sd-color-foreground-muted);
+  font-size: var(--sd-font-size-xs);
+  font-weight: var(--sd-font-weight-semibold);
+}
+
+.separator {
+  height: 1px;
+  margin-block: var(--sd-spacing-1);
+  background: var(--sd-color-border);
+}
+
+.group {
+  display: block;
+}
+
+.checkable {
+  padding-left: var(--sd-spacing-8);
+}
+
+.indicatorSlot {
+  position: absolute;
+  left: var(--sd-spacing-3);
+  color: var(--sd-color-accent);
+}
+
+.shortcut {
+  margin-left: auto;
+  color: var(--sd-color-foreground-subtle);
+  font-family: var(--sd-font-family-mono);
+  font-size: var(--sd-font-size-xs);
+}
+
+.subTrigger::after {
+  content: '›';
+  margin-left: auto;
+  color: var(--sd-color-foreground-muted);
+}
+
+@keyframes sd-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}

@@ -1,0 +1,61 @@
+.root {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: var(--sd-spacing-1);
+  border: 1px solid var(--sd-color-border);
+  border-radius: var(--sd-radius-full);
+  background: var(--sd-color-accent-muted);
+  color: var(--sd-color-foreground-muted);
+  font-family: var(--sd-font-family-sans);
+  font-weight: var(--sd-font-weight-medium);
+  line-height: var(--sd-font-leading-tight);
+  white-space: nowrap;
+}
+
+.neutral {
+  background: var(--sd-color-accent-muted);
+  border-color: var(--sd-color-border);
+  color: var(--sd-color-foreground-muted);
+}
+
+.success {
+  background: var(--sd-color-success-surface);
+  border-color: var(--sd-color-success);
+  color: var(--sd-color-success);
+}
+
+.warning {
+  background: var(--sd-color-warning-surface);
+  border-color: var(--sd-color-warning);
+  color: var(--sd-color-warning);
+}
+
+.danger {
+  background: var(--sd-color-danger-surface);
+  border-color: var(--sd-color-danger);
+  color: var(--sd-color-danger);
+}
+
+.info {
+  background: var(--sd-color-info-surface);
+  border-color: var(--sd-color-info);
+  color: var(--sd-color-info);
+}
+
+.sm {
+  padding: var(--sd-spacing-0) var(--sd-spacing-2);
+  font-size: var(--sd-font-size-xs);
+}
+
+.md {
+  padding: var(--sd-spacing-1) var(--sd-spacing-3);
+  font-size: var(--sd-font-size-sm);
+}
+
+.dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: var(--sd-radius-full);
+  background: currentColor;
+}

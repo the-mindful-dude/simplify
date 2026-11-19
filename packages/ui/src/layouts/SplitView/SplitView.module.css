@@ -1,0 +1,130 @@
+.root {
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sd-split-gap, var(--sd-spacing-4));
+  align-items: stretch;
+}
+
+.side {
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .root {
+    gap: var(--sd-split-gap-sm, var(--sd-split-gap, var(--sd-spacing-4)));
+  }
+
+  .splitAtSm {
+    grid-template-columns: var(--sd-split-cols-sm, var(--sd-split-cols, 1fr 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .root {
+    gap: var(--sd-split-gap-md, var(--sd-split-gap-sm, var(--sd-split-gap, var(--sd-spacing-4))));
+  }
+
+  .splitAtMd {
+    grid-template-columns: var(
+      --sd-split-cols-md,
+      var(--sd-split-cols-sm, var(--sd-split-cols, 1fr 1fr))
+    );
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    gap: var(
+      --sd-split-gap-lg,
+      var(--sd-split-gap-md, var(--sd-split-gap-sm, var(--sd-split-gap, var(--sd-spacing-4))))
+    );
+  }
+
+  .splitAtLg {
+    grid-template-columns: var(
+      --sd-split-cols-lg,
+      var(--sd-split-cols-md, var(--sd-split-cols-sm, var(--sd-split-cols, 1fr 1fr)))
+    );
+  }
+}
+
+@media (min-width: 1280px) {
+  .root {
+    gap: var(
+      --sd-split-gap-xl,
+      var(
+        --sd-split-gap-lg,
+        var(--sd-split-gap-md, var(--sd-split-gap-sm, var(--sd-split-gap, var(--sd-spacing-4))))
+      )
+    );
+  }
+
+  .splitAtXl {
+    grid-template-columns: var(
+      --sd-split-cols-xl,
+      var(
+        --sd-split-cols-lg,
+        var(--sd-split-cols-md, var(--sd-split-cols-sm, var(--sd-split-cols, 1fr 1fr)))
+      )
+    );
+  }
+}
+
+@media (min-width: 1536px) {
+  .root {
+    gap: var(
+      --sd-split-gap-2xl,
+      var(
+        --sd-split-gap-xl,
+        var(
+          --sd-split-gap-lg,
+          var(--sd-split-gap-md, var(--sd-split-gap-sm, var(--sd-split-gap, var(--sd-spacing-4))))
+        )
+      )
+    );
+  }
+
+  .splitAt2Xl {
+    grid-template-columns: var(
+      --sd-split-cols-2xl,
+      var(
+        --sd-split-cols-xl,
+        var(
+          --sd-split-cols-lg,
+          var(--sd-split-cols-md, var(--sd-split-cols-sm, var(--sd-split-cols, 1fr 1fr)))
+        )
+      )
+    );
+  }
+}
+
+@media (max-width: 639px) {
+  .reverseSm > .side:first-child {
+    order: 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .reverseMd > .side:first-child {
+    order: 2;
+  }
+}
+
+@media (max-width: 1023px) {
+  .reverseLg > .side:first-child {
+    order: 2;
+  }
+}
+
+@media (max-width: 1279px) {
+  .reverseXl > .side:first-child {
+    order: 2;
+  }
+}
+
+@media (max-width: 1535px) {
+  .reverse2Xl > .side:first-child {
+    order: 2;
+  }
+}

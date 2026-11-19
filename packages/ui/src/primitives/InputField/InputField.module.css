@@ -1,0 +1,104 @@
+.root {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  gap: var(--sd-spacing-2);
+  font-family: var(--sd-font-family-sans);
+}
+
+.label {
+  color: var(--sd-color-foreground);
+  font-size: var(--sd-font-size-sm);
+  font-weight: var(--sd-font-weight-medium);
+  line-height: var(--sd-font-leading-tight);
+}
+
+.required {
+  margin-left: var(--sd-spacing-1);
+  color: var(--sd-color-danger);
+}
+
+.description {
+  margin: 0;
+  color: var(--sd-color-foreground-muted);
+  font-size: var(--sd-font-size-xs);
+  line-height: var(--sd-font-leading-normal);
+}
+
+.control {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: var(--sd-spacing-2);
+  border: 1px solid var(--sd-color-border);
+  border-radius: var(--sd-radius-md);
+  background: var(--sd-color-background-subtle);
+  transition: border-color var(--sd-motion-duration-fast) var(--sd-motion-ease-standard);
+}
+
+.control:focus-within {
+  border-color: var(--sd-color-border-focus);
+  outline: 2px solid var(--sd-color-border-focus);
+  outline-offset: -1px;
+}
+
+.root[data-invalid='true'] .control {
+  border-color: var(--sd-color-danger);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--sd-color-foreground);
+  font-family: inherit;
+  line-height: var(--sd-font-leading-normal);
+}
+
+.input::placeholder {
+  color: var(--sd-color-foreground-subtle);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.leading,
+.trailing {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  color: var(--sd-color-foreground-muted);
+}
+
+.sm {
+  padding: var(--sd-spacing-2) var(--sd-spacing-3);
+  font-size: var(--sd-font-size-xs);
+}
+
+.md {
+  padding: var(--sd-spacing-2) var(--sd-spacing-3);
+  font-size: var(--sd-font-size-sm);
+}
+
+.lg {
+  padding: var(--sd-spacing-3) var(--sd-spacing-4);
+  font-size: var(--sd-font-size-md);
+}
+
+.error {
+  margin: 0;
+  color: var(--sd-color-danger);
+  font-size: var(--sd-font-size-xs);
+  line-height: var(--sd-font-leading-normal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control {
+    transition-duration: var(--sd-motion-duration-instant);
+  }
+}

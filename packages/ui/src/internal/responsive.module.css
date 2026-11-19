@@ -1,0 +1,99 @@
+/*
+ * Breakpoint bounds mirror the `--sd-breakpoint-*` tokens from
+ * @simplify-dev/tokens. Media queries cannot read custom properties, so the
+ * values are repeated here once and shared by every component.
+ */
+
+.root {
+  box-sizing: border-box;
+}
+
+@media (max-width: 639px) {
+  .root[data-sd-hidden-below='sm'] {
+    display: none !important;
+  }
+  .root[data-sd-collapsed-below='sm'] {
+    --sd-collapsed: 1;
+    min-width: 0;
+    max-width: 100%;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 767px) {
+  .root[data-sd-hidden-below='md'] {
+    display: none !important;
+  }
+  .root[data-sd-collapsed-below='md'] {
+    --sd-collapsed: 1;
+    min-width: 0;
+    max-width: 100%;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 1023px) {
+  .root[data-sd-hidden-below='lg'] {
+    display: none !important;
+  }
+  .root[data-sd-collapsed-below='lg'] {
+    --sd-collapsed: 1;
+    min-width: 0;
+    max-width: 100%;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 1279px) {
+  .root[data-sd-hidden-below='xl'] {
+    display: none !important;
+  }
+  .root[data-sd-collapsed-below='xl'] {
+    --sd-collapsed: 1;
+    min-width: 0;
+    max-width: 100%;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 1535px) {
+  .root[data-sd-hidden-below='2xl'] {
+    display: none !important;
+  }
+  .root[data-sd-collapsed-below='2xl'] {
+    --sd-collapsed: 1;
+    min-width: 0;
+    max-width: 100%;
+    align-self: stretch;
+  }
+}
+
+@media (min-width: 640px) {
+  .root[data-sd-hidden-above='sm'] {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .root[data-sd-hidden-above='md'] {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .root[data-sd-hidden-above='lg'] {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .root[data-sd-hidden-above='xl'] {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  .root[data-sd-hidden-above='2xl'] {
+    display: none !important;
+  }
+}
