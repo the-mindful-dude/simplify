@@ -7,9 +7,7 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  experimental: {
-    outputFileTracingRoot: path.join(currentDirectory, '../..'),
-  },
+  outputFileTracingRoot: path.join(currentDirectory, '../..'),
   transpilePackages: [
     '@simplify-dev/blocks',
     '@simplify-dev/registry',
