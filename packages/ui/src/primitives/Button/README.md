@@ -15,23 +15,23 @@ import type { ButtonProps, ButtonSize, ButtonVariant } from '@simplify-dev/ui';
 responsive visibility props. All native button attributes (`onClick`, `name`, `value`, `form`,
 `aria-*`, and so on) are forwarded to the rendered element.
 
-| Name            | Type                                                              | Default     | Description                                                                                       |
-| --------------- | ----------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------- |
-| `variant`       | `'primary' \| 'secondary' \| 'ghost' \| 'outline' \| 'destructive'` | `'primary'` | Visual treatment. Exposed as `data-variant`.                                                       |
-| `size`          | `'sm' \| 'md' \| 'lg'`                                             | `'md'`      | Control height and text size. Exposed as `data-size`.                                              |
-| `loading`       | `boolean`                                                         | `false`     | Sets `disabled`, sets `aria-busy`, and replaces the leading slot with a small `Spinner`.            |
-| `loadingLabel`  | `string`                                                          | `'Loading'` | Accessible name passed to the loading `Spinner`.                                                   |
-| `leading`       | `ReactNode`                                                       | —           | Content before the label; wrapped in `aria-hidden` so it is not announced twice.                    |
-| `trailing`      | `ReactNode`                                                       | —           | Content after the label; wrapped in `aria-hidden`. Hidden while `loading` is true.                  |
-| `fullWidth`     | `boolean`                                                         | `false`     | Sets the control width to `100%`.                                                                  |
-| `asChild`       | `boolean`                                                         | `false`     | Renders the single child element via Radix `Slot`, forwarding classes, data attributes and props.   |
-| `children`      | `ReactNode`                                                       | —           | Label content. With `asChild`, the child element itself is rendered.                                |
-| `className`     | `string`                                                          | —           | Appended to the generated CSS Module classes.                                                      |
-| `disabled`      | `boolean`                                                         | `false`     | Prevents interaction. `loading` also forces the disabled state.                                    |
-| `type`          | `'button' \| 'submit' \| 'reset'`                                  | `'button'`  | Native button type.                                                                                |
-| `hiddenBelow`   | `Breakpoint`                                                      | —           | Hide below the given breakpoint width. See [Responsive behavior](#responsive-behavior).            |
-| `hiddenAbove`   | `Breakpoint`                                                      | —           | Hide at and above the given breakpoint width.                                                      |
-| `collapsedBelow`| `Breakpoint`                                                      | —           | Allow the control to shrink below the given breakpoint.                                            |
+| Name             | Type                                                                | Default     | Description                                                                                       |
+| ---------------- | ------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------- |
+| `variant`        | `'primary' \| 'secondary' \| 'ghost' \| 'outline' \| 'destructive'` | `'primary'` | Visual treatment. Exposed as `data-variant`.                                                      |
+| `size`           | `'sm' \| 'md' \| 'lg'`                                              | `'md'`      | Control height and text size. Exposed as `data-size`.                                             |
+| `loading`        | `boolean`                                                           | `false`     | Sets `disabled`, sets `aria-busy`, and replaces the leading slot with a small `Spinner`.          |
+| `loadingLabel`   | `string`                                                            | `'Loading'` | Accessible name passed to the loading `Spinner`.                                                  |
+| `leading`        | `ReactNode`                                                         | —           | Content before the label; wrapped in `aria-hidden` so it is not announced twice.                  |
+| `trailing`       | `ReactNode`                                                         | —           | Content after the label; wrapped in `aria-hidden`. Hidden while `loading` is true.                |
+| `fullWidth`      | `boolean`                                                           | `false`     | Sets the control width to `100%`.                                                                 |
+| `asChild`        | `boolean`                                                           | `false`     | Renders the single child element via Radix `Slot`, forwarding classes, data attributes and props. |
+| `children`       | `ReactNode`                                                         | —           | Label content. With `asChild`, the child element itself is rendered.                              |
+| `className`      | `string`                                                            | —           | Appended to the generated CSS Module classes.                                                     |
+| `disabled`       | `boolean`                                                           | `false`     | Prevents interaction. `loading` also forces the disabled state.                                   |
+| `type`           | `'button' \| 'submit' \| 'reset'`                                   | `'button'`  | Native button type.                                                                               |
+| `hiddenBelow`    | `Breakpoint`                                                        | —           | Hide below the given breakpoint width. See [Responsive behavior](#responsive-behavior).           |
+| `hiddenAbove`    | `Breakpoint`                                                        | —           | Hide at and above the given breakpoint width.                                                     |
+| `collapsedBelow` | `Breakpoint`                                                        | —           | Allow the control to shrink below the given breakpoint.                                           |
 
 `Breakpoint` is one of `sm`, `md`, `lg`, `xl`, `2xl`.
 
@@ -42,7 +42,7 @@ responsive visibility props. All native button attributes (`onClick`, `name`, `v
   (danger fill).
 - **Sizes:** `sm` (min-height `1.75rem`), `md` (`2.25rem`), and `lg` (`2.75rem`).
 - **States:** hover styles are applied for `:not(:disabled)`. The disabled state uses `opacity:
-  0.55` and `cursor: not-allowed`; the loading state uses `cursor: progress`. `data-loading` and
+0.55` and `cursor: not-allowed`; the loading state uses `cursor: progress`. `data-loading` and
   `data-disabled` attributes mirror the React state for styling.
 
 ## Responsive behavior

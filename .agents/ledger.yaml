@@ -1,0 +1,226 @@
+version: 1
+branch: feat/phase-9-complete-premium-ui
+base_head: 558db78740ce3ef1ba2d1c4d0bf750af0f03414d
+objective: 'Complete Phase 9; fix npm run dev by provisioning pnpm and reinstalling; upgrade apps/web to latest stable Next.js 16.4.6 + React 19; deliver a production-grade dark monochrome registry browser; build a reusable token-driven component library in packages/ui with per-component READMEs; fix every pre-existing error; track both lockfiles with ADRs.'
+user_decisions:
+  - 'Next phase = complete Phase 9 (branch continuity); Phase 8 skipped (no GitHub credentials).'
+  - 'Fix npm run dev via Corepack pnpm@9.15.9 + pnpm reinstall + Node >=20.9.'
+  - 'Track package-lock.json alongside pnpm-lock.yaml; document with ADR.'
+  - 'Latest Next.js (16.4.6) and React 19; document locked-decision change in ADR.'
+  - 'Premium registry browser UI; dark monochrome/silver, Vercel-like, smooth/animated, mature/interactive.'
+  - 'components/ui is canonical home for reusable components; no hardcoded hex; correct grouping/props; viewport hidden/collapsible props.'
+  - 'tokens package is canonical source (CSS vars + typed TS constants); hex only in token source/generated output.'
+  - 'Radix + jsdom + @testing-library/react added for Dialog/interactive components and DOM tests.'
+  - 'Responsive API = simple flags + responsive value objects.'
+  - 'Component set = broader: Button, InputField, Container, SplitView, AutoGrid, Stack, Dialog, Text, Badge, Card, Separator, Skeleton, Spinner, Tabs, DropdownMenu, Tooltip, Avatar.'
+  - 'Every reusable component gets a README.md with complete, specific, non-generic usage docs and no phase references.'
+preserve:
+  - 'package-lock.json (was untracked at start; user wants it tracked, never delete).'
+  - '.agents/ (coordinator scaffold created at start).'
+tasks:
+  - id: T-001
+    objective: 'Foundation: provision pnpm 9.15.9 via Corepack, align Node >=20.9, reinstall with pnpm restoring workspace links, upgrade Next.js 16.4.6/React 19 and add Radix + DOM-test deps, fix dev scripts, configure Vitest DOM env, keep both lockfiles tracked'
+    owner: coder
+    reviewer: reviewer
+    dependencies: [T-002]
+    acceptance:
+      - "`pnpm --version` reports 9.15.9; `pnpm dev` starts web/registry-api without turbo 'cannot find binary path'."
+      - 'node_modules/@simplify-dev/* workspace symlinks exist; next 16.4.6, react 19, Radix and DOM-test deps installed.'
+      - 'apps/web runs on Next 16.4.6 + React 19; dev scripts self-sufficient; Vitest has DOM env for component tests.'
+    verification:
+      ['pnpm --version', 'pnpm install', 'pnpm build', 'pnpm dev (timeout)', 'pnpm typecheck']
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          [
+            '.nvmrc',
+            'package.json',
+            'pnpm-lock.yaml',
+            'turbo.json',
+            'vitest.shared.ts',
+            'apps/registry-api/package.json',
+            'apps/web/package.json',
+            'apps/web/next.config.mjs',
+            'apps/web/tsconfig.json',
+            'packages/ui/package.json',
+            'packages/tokens/package.json',
+          ],
+        task: T-001,
+      }
+    evidence:
+      [
+        'pnpm --version => 9.15.9',
+        'pnpm install => exit 0; workspace symlinks restored; package-lock.json byte-identical and untracked',
+        'pnpm build => 11/11 successful; pnpm typecheck => 19/19 successful; pnpm test => 19/19 successful; pnpm lint => 19/19 successful',
+        'timeout 30s pnpm dev => registry-api on :3002 and Next 16.4.6 ready on :3000; no binary-path error',
+        'pnpm --filter @simplify-dev/web build => Next 16.4.6 compiled successfully',
+      ]
+    reports: []
+    open_risks: ['Only AGENTS.md still fails pnpm format:check (routed to T-004)']
+    commit: 66afa11
+  - id: T-002
+    objective: 'Produce architecture decision records for locked-decision changes and UI/token contracts'
+    owner: architect
+    dependencies: []
+    acceptance:
+      - 'ADRs in .agents/decisions/ cover Next16/React19, Node floor, dual lockfiles, canonical tokens, UI component library API/boundaries.'
+      - 'Each ADR states context, decision, alternatives, consequences, compatibility, migration and rollback.'
+    verification: ['read ADR files', 'architect sign-off on final diff']
+    status: in_progress
+    lease: { owner: architect, paths: ['.agents/decisions/**'], task: T-002 }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-003
+    objective: 'Audit and complete Phase 9.5 safe file/configuration operations and verify 9.1-9.6'
+    owner: coder
+    dependencies: [T-001]
+    acceptance:
+      - 'Rollback, interruption recovery, modified/missing file detection covered by tests in packages/cli.'
+      - 'All Phase 9.1-9.6 requirements audited; gaps implemented with tests.'
+    verification: ['pnpm --filter @simplify-dev/cli test', 'pnpm typecheck', 'reviewer sign-off']
+    status: not_started
+    lease:
+      {
+        owner: coder,
+        paths: ['packages/cli/src/installation/**', 'packages/cli/test/phase9-operations.test.ts'],
+        task: T-003,
+      }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-004
+    objective: 'Fix all pre-existing lint/type/test errors'
+    owner: bugfixer
+    dependencies: [T-001]
+    acceptance:
+      - 'pnpm lint, pnpm typecheck, pnpm test, pnpm build, pnpm format:check all pass.'
+      - '15 existing ESLint errors in test files fixed without weakening assertions.'
+    verification: ['pnpm format:check', 'pnpm lint', 'pnpm typecheck', 'pnpm test', 'pnpm build']
+    status: not_started
+    lease:
+      {
+        owner: bugfixer,
+        paths:
+          [
+            'packages/cli/test/{cli,config,detection,hybrid-installer,installation-planner,library-init,package-installer,safe-write}.test.ts',
+            'packages/github/test/github.test.ts',
+            'packages/registry/test/resolver.test.ts',
+            'packages/tooling/test/library-builder.test.ts',
+            'AGENTS.md',
+          ],
+        task: T-004,
+      }
+    evidence: []
+    reports: []
+    open_risks: ['Some TS errors depend on T-001 restoring workspace links']
+    commit: null
+  - id: T-005
+    objective: 'Implement canonical tokens and the full reusable UI component library with DOM tests'
+    owner: coder
+    dependencies: [T-001, T-002]
+    acceptance:
+      - 'packages/tokens exports dark monochrome/silver CSS custom properties + typed constants; hex only in token source/generated output.'
+      - '17 components implemented in packages/ui with grouped folders, CSS Modules, Radix where needed, responsive flags+objects, no hex literals, DOM tests.'
+      - 'pnpm --filter @simplify-dev/ui test and typecheck pass.'
+    verification:
+      [
+        'pnpm --filter @simplify-dev/tokens build',
+        'pnpm --filter @simplify-dev/ui test',
+        'pnpm typecheck',
+        'pnpm lint',
+      ]
+    status: not_started
+    lease: { owner: coder, paths: ['packages/tokens/**', 'packages/ui/**'], task: T-005 }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-006
+    objective: 'Build the premium dark monochrome registry browser in apps/web using the delivered UI library and tokens (framework upgrade handled in T-001)'
+    owner: coder
+    dependencies: [T-001, T-005]
+    acceptance:
+      - 'apps/web runs on Next 16.4.6 + React 19 with no next lint usage; config compatible.'
+      - 'Registry browser renders real local registry data with responsive layout, semantic tokens, a11y, reduced-motion, no placeholder.'
+      - 'pnpm dev renders the UI; pnpm build/lint/typecheck/test pass.'
+    verification:
+      [
+        'pnpm --filter @simplify-dev/web build',
+        'pnpm dev (timeout)',
+        'pnpm lint',
+        'pnpm typecheck',
+        'pnpm test',
+      ]
+    status: not_started
+    lease:
+      {
+        owner: coder,
+        paths: ['apps/web/app/**', 'apps/web/components/**', 'apps/web/styles/**'],
+        task: T-006,
+      }
+    evidence: []
+    reports: []
+    open_risks: ['Next 16 codemods may need manual fixes', 'React 19 peer ranges']
+    commit: null
+  - id: T-007
+    objective: 'Write complete per-component README.md documentation for every reusable component'
+    owner: documenter
+    dependencies: [T-005]
+    acceptance:
+      - 'One README.md per component folder under packages/ui/src/** with usage, props table, tokens, a11y, responsive behavior, examples.'
+      - 'No phase references, no generic filler; content specific to actual implementation.'
+    verification: ['review each README against component source', 'grep for phase/generic filler']
+    status: not_started
+    lease: { owner: documenter, paths: ['packages/ui/src/**/README.md'], task: T-007 }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-008
+    objective: 'Transcribe ADRs into docs/architecture and correct stale TODO.md after verification'
+    owner: documenter
+    dependencies: [T-002, T-003, T-004, T-005, T-006]
+    acceptance:
+      - 'docs/architecture contains ADRs matching architect decisions; TODO.md reflects verified completed work only.'
+    verification: ['docs review', 'TODO.md vs git/evidence']
+    status: not_started
+    lease:
+      {
+        owner: documenter,
+        paths: ['docs/architecture/**', 'TODO.md', 'docs/development/**', 'CONTRIBUTING.md'],
+        task: T-008,
+      }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-009
+    objective: 'Independent correctness and regression review of all delegated diffs'
+    owner: reviewer
+    dependencies: [T-003, T-004, T-005, T-006, T-007, T-008]
+    acceptance: ['No unresolved correctness, regression, boundary, or acceptance gaps.']
+    verification: ['review actual git diff']
+    status: not_started
+    lease: { owner: reviewer, paths: [], task: T-009 }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-010
+    objective: 'Security review of installation engine, new dependencies, tokens/UI data flow and registry browser'
+    owner: security
+    dependencies: [T-003, T-005, T-006]
+    acceptance:
+      ['No unresolved security findings; path safety and dependency risks documented/approved.']
+    verification: ['security review of diff']
+    status: not_started
+    lease: { owner: security, paths: [], task: T-010 }
+    evidence: []
+    reports: []
+    open_risks: []
+    commit: null

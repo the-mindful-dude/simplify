@@ -1,6 +1,6 @@
 # ADR-003 — Canonical design tokens and `packages/ui` component contracts
 
-- **Status:** Accepted (user-approved architecture/product contract; pending implementation and transcription to `docs/architecture/`)
+- **Status:** Accepted — implemented (user-approved architecture/product contract; commit 4271bad)
 - **Date:** 2026-11-19
 - **Owners:** architect
 - **Related tasks:** T-002, T-005, T-006, T-007

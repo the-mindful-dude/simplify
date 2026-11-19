@@ -1,6 +1,6 @@
 # ADR-001 — Upgrade `apps/web` to Next.js 16.4.6 and React 19
 
-- **Status:** Accepted (user-approved locked-decision change; pending implementation and transcription to `docs/architecture/`)
+- **Status:** Accepted — implemented (user-approved locked-decision change; commit 66afa11)
 - **Date:** 2026-11-19
 - **Owners:** architect
 - **Related tasks:** T-002, T-001, T-006

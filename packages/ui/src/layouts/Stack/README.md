@@ -13,19 +13,19 @@ import type { StackAlign, StackDirection, StackJustify, StackProps } from '@simp
 
 `StackProps` extends `HTMLAttributes<HTMLDivElement>` and the shared responsive visibility props.
 
-| Name             | Type                                                          | Default     | Description                                                                    |
-| ---------------- | ------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------ |
-| `direction`      | `StackDirection \| ResponsiveValue<StackDirection>`           | `'column'`  | Flex direction; optionally overridden per breakpoint.                           |
-| `gap`            | `SpacingValue \| ResponsiveValue<SpacingValue>`               | `'4'`       | Gap between children; optionally overridden per breakpoint.                    |
-| `align`          | `'start' \| 'center' \| 'end' \| 'stretch' \| 'baseline'`      | `'stretch'` | Cross-axis alignment, applied at all breakpoints.                              |
-| `justify`        | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | `'start'` | Main-axis distribution, applied at all breakpoints.                     |
-| `wrap`           | `boolean`                                                     | `false`     | Enables `flex-wrap: wrap`.                                                     |
-| `divider`        | `boolean`                                                     | `false`     | Inserts a themed divider between adjacent children.                            |
-| `className`      | `string`                                                      | —           | Appended to the generated CSS Module classes.                                  |
-| `style`          | `CSSProperties`                                               | —           | Merged after the generated custom properties.                                  |
-| `hiddenBelow`    | `Breakpoint`                                                  | —           | Hide below the given breakpoint.                                               |
-| `hiddenAbove`    | `Breakpoint`                                                  | —           | Hide at and above the given breakpoint.                                        |
-| `collapsedBelow` | `Breakpoint`                                                  | —           | Allow the stack to shrink below the given breakpoint.                          |
+| Name             | Type                                                                | Default     | Description                                                 |
+| ---------------- | ------------------------------------------------------------------- | ----------- | ----------------------------------------------------------- |
+| `direction`      | `StackDirection \| ResponsiveValue<StackDirection>`                 | `'column'`  | Flex direction; optionally overridden per breakpoint.       |
+| `gap`            | `SpacingValue \| ResponsiveValue<SpacingValue>`                     | `'4'`       | Gap between children; optionally overridden per breakpoint. |
+| `align`          | `'start' \| 'center' \| 'end' \| 'stretch' \| 'baseline'`           | `'stretch'` | Cross-axis alignment, applied at all breakpoints.           |
+| `justify`        | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | `'start'`   | Main-axis distribution, applied at all breakpoints.         |
+| `wrap`           | `boolean`                                                           | `false`     | Enables `flex-wrap: wrap`.                                  |
+| `divider`        | `boolean`                                                           | `false`     | Inserts a themed divider between adjacent children.         |
+| `className`      | `string`                                                            | —           | Appended to the generated CSS Module classes.               |
+| `style`          | `CSSProperties`                                                     | —           | Merged after the generated custom properties.               |
+| `hiddenBelow`    | `Breakpoint`                                                        | —           | Hide below the given breakpoint.                            |
+| `hiddenAbove`    | `Breakpoint`                                                        | —           | Hide at and above the given breakpoint.                     |
+| `collapsedBelow` | `Breakpoint`                                                        | —           | Allow the stack to shrink below the given breakpoint.       |
 
 `StackDirection` is `'row' | 'column'`.
 

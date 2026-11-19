@@ -15,11 +15,11 @@ The item component is available as `AutoGrid.Item` and as the named export `Auto
 
 `AutoGridProps` extends `HTMLAttributes<HTMLDivElement>` and the shared responsive visibility props.
 
-| Name             | Type                                            | Default   | Description                                                                     |
-| ---------------- | ----------------------------------------------- | --------- | ------------------------------------------------------------------------------- |
+| Name             | Type                                            | Default   | Description                                                                      |
+| ---------------- | ----------------------------------------------- | --------- | -------------------------------------------------------------------------------- |
 | `columns`        | `ColumnCount \| ResponsiveValue<ColumnCount>`   | `1`       | Number of equal columns; optionally overridden per breakpoint.                   |
 | `gap`            | `SpacingValue \| ResponsiveValue<SpacingValue>` | `'4'`     | Grid gap; optionally overridden per breakpoint.                                  |
-| `mode`           | `'fixed' \| 'fit'`                              | `'fixed'` | `fixed` uses `columns`; `fit` fills each row with items at least `minItemWidth`.  |
+| `mode`           | `'fixed' \| 'fit'`                              | `'fixed'` | `fixed` uses `columns`; `fit` fills each row with items at least `minItemWidth`. |
 | `minItemWidth`   | `string`                                        | `'16rem'` | Minimum item width in `fit` mode, set through `--sd-grid-min-width`.             |
 | `isEmpty`        | `boolean`                                       | `false`   | Forces the empty state even when children are present.                           |
 | `emptyState`     | `ReactNode`                                     | —         | Content shown in the empty state. With no children, its presence triggers it.    |
@@ -36,9 +36,9 @@ The item component is available as `AutoGrid.Item` and as the named export `Auto
 `AutoGridItemProps` extends `HTMLAttributes<HTMLDivElement>` and the shared responsive visibility
 props, with one additional prop:
 
-| Name  | Type                                         | Default | Description                                              |
-| ----- | -------------------------------------------- | ------- | -------------------------------------------------------- |
-| `span`| `ColumnCount \| ResponsiveValue<ColumnCount>` | `1`     | Columns spanned by this item; optionally per breakpoint. |
+| Name   | Type                                          | Default | Description                                              |
+| ------ | --------------------------------------------- | ------- | -------------------------------------------------------- |
+| `span` | `ColumnCount \| ResponsiveValue<ColumnCount>` | `1`     | Columns spanned by this item; optionally per breakpoint. |
 
 ## Grid modes and states
 

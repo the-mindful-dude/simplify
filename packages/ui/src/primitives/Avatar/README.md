@@ -19,19 +19,19 @@ The compound parts are available both as named exports and as properties of `Ava
 `ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>` and the shared responsive visibility props.
 Radix root props such as `asChild` are forwarded.
 
-| Name             | Type                     | Default  | Description                                                                     |
-| ---------------- | ------------------------ | -------- | ------------------------------------------------------------------------------- |
-| `size`           | `'sm' \| 'md' \| 'lg'`   | `'md'`   | Diameter (`1.75rem`, `2.25rem`, or `3rem`); exposed as `data-size`.               |
-| `src`            | `string`                 | —        | Image source. When absent, only the fallback renders.                           |
-| `alt`            | `string`                 | `''`     | Alternative text forwarded to the image.                                        |
-| `fallback`       | `ReactNode`              | —        | Content shown while the image is missing or fails to load, typically initials.   |
-| `delayMs`        | `number`                 | —        | Delay in milliseconds before the fallback appears.                              |
-| `imageLoading`   | `'eager' \| 'lazy'`      | `'eager'`| Native `loading` attribute on the image.                                         |
-| `children`       | `ReactNode`              | —        | When supplied, replaces the default image/fallback composition.                 |
-| `className`      | `string`                 | —        | Appended to the root CSS Module classes.                                        |
-| `hiddenBelow`    | `Breakpoint`             | —        | Hide below the given breakpoint.                                                |
-| `hiddenAbove`    | `Breakpoint`             | —        | Hide at and above the given breakpoint.                                         |
-| `collapsedBelow` | `Breakpoint`             | —        | Allow the avatar to shrink below the given breakpoint.                          |
+| Name             | Type                   | Default   | Description                                                                    |
+| ---------------- | ---------------------- | --------- | ------------------------------------------------------------------------------ |
+| `size`           | `'sm' \| 'md' \| 'lg'` | `'md'`    | Diameter (`1.75rem`, `2.25rem`, or `3rem`); exposed as `data-size`.            |
+| `src`            | `string`               | —         | Image source. When absent, only the fallback renders.                          |
+| `alt`            | `string`               | `''`      | Alternative text forwarded to the image.                                       |
+| `fallback`       | `ReactNode`            | —         | Content shown while the image is missing or fails to load, typically initials. |
+| `delayMs`        | `number`               | —         | Delay in milliseconds before the fallback appears.                             |
+| `imageLoading`   | `'eager' \| 'lazy'`    | `'eager'` | Native `loading` attribute on the image.                                       |
+| `children`       | `ReactNode`            | —         | When supplied, replaces the default image/fallback composition.                |
+| `className`      | `string`               | —         | Appended to the root CSS Module classes.                                       |
+| `hiddenBelow`    | `Breakpoint`           | —         | Hide below the given breakpoint.                                               |
+| `hiddenAbove`    | `Breakpoint`           | —         | Hide at and above the given breakpoint.                                        |
+| `collapsedBelow` | `Breakpoint`           | —         | Allow the avatar to shrink below the given breakpoint.                         |
 
 `AvatarImage` and `AvatarFallback` accept their corresponding Radix component props and a
 `className`.

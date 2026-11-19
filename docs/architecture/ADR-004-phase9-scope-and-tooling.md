@@ -1,6 +1,6 @@
 # ADR-004 — Phase 9 scope, environment/tooling baseline, Radix/DOM testing, and responsive API
 
-- **Status:** Accepted (user-approved scope and tooling decision; pending implementation and transcription to `docs/architecture/`)
+- **Status:** Accepted — implemented (user-approved scope and tooling decision; commits 66afa11, 339086b)
 - **Date:** 2026-11-19
 - **Owners:** architect
 - **Related tasks:** T-002, T-001, T-003, T-004, T-005, T-006, T-007

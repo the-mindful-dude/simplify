@@ -1,6 +1,6 @@
 # ADR-002 — Track both `pnpm-lock.yaml` and `package-lock.json` with pnpm as primary
 
-- **Status:** Accepted (user-approved process/tooling decision; pending implementation and transcription to `docs/architecture/`)
+- **Status:** Accepted — implemented (user-approved process/tooling decision; commit cd9c235, lockfile refreshed in T-014)
 - **Date:** 2026-11-19
 - **Owners:** architect
 - **Related tasks:** T-002, T-001, T-004, T-006
@@ -50,6 +50,10 @@ This documents an approved workflow exception in how lock artifacts are tracked;
 - **Lockfile drift:** the two files can diverge in metadata/resolution details, causing confusion or false confidence in `npm audit`/tooling that reads only npm lock data.
 - Additional diff noise and maintenance burden on dependency updates.
 - Potential CI/local inconsistency if someone runs `npm install` and commits unintended changes.
+
+### Known limitation
+
+- The tracked `package-lock.json` covers **root dependencies only**: npm cannot resolve pnpm's `workspace:` protocol, so workspace-package dependencies (e.g. `next@16.4.6`) and `@simplify-dev/*` workspace links are not represented in it. `pnpm-lock.yaml` remains authoritative for workspace resolution and security review. This is an accepted exception, not drift to be "fixed" by an npm install.
 
 ## Compatibility and migration
 

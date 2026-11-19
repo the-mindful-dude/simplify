@@ -16,18 +16,18 @@ The side component is available as `SplitView.Side` and as the named export `Spl
 `SplitViewProps` extends `Omit<HTMLAttributes<HTMLDivElement>, 'children'>` and the shared responsive
 visibility props.
 
-| Name              | Type                                            | Default   | Description                                                                    |
-| ----------------- | ----------------------------------------------- | --------- | ------------------------------------------------------------------------------ |
-| `ratio`           | `SplitRatio \| ResponsiveValue<SplitRatio>`     | `[1, 1]`  | Two flex weights, emitted as `<start>fr <end>fr`; optionally overridden per breakpoint. |
-| `splitAt`         | `Breakpoint`                                    | `'md'`    | Minimum breakpoint at which the two sides render side by side.                  |
-| `reverseOnMobile` | `boolean`                                       | `false`   | Swaps the first side to the end while the layout is still stacked.              |
-| `gap`             | `SpacingValue \| ResponsiveValue<SpacingValue>` | `'4'`     | Gap between the two panes; optionally overridden per breakpoint.                |
-| `children`        | `ReactNode`                                     | —         | Typically two `SplitView.Side` elements.                                        |
-| `className`       | `string`                                        | —         | Appended to the generated CSS Module classes.                                   |
-| `style`           | `CSSProperties`                                 | —         | Merged after the generated custom properties.                                   |
-| `hiddenBelow`     | `Breakpoint`                                    | —         | Hide below the given breakpoint.                                                |
-| `hiddenAbove`     | `Breakpoint`                                    | —         | Hide at and above the given breakpoint.                                         |
-| `collapsedBelow`  | `Breakpoint`                                    | —         | Allow the layout to shrink below the given breakpoint.                          |
+| Name              | Type                                            | Default  | Description                                                                             |
+| ----------------- | ----------------------------------------------- | -------- | --------------------------------------------------------------------------------------- |
+| `ratio`           | `SplitRatio \| ResponsiveValue<SplitRatio>`     | `[1, 1]` | Two flex weights, emitted as `<start>fr <end>fr`; optionally overridden per breakpoint. |
+| `splitAt`         | `Breakpoint`                                    | `'md'`   | Minimum breakpoint at which the two sides render side by side.                          |
+| `reverseOnMobile` | `boolean`                                       | `false`  | Swaps the first side to the end while the layout is still stacked.                      |
+| `gap`             | `SpacingValue \| ResponsiveValue<SpacingValue>` | `'4'`    | Gap between the two panes; optionally overridden per breakpoint.                        |
+| `children`        | `ReactNode`                                     | —        | Typically two `SplitView.Side` elements.                                                |
+| `className`       | `string`                                        | —        | Appended to the generated CSS Module classes.                                           |
+| `style`           | `CSSProperties`                                 | —        | Merged after the generated custom properties.                                           |
+| `hiddenBelow`     | `Breakpoint`                                    | —        | Hide below the given breakpoint.                                                        |
+| `hiddenAbove`     | `Breakpoint`                                    | —        | Hide at and above the given breakpoint.                                                 |
+| `collapsedBelow`  | `Breakpoint`                                    | —        | Allow the layout to shrink below the given breakpoint.                                  |
 
 `SplitRatio` is a readonly tuple `[number, number]`. `SplitViewSideProps` extends
 `HTMLAttributes<HTMLDivElement>` and the shared responsive visibility props, so each side can carry

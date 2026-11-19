@@ -22,13 +22,13 @@ and `Portal`.
 
 ### Root
 
-| Name                | Type      | Default | Description                                                                    |
-| ------------------- | --------- | ------- | ------------------------------------------------------------------------------ |
-| `delayDuration`     | `number`  | `200`   | Milliseconds before the tooltip opens.                                         |
-| `skipDelayDuration` | `number`  | `300`   | Milliseconds during which subsequent tooltips open immediately.                |
-| `hiddenBelow`       | `Breakpoint` | —    | Hide below the given breakpoint.                                               |
-| `hiddenAbove`       | `Breakpoint` | —    | Hide at and above the given breakpoint.                                        |
-| `collapsedBelow`    | `Breakpoint` | —    | Allow the trigger region to shrink below the given breakpoint.                 |
+| Name                | Type         | Default | Description                                                     |
+| ------------------- | ------------ | ------- | --------------------------------------------------------------- |
+| `delayDuration`     | `number`     | `200`   | Milliseconds before the tooltip opens.                          |
+| `skipDelayDuration` | `number`     | `300`   | Milliseconds during which subsequent tooltips open immediately. |
+| `hiddenBelow`       | `Breakpoint` | —       | Hide below the given breakpoint.                                |
+| `hiddenAbove`       | `Breakpoint` | —       | Hide at and above the given breakpoint.                         |
+| `collapsedBelow`    | `Breakpoint` | —       | Allow the trigger region to shrink below the given breakpoint.  |
 
 The root also accepts all `TooltipPrimitive.Root` props, including `open`, `defaultOpen`, and
 `onOpenChange`. It wraps the tree in its own `TooltipPrimitive.Provider` with the timing values
@@ -46,11 +46,11 @@ want one shared timing configuration.
 
 ### Content
 
-| Name        | Type      | Default | Description                                                     |
-| ----------- | --------- | ------- | --------------------------------------------------------------- |
-| `sideOffset`| `number`  | `6`     | Distance from the trigger.                                      |
-| `showArrow` | `boolean` | `true`  | Renders a `TooltipPrimitive.Arrow` sized `10` by `5`.            |
-| `className` | `string`  | —       | Appended to the styled content class.                           |
+| Name         | Type      | Default | Description                                           |
+| ------------ | --------- | ------- | ----------------------------------------------------- |
+| `sideOffset` | `number`  | `6`     | Distance from the trigger.                            |
+| `showArrow`  | `boolean` | `true`  | Renders a `TooltipPrimitive.Arrow` sized `10` by `5`. |
+| `className`  | `string`  | —       | Appended to the styled content class.                 |
 
 All other props are Radix content props. Content is rendered through a portal.
 
@@ -98,9 +98,7 @@ export function PublishHint() {
           ?
         </Button>
       </Tooltip.Trigger>
-      <Tooltip.Content sideOffset={8}>
-        Published versions are immutable.
-      </Tooltip.Content>
+      <Tooltip.Content sideOffset={8}>Published versions are immutable.</Tooltip.Content>
     </Tooltip>
   );
 }

@@ -22,25 +22,25 @@ shared responsive visibility props. Native input attributes (`value`, `onChange`
 `type`, `autoComplete`, `maxLength`, `disabled`, and so on) are forwarded to the `<input>`. `size`
 is omitted here because it is the field's own size API.
 
-| Name              | Type                              | Default | Description                                                                                     |
-| ----------------- | --------------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
-| `label`           | `ReactNode`                       | —       | Renders a `<label>` linked to the input with `htmlFor`.                                           |
-| `description`     | `ReactNode`                       | —       | Helper text rendered in a `<p>` and referenced by the input's `aria-describedby`.                 |
-| `error`           | `ReactNode`                       | —       | Validation message in a `role="alert"` `<p>`; also switches the field to its invalid presentation. |
-| `invalid`         | `boolean`                         | `false` | Forces the invalid presentation without requiring an `error` message.                            |
-| `size`            | `'sm' \| 'md' \| 'lg'`            | `'md'`  | Input padding and font size.                                                                     |
-| `leading`         | `ReactNode`                       | —       | Adornment before the input, wrapped in `aria-hidden="true"`.                                     |
-| `trailing`        | `ReactNode`                       | —       | Adornment after the input.                                                                       |
-| `slots`           | `InputFieldSlots`                 | —       | Class names for the `root`, `label`, `description`, `control`, `input`, `leading`, `trailing`, and `error` parts. |
-| `slotProps`       | `InputFieldSlotProps`             | —       | Native props and class names forwarded to each rendered part.                                   |
-| `id`              | `string`                          | generated | Input id. When omitted, a stable id is derived from React `useId()` and reused for label/description/error wiring. |
-| `required`        | `boolean`                         | `false` | Marks the input required and renders a visual `*` next to the label.                             |
-| `className`       | `string`                          | —       | Appended to the root CSS Module classes.                                                         |
-| `aria-describedby`| `string`                          | —       | Merged with the generated description and error ids rather than overwritten.                    |
-| `aria-invalid`    | `boolean \| 'false' \| 'grammar' \| 'spelling' \| 'true'` | — | Merged with the computed invalid state. |
-| `hiddenBelow`     | `Breakpoint`                      | —       | Hide below the given breakpoint.                                                                 |
-| `hiddenAbove`     | `Breakpoint`                      | —       | Hide at and above the given breakpoint.                                                          |
-| `collapsedBelow`  | `Breakpoint`                      | —       | Allow the field to shrink below the given breakpoint.                                            |
+| Name               | Type                                                      | Default   | Description                                                                                                        |
+| ------------------ | --------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------ |
+| `label`            | `ReactNode`                                               | —         | Renders a `<label>` linked to the input with `htmlFor`.                                                            |
+| `description`      | `ReactNode`                                               | —         | Helper text rendered in a `<p>` and referenced by the input's `aria-describedby`.                                  |
+| `error`            | `ReactNode`                                               | —         | Validation message in a `role="alert"` `<p>`; also switches the field to its invalid presentation.                 |
+| `invalid`          | `boolean`                                                 | `false`   | Forces the invalid presentation without requiring an `error` message.                                              |
+| `size`             | `'sm' \| 'md' \| 'lg'`                                    | `'md'`    | Input padding and font size.                                                                                       |
+| `leading`          | `ReactNode`                                               | —         | Adornment before the input, wrapped in `aria-hidden="true"`.                                                       |
+| `trailing`         | `ReactNode`                                               | —         | Adornment after the input.                                                                                         |
+| `slots`            | `InputFieldSlots`                                         | —         | Class names for the `root`, `label`, `description`, `control`, `input`, `leading`, `trailing`, and `error` parts.  |
+| `slotProps`        | `InputFieldSlotProps`                                     | —         | Native props and class names forwarded to each rendered part.                                                      |
+| `id`               | `string`                                                  | generated | Input id. When omitted, a stable id is derived from React `useId()` and reused for label/description/error wiring. |
+| `required`         | `boolean`                                                 | `false`   | Marks the input required and renders a visual `*` next to the label.                                               |
+| `className`        | `string`                                                  | —         | Appended to the root CSS Module classes.                                                                           |
+| `aria-describedby` | `string`                                                  | —         | Merged with the generated description and error ids rather than overwritten.                                       |
+| `aria-invalid`     | `boolean \| 'false' \| 'grammar' \| 'spelling' \| 'true'` | —         | Merged with the computed invalid state.                                                                            |
+| `hiddenBelow`      | `Breakpoint`                                              | —         | Hide below the given breakpoint.                                                                                   |
+| `hiddenAbove`      | `Breakpoint`                                              | —         | Hide at and above the given breakpoint.                                                                            |
+| `collapsedBelow`   | `Breakpoint`                                              | —         | Allow the field to shrink below the given breakpoint.                                                              |
 
 `InputFieldSlots` and `InputFieldSlotProps` each expose the keys `root`, `label`, `description`,
 `control`, `input`, `leading`, `trailing`, and `error`.

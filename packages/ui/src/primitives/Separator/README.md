@@ -14,15 +14,15 @@ import type { SeparatorProps } from '@simplify-dev/ui';
 `SeparatorProps` extends `Omit<HTMLAttributes<HTMLDivElement>, 'content'>` and the shared responsive
 visibility props. Standard div attributes are forwarded.
 
-| Name             | Type                        | Default         | Description                                                                          |
-| ---------------- | --------------------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `orientation`    | `'horizontal' \| 'vertical'` | `'horizontal'`  | Divider axis; exposed as `data-orientation` and, when semantic, as `aria-orientation`. |
-| `decorative`     | `boolean`                   | `true`          | When true, sets `role="none"` and hides the divider from assistive technology.        |
-| `role`           | `string`                    | —               | Used only when `decorative={false}`; defaults to `'separator'` in that case.          |
-| `className`      | `string`                    | —               | Appended to the generated CSS Module classes.                                        |
-| `hiddenBelow`    | `Breakpoint`                | —               | Hide below the given breakpoint.                                                     |
-| `hiddenAbove`    | `Breakpoint`                | —               | Hide at and above the given breakpoint.                                              |
-| `collapsedBelow` | `Breakpoint`                | —               | Allow the divider to shrink below the given breakpoint.                              |
+| Name             | Type                         | Default        | Description                                                                            |
+| ---------------- | ---------------------------- | -------------- | -------------------------------------------------------------------------------------- |
+| `orientation`    | `'horizontal' \| 'vertical'` | `'horizontal'` | Divider axis; exposed as `data-orientation` and, when semantic, as `aria-orientation`. |
+| `decorative`     | `boolean`                    | `true`         | When true, sets `role="none"` and hides the divider from assistive technology.         |
+| `role`           | `string`                     | —              | Used only when `decorative={false}`; defaults to `'separator'` in that case.           |
+| `className`      | `string`                     | —              | Appended to the generated CSS Module classes.                                          |
+| `hiddenBelow`    | `Breakpoint`                 | —              | Hide below the given breakpoint.                                                       |
+| `hiddenAbove`    | `Breakpoint`                 | —              | Hide at and above the given breakpoint.                                                |
+| `collapsedBelow` | `Breakpoint`                 | —              | Allow the divider to shrink below the given breakpoint.                                |
 
 ## Orientation
 

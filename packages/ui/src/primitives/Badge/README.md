@@ -16,13 +16,13 @@ Standard span attributes (`title`, `aria-*`, event handlers, and so on) are forw
 
 | Name             | Type                                                        | Default     | Description                                                        |
 | ---------------- | ----------------------------------------------------------- | ----------- | ------------------------------------------------------------------ |
-| `variant`        | `'neutral' \| 'success' \| 'warning' \| 'danger' \| 'info'`  | `'neutral'` | Semantic color role; exposed as `data-variant`.                     |
-| `size`           | `'sm' \| 'md'`                                              | `'md'`      | Padding and font size; exposed as `data-size`.                      |
-| `dot`            | `boolean`                                                   | `false`     | Renders a leading status dot that inherits the current text color.   |
-| `className`      | `string`                                                    | —           | Appended to the generated CSS Module classes.                       |
-| `hiddenBelow`    | `Breakpoint`                                                | —           | Hide below the given breakpoint.                                    |
-| `hiddenAbove`    | `Breakpoint`                                                | —           | Hide at and above the given breakpoint.                             |
-| `collapsedBelow` | `Breakpoint`                                                | —           | Allow the badge to shrink below the given breakpoint.               |
+| `variant`        | `'neutral' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'neutral'` | Semantic color role; exposed as `data-variant`.                    |
+| `size`           | `'sm' \| 'md'`                                              | `'md'`      | Padding and font size; exposed as `data-size`.                     |
+| `dot`            | `boolean`                                                   | `false`     | Renders a leading status dot that inherits the current text color. |
+| `className`      | `string`                                                    | —           | Appended to the generated CSS Module classes.                      |
+| `hiddenBelow`    | `Breakpoint`                                                | —           | Hide below the given breakpoint.                                   |
+| `hiddenAbove`    | `Breakpoint`                                                | —           | Hide at and above the given breakpoint.                            |
+| `collapsedBelow` | `Breakpoint`                                                | —           | Allow the badge to shrink below the given breakpoint.              |
 
 ## Variants and sizes
 

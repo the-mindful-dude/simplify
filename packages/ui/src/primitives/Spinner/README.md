@@ -14,15 +14,15 @@ import type { SpinnerProps, SpinnerSize } from '@simplify-dev/ui';
 `SpinnerProps` extends `HTMLAttributes<HTMLSpanElement>` and the shared responsive visibility props.
 Standard span attributes are forwarded.
 
-| Name             | Type                     | Default      | Description                                                                    |
-| ---------------- | ------------------------ | ------------ | ------------------------------------------------------------------------------ |
-| `size`           | `'sm' \| 'md' \| 'lg'`   | `'md'`       | Visual size (`0.75rem`, `1rem`, or `1.5rem`); exposed as `data-size`.            |
-| `label`          | `string`                 | `'Loading'`  | Accessible name announced while the indicator is visible.                      |
-| `role`           | `string`                 | `'status'`   | Override to make the indicator decorative, for example `role="presentation"`.   |
-| `className`      | `string`                 | —            | Appended to the generated CSS Module classes.                                   |
-| `hiddenBelow`    | `Breakpoint`             | —            | Hide below the given breakpoint.                                                |
-| `hiddenAbove`    | `Breakpoint`             | —            | Hide at and above the given breakpoint.                                         |
-| `collapsedBelow` | `Breakpoint`             | —            | Allow the indicator to shrink below the given breakpoint.                       |
+| Name             | Type                   | Default     | Description                                                                   |
+| ---------------- | ---------------------- | ----------- | ----------------------------------------------------------------------------- |
+| `size`           | `'sm' \| 'md' \| 'lg'` | `'md'`      | Visual size (`0.75rem`, `1rem`, or `1.5rem`); exposed as `data-size`.         |
+| `label`          | `string`               | `'Loading'` | Accessible name announced while the indicator is visible.                     |
+| `role`           | `string`               | `'status'`  | Override to make the indicator decorative, for example `role="presentation"`. |
+| `className`      | `string`               | —           | Appended to the generated CSS Module classes.                                 |
+| `hiddenBelow`    | `Breakpoint`           | —           | Hide below the given breakpoint.                                              |
+| `hiddenAbove`    | `Breakpoint`           | —           | Hide at and above the given breakpoint.                                       |
+| `collapsedBelow` | `Breakpoint`           | —           | Allow the indicator to shrink below the given breakpoint.                     |
 
 ## Sizes and states
 

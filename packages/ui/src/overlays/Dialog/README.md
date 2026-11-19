@@ -40,15 +40,15 @@ the shared responsive visibility flags. `className` is appended to the styled tr
 
 ### Content
 
-| Name              | Type                        | Default | Description                                                                    |
-| ----------------- | --------------------------- | ------- | ------------------------------------------------------------------------------ |
-| `size`            | `'sm' \| 'md' \| 'lg'`      | `'md'`  | Maximum width (`24rem`, `32rem`, or `48rem`); exposed as `data-size`.            |
-| `showClose`       | `boolean`                   | `true`  | Renders the built-in close button labeled `"Close dialog"`.                     |
-| `overlayClassName`| `string`                    | —       | Additional class for the rendered overlay.                                      |
-| `className`       | `string`                    | —       | Appended to the content CSS Module classes.                                     |
-| `hiddenBelow`     | `Breakpoint`                | —       | Hide below the given breakpoint.                                               |
-| `hiddenAbove`     | `Breakpoint`                | —       | Hide at and above the given breakpoint.                                        |
-| `collapsedBelow`  | `Breakpoint`                | —       | Allow the content to shrink below the given breakpoint.                        |
+| Name               | Type                   | Default | Description                                                           |
+| ------------------ | ---------------------- | ------- | --------------------------------------------------------------------- |
+| `size`             | `'sm' \| 'md' \| 'lg'` | `'md'`  | Maximum width (`24rem`, `32rem`, or `48rem`); exposed as `data-size`. |
+| `showClose`        | `boolean`              | `true`  | Renders the built-in close button labeled `"Close dialog"`.           |
+| `overlayClassName` | `string`               | —       | Additional class for the rendered overlay.                            |
+| `className`        | `string`               | —       | Appended to the content CSS Module classes.                           |
+| `hiddenBelow`      | `Breakpoint`           | —       | Hide below the given breakpoint.                                      |
+| `hiddenAbove`      | `Breakpoint`           | —       | Hide at and above the given breakpoint.                               |
+| `collapsedBelow`   | `Breakpoint`           | —       | Allow the content to shrink below the given breakpoint.               |
 
 All other `DialogContent` props are Radix content props and are forwarded.
 

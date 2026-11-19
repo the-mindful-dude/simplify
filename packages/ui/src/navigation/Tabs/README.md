@@ -26,11 +26,11 @@ as a property of `Tabs`: `Root`, `List`, `Trigger`, and `Content`.
 responsive visibility props. Radix state props are forwarded, including `value`, `defaultValue`, and
 `onValueChange`, as well as `orientation` and `activationMode`.
 
-| Name             | Type         | Default | Description                                                  |
-| ---------------- | ------------ | ------- | ------------------------------------------------------------ |
-| `hiddenBelow`    | `Breakpoint` | —       | Hide below the given breakpoint.                             |
-| `hiddenAbove`    | `Breakpoint` | —       | Hide at and above the given breakpoint.                      |
-| `collapsedBelow` | `Breakpoint` | —       | Allow the tab set to shrink below the given breakpoint.      |
+| Name             | Type         | Default | Description                                             |
+| ---------------- | ------------ | ------- | ------------------------------------------------------- |
+| `hiddenBelow`    | `Breakpoint` | —       | Hide below the given breakpoint.                        |
+| `hiddenAbove`    | `Breakpoint` | —       | Hide at and above the given breakpoint.                 |
+| `collapsedBelow` | `Breakpoint` | —       | Allow the tab set to shrink below the given breakpoint. |
 
 ### List, Trigger, and Content
 

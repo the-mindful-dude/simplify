@@ -14,19 +14,19 @@ import type { SkeletonProps, SkeletonVariant } from '@simplify-dev/ui';
 `SkeletonProps` extends `Omit<HTMLAttributes<HTMLDivElement>, 'children'>` and the shared responsive
 visibility props. Standard div attributes except `children` are forwarded.
 
-| Name             | Type                               | Default | Description                                                                          |
-| ---------------- | ---------------------------------- | ------- | ------------------------------------------------------------------------------------ |
-| `variant`        | `'text' \| 'rect' \| 'circle'`     | `'text'`| Shape of each placeholder; exposed as `data-variant`.                                |
-| `width`          | `string \| number`                 | —       | Inline CSS `width` applied to the root.                                              |
-| `height`         | `string \| number`                 | —       | Inline CSS `height` applied to the root.                                             |
-| `lines`          | `number`                           | `1`     | Number of placeholder rows when `variant="text"`; values are floored with a minimum of 1. |
-| `animate`        | `boolean`                          | `true`  | Enables the pulse animation; exposed as `data-animate` and toggles the static class.  |
-| `label`          | `string`                           | —       | Accessible status name. Supplying it switches the root to `role="status"`.           |
-| `className`      | `string`                           | —       | Appended to the generated CSS Module classes.                                        |
-| `style`          | `CSSProperties`                    | —       | Merged after the generated `width`/`height` values.                                  |
-| `hiddenBelow`    | `Breakpoint`                       | —       | Hide below the given breakpoint.                                                     |
-| `hiddenAbove`    | `Breakpoint`                       | —       | Hide at and above the given breakpoint.                                              |
-| `collapsedBelow` | `Breakpoint`                       | —       | Allow the placeholder to shrink below the given breakpoint.                          |
+| Name             | Type                           | Default  | Description                                                                               |
+| ---------------- | ------------------------------ | -------- | ----------------------------------------------------------------------------------------- |
+| `variant`        | `'text' \| 'rect' \| 'circle'` | `'text'` | Shape of each placeholder; exposed as `data-variant`.                                     |
+| `width`          | `string \| number`             | —        | Inline CSS `width` applied to the root.                                                   |
+| `height`         | `string \| number`             | —        | Inline CSS `height` applied to the root.                                                  |
+| `lines`          | `number`                       | `1`      | Number of placeholder rows when `variant="text"`; values are floored with a minimum of 1. |
+| `animate`        | `boolean`                      | `true`   | Enables the pulse animation; exposed as `data-animate` and toggles the static class.      |
+| `label`          | `string`                       | —        | Accessible status name. Supplying it switches the root to `role="status"`.                |
+| `className`      | `string`                       | —        | Appended to the generated CSS Module classes.                                             |
+| `style`          | `CSSProperties`                | —        | Merged after the generated `width`/`height` values.                                       |
+| `hiddenBelow`    | `Breakpoint`                   | —        | Hide below the given breakpoint.                                                          |
+| `hiddenAbove`    | `Breakpoint`                   | —        | Hide at and above the given breakpoint.                                                   |
+| `collapsedBelow` | `Breakpoint`                   | —        | Allow the placeholder to shrink below the given breakpoint.                               |
 
 ## Shapes and states
 
@@ -49,7 +49,7 @@ reserve exact layout space at each viewport.
 - Loading placeholders are hidden from assistive technology by default to avoid announcing
   decorative shapes repeatedly.
 - Provide `label` when the loading state itself is meaningful, for example `"Loading registry
-  results"`. The element is then announced once as a status region.
+results"`. The element is then announced once as a status region.
 - The component is never interactive and does not receive focus.
 
 ## Token dependencies

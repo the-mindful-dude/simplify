@@ -14,16 +14,16 @@ import type { ContainerProps, ContainerSize } from '@simplify-dev/ui';
 `ContainerProps` extends `HTMLAttributes<HTMLDivElement>` and the shared responsive visibility
 props. Standard div attributes are forwarded.
 
-| Name             | Type                                                | Default  | Description                                                                     |
-| ---------------- | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
-| `size`           | `'sm' \| 'md' \| 'lg' \| 'full'`                    | `'lg'`   | Maximum content width; exposed as `data-size`.                                  |
-| `padding`        | `SpacingValue \| ResponsiveValue<SpacingValue>`     | `'4'`    | Inline padding, optionally overridden per breakpoint.                           |
-| `center`         | `boolean`                                           | `true`   | Centers the content column with `margin-inline: auto`.                          |
-| `className`      | `string`                                            | —        | Appended to the generated CSS Module classes.                                   |
-| `style`          | `CSSProperties`                                     | —        | Merged after the generated padding custom properties.                           |
-| `hiddenBelow`    | `Breakpoint`                                        | —        | Hide below the given breakpoint.                                                |
-| `hiddenAbove`    | `Breakpoint`                                        | —        | Hide at and above the given breakpoint.                                         |
-| `collapsedBelow` | `Breakpoint`                                        | —        | Allow the column to shrink below the given breakpoint.                          |
+| Name             | Type                                            | Default | Description                                            |
+| ---------------- | ----------------------------------------------- | ------- | ------------------------------------------------------ |
+| `size`           | `'sm' \| 'md' \| 'lg' \| 'full'`                | `'lg'`  | Maximum content width; exposed as `data-size`.         |
+| `padding`        | `SpacingValue \| ResponsiveValue<SpacingValue>` | `'4'`   | Inline padding, optionally overridden per breakpoint.  |
+| `center`         | `boolean`                                       | `true`  | Centers the content column with `margin-inline: auto`. |
+| `className`      | `string`                                        | —       | Appended to the generated CSS Module classes.          |
+| `style`          | `CSSProperties`                                 | —       | Merged after the generated padding custom properties.  |
+| `hiddenBelow`    | `Breakpoint`                                    | —       | Hide below the given breakpoint.                       |
+| `hiddenAbove`    | `Breakpoint`                                    | —       | Hide at and above the given breakpoint.                |
+| `collapsedBelow` | `Breakpoint`                                    | —       | Allow the column to shrink below the given breakpoint. |
 
 `SpacingValue` is a spacing scale key: `0`, `1`, `2`, `3`, `4`, `5`, `6`, `8`, `10`, `12`, `16`,
 `20`, or `24`. `ResponsiveValue<T>` is `{ base?: T; sm?: T; md?: T; lg?: T; xl?: T; 2xl?: T }`.

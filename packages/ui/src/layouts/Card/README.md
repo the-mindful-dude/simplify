@@ -16,17 +16,17 @@ The sections are available as `Card.Root` / `Card`, `Card.Header` / `CardHeader`
 
 `CardProps` extends `HTMLAttributes<HTMLDivElement>` and the shared responsive visibility props.
 
-| Name             | Type                                            | Default     | Description                                                                 |
-| ---------------- | ----------------------------------------------- | ----------- | --------------------------------------------------------------------------- |
-| `variant`        | `'default' \| 'elevated' \| 'outline'`          | `'default'` | Surface treatment; exposed as `data-variant`.                               |
-| `padding`        | `SpacingValue \| ResponsiveValue<SpacingValue>` | `'6'`       | Inner padding; optionally overridden per breakpoint.                        |
-| `interactive`    | `boolean`                                       | `false`     | Adds hover/focus affordances and makes the card keyboard focusable.         |
+| Name             | Type                                            | Default              | Description                                                         |
+| ---------------- | ----------------------------------------------- | -------------------- | ------------------------------------------------------------------- |
+| `variant`        | `'default' \| 'elevated' \| 'outline'`          | `'default'`          | Surface treatment; exposed as `data-variant`.                       |
+| `padding`        | `SpacingValue \| ResponsiveValue<SpacingValue>` | `'6'`                | Inner padding; optionally overridden per breakpoint.                |
+| `interactive`    | `boolean`                                       | `false`              | Adds hover/focus affordances and makes the card keyboard focusable. |
 | `tabIndex`       | `number`                                        | `0` when interactive | Overrides the default `tabIndex` applied in interactive mode.       |
-| `className`      | `string`                                        | —           | Appended to the generated CSS Module classes.                              |
-| `style`          | `CSSProperties`                                 | —           | Merged after the generated padding custom properties.                      |
-| `hiddenBelow`    | `Breakpoint`                                    | —           | Hide below the given breakpoint.                                           |
-| `hiddenAbove`    | `Breakpoint`                                    | —           | Hide at and above the given breakpoint.                                    |
-| `collapsedBelow` | `Breakpoint`                                    | —           | Allow the card to shrink below the given breakpoint.                       |
+| `className`      | `string`                                        | —                    | Appended to the generated CSS Module classes.                       |
+| `style`          | `CSSProperties`                                 | —                    | Merged after the generated padding custom properties.               |
+| `hiddenBelow`    | `Breakpoint`                                    | —                    | Hide below the given breakpoint.                                    |
+| `hiddenAbove`    | `Breakpoint`                                    | —                    | Hide at and above the given breakpoint.                             |
+| `collapsedBelow` | `Breakpoint`                                    | —                    | Allow the card to shrink below the given breakpoint.                |
 
 `CardSectionProps` is `HTMLAttributes<HTMLDivElement>` plus the same three responsive visibility
 flags, so each section can be hidden or collapsed independently.

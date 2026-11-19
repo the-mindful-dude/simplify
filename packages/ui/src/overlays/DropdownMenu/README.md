@@ -40,8 +40,8 @@ styled content class.
 
 `DropdownMenuItemProps` extends the Radix item props with one addition:
 
-| Name          | Type      | Default | Description                                              |
-| ------------- | --------- | ------- | -------------------------------------------------------- |
+| Name          | Type      | Default | Description                                                |
+| ------------- | --------- | ------- | ---------------------------------------------------------- |
 | `destructive` | `boolean` | `false` | Uses the danger color role. Exposed as `data-destructive`. |
 
 ### Shortcut
