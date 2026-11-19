@@ -1,9 +1,9 @@
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, afterEach } from 'vitest';
 import { mkdtemp, rm, writeFile, readFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 
-import { buildLibrary, type BuildResult } from '../src/index.js';
+import { buildLibrary } from '../src/index.js';
 
 async function writeFileRecursive(filePath: string, content: string): Promise<void> {
   await mkdir(dirname(filePath), { recursive: true });

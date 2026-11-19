@@ -6,7 +6,6 @@ import {
   type AssetManifestLoader,
   type Conflict,
   type DependencyGraph,
-  type ResolutionResult,
 } from '../src/resolver/index.js';
 import type { AssetManifest, ProjectConfiguration } from '@simplify-dev/schemas';
 

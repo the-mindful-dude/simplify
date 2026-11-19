@@ -81,22 +81,22 @@ Consider long-term scalability without introducing speculative infrastructure, u
 
 The following decisions are established architectural constraints:
 
-| Area | Decision |
-| --- | --- |
-| Package scope | `@simplify-dev/*` |
-| CLI executable | `simplify` from `@simplify-dev/cli` |
-| Runtime | Node.js 20 LTS |
-| TypeScript | 5.x, strict |
-| React / Next.js | React 18.x / Next.js 14.x |
-| Package manager | pnpm 9.x workspaces |
-| Build orchestration | Turborepo |
-| Tests | Vitest |
-| Lint / format | ESLint + Prettier |
-| Module format | ESM only |
-| Styling | CSS custom properties + CSS Modules |
-| Headless UI | Radix UI |
+| Area                  | Decision                                      |
+| --------------------- | --------------------------------------------- |
+| Package scope         | `@simplify-dev/*`                             |
+| CLI executable        | `simplify` from `@simplify-dev/cli`           |
+| Runtime               | Node.js 20 LTS                                |
+| TypeScript            | 5.x, strict                                   |
+| React / Next.js       | React 18.x / Next.js 14.x                     |
+| Package manager       | pnpm 9.x workspaces                           |
+| Build orchestration   | Turborepo                                     |
+| Tests                 | Vitest                                        |
+| Lint / format         | ESLint + Prettier                             |
+| Module format         | ESM only                                      |
+| Styling               | CSS custom properties + CSS Modules           |
+| Headless UI           | Radix UI                                      |
 | Registry distribution | Static versioned metadata and artifacts first |
-| GitHub authorization | GitHub App |
+| GitHub authorization  | GitHub App                                    |
 
 Exact versions are pinned in repository configuration.
 
@@ -147,31 +147,31 @@ packages/registry
 
 schemas
   └── no runtime dependencies
-````
+```
 
 Mandatory rules:
 
-* No circular dependencies, direct or indirect.
+- No circular dependencies, direct or indirect.
 
-* The registry and asset model must not depend on GitHub-specific concepts.
+- The registry and asset model must not depend on GitHub-specific concepts.
 
-* GitHub integration must not own or redefine the registry asset model.
+- GitHub integration must not own or redefine the registry asset model.
 
-* The CLI must not import web application internals.
+- The CLI must not import web application internals.
 
-* The web application must consume registry data rather than maintain a separate catalogue.
+- The web application must consume registry data rather than maintain a separate catalogue.
 
-* Framework-independent logic must not import React, UI components, or framework-specific code.
+- Framework-independent logic must not import React, UI components, or framework-specific code.
 
-* Core logic must not import provider SDKs or database clients directly.
+- Core logic must not import provider SDKs or database clients directly.
 
-* Integrations must implement declared contracts and remain optional where appropriate.
+- Integrations must implement declared contracts and remain optional where appropriate.
 
-* Cross-package imports must use deliberate public entry points.
+- Cross-package imports must use deliberate public entry points.
 
-* Never import another package's `internal/` directory or arbitrary deep paths.
+- Never import another package's `internal/` directory or arbitrary deep paths.
 
-* Infrastructure details must not leak into domain-level contracts.
+- Infrastructure details must not leak into domain-level contracts.
 
 Depend on the smallest stable interface that provides the required capability.
 
@@ -181,37 +181,37 @@ A package must represent a meaningful responsibility or dependency boundary. Do 
 
 Every module must have:
 
-* A clearly defined responsibility.
+- A clearly defined responsibility.
 
-* Explicit dependencies.
+- Explicit dependencies.
 
-* A predictable input/output contract.
+- A predictable input/output contract.
 
-* A limited public interface.
+- A limited public interface.
 
-* Ownership of a coherent part of the system.
+- Ownership of a coherent part of the system.
 
-* Appropriate tests.
+- Appropriate tests.
 
 Keep modules cohesive and loosely coupled. Avoid god modules, god classes, god functions, catch-all utility files, duplicated business logic, hidden dependencies, unnecessary shared state, and excessive fragmentation.
 
 Separate responsibilities where appropriate:
 
-* Domain models and business rules.
+- Domain models and business rules.
 
-* Application workflows and orchestration.
+- Application workflows and orchestration.
 
-* External service adapters.
+- External service adapters.
 
-* Data access and persistence.
+- Data access and persistence.
 
-* Transport and communication.
+- Transport and communication.
 
-* Validation and error handling.
+- Validation and error handling.
 
-* Presentation and state management.
+- Presentation and state management.
 
-* Configuration and infrastructure.
+- Configuration and infrastructure.
 
 Do not introduce layers mechanically. Choose boundaries based on actual responsibilities.
 
@@ -223,15 +223,15 @@ Keep exports deliberate. Do not expose internal utilities accidentally.
 
 An asset is an independently installable implementation. A library is a distributable collection of related assets.
 
-* One logical asset may have implementations for different languages or frameworks.
+- One logical asset may have implementations for different languages or frameworks.
 
-* Recipes compose existing assets; they must not duplicate implementations.
+- Recipes compose existing assets; they must not duplicate implementations.
 
-* Templates should compose existing assets whenever possible.
+- Templates should compose existing assets whenever possible.
 
-* Assets must have explicit identities and independently manageable versions.
+- Assets must have explicit identities and independently manageable versions.
 
-* The registry must understand libraries independently of repository directory layout.
+- The registry must understand libraries independently of repository directory layout.
 
 Application-owned concerns remain outside distributed assets unless an explicit contract defines an integration boundary. These include authentication, authorization, permissions, secrets, application-specific business rules, database ownership, deployment, persistence policy, and data protection.
 
@@ -239,25 +239,25 @@ Assets may provide reusable interfaces, adapters, UI, and logic for these concer
 
 ### 4.4 Manifests and Versioning
 
-* Libraries use `simplify/library.json`.
+- Libraries use `simplify/library.json`.
 
-* Assets use category-specific manifests.
+- Assets use category-specific manifests.
 
-* Manifests describe identity, targets, dependencies, installation, files, documentation, preview, license, and attribution.
+- Manifests describe identity, targets, dependencies, installation, files, documentation, preview, license, and attribution.
 
-* Validate manifests and external metadata at system boundaries.
+- Validate manifests and external metadata at system boundaries.
 
-* Published versions must be immutable and reproducible.
+- Published versions must be immutable and reproducible.
 
-* Record repository identity, commit SHA, tag or release, version, timestamp, artifact or snapshot, and validation results.
+- Record repository identity, commit SHA, tag or release, version, timestamp, artifact or snapshot, and validation results.
 
-* Distinguish development snapshots from stable releases.
+- Distinguish development snapshots from stable releases.
 
-* Use Semantic Versioning for stable releases.
+- Use Semantic Versioning for stable releases.
 
-* Detect missing dependencies, incompatible versions, and dependency cycles.
+- Detect missing dependencies, incompatible versions, and dependency cycles.
 
-* Provide actionable errors instead of silently accepting invalid metadata or dependency combinations.
+- Provide actionable errors instead of silently accepting invalid metadata or dependency combinations.
 
 ### 4.5 Installation Safety
 
@@ -265,29 +265,29 @@ Supported installation modes are package, source, and hybrid.
 
 The installer must:
 
-* Never overwrite user-modified files without an explicit decision.
+- Never overwrite user-modified files without an explicit decision.
 
-* Never replace secrets or environment values.
+- Never replace secrets or environment values.
 
-* Never execute arbitrary registry-provided scripts.
+- Never execute arbitrary registry-provided scripts.
 
-* Restrict target paths and prevent path traversal.
+- Restrict target paths and prevent path traversal.
 
-* Validate installation plans before applying them.
+- Validate installation plans before applying them.
 
-* Prefer safe writes, backups, and rollback for multi-file operations.
+- Prefer safe writes, backups, and rollback for multi-file operations.
 
-* Apply only supported, declarative configuration changes.
+- Apply only supported, declarative configuration changes.
 
-* Show a plan before destructive operations.
+- Show a plan before destructive operations.
 
-* Track installed versions, files, hashes, and dependencies in `.simplify/`.
+- Track installed versions, files, hashes, and dependencies in `.simplify/`.
 
-* Detect modified and missing files before updates or removals.
+- Detect modified and missing files before updates or removals.
 
-* Preserve consumer customizations.
+- Preserve consumer customizations.
 
-* Provide predictable recovery for interrupted operations.
+- Provide predictable recovery for interrupted operations.
 
 Distinguish unchanged managed files, modified files, missing files, user-owned conflicts, new files, and asset dependencies.
 
@@ -297,27 +297,27 @@ Never assume a file is safe to replace merely because simplify.dev originally in
 
 GitHub is the canonical source for library source code and history. simplify.dev owns registry metadata, validation, distribution, and installation.
 
-* Support connecting existing repositories and creating new ones.
+- Support connecting existing repositories and creating new ones.
 
-* Use a GitHub App with explicitly requested, least-privilege permissions.
+- Use a GitHub App with explicitly requested, least-privilege permissions.
 
-* GitHub Actions is the primary validation and publishing environment.
+- GitHub Actions is the primary validation and publishing environment.
 
-* Ordinary pushes must never trigger unintended stable releases.
+- Ordinary pushes must never trigger unintended stable releases.
 
-* Publishing must follow explicit versioning and validation.
+- Publishing must follow explicit versioning and validation.
 
-* Webhooks must be authenticated, idempotent, and resilient to retries and out-of-order delivery.
+- Webhooks must be authenticated, idempotent, and resilient to retries and out-of-order delivery.
 
-* Preserve published versions when repositories are renamed, deleted, or inaccessible.
+- Preserve published versions when repositories are renamed, deleted, or inaccessible.
 
-* Distinguish repository state from published registry state.
+- Distinguish repository state from published registry state.
 
-* Treat repository contents, workflows, manifests, and webhook payloads as untrusted input.
+- Treat repository contents, workflows, manifests, and webhook payloads as untrusted input.
 
-* Keep GitHub-specific implementation inside the GitHub integration.
+- Keep GitHub-specific implementation inside the GitHub integration.
 
-* The core registry must remain usable without GitHub.
+- The core registry must remain usable without GitHub.
 
 GitHub is an integration and source-of-truth mechanism for library source code, not the owner of simplify.dev's core asset model.
 
@@ -325,25 +325,25 @@ GitHub is an integration and source-of-truth mechanism for library source code, 
 
 Presentation and behavior must remain independently understandable.
 
-* Components consume semantic design tokens; do not hardcode brand values.
+- Components consume semantic design tokens; do not hardcode brand values.
 
-* Keep business logic outside presentation components where appropriate.
+- Keep business logic outside presentation components where appropriate.
 
-* Framework-independent logic must not depend on React.
+- Framework-independent logic must not depend on React.
 
-* UI consumes stable controller, state, or behavior interfaces.
+- UI consumes stable controller, state, or behavior interfaces.
 
-* Define transport and storage contracts; provider and database adapters implement them.
+- Define transport and storage contracts; provider and database adapters implement them.
 
-* Avoid mandatory global providers.
+- Avoid mandatory global providers.
 
-* Use CSS custom properties and theme attributes where appropriate.
+- Use CSS custom properties and theme attributes where appropriate.
 
-* Preserve React server/client boundaries deliberately.
+- Preserve React server/client boundaries deliberately.
 
-* Do not mark every component client-only.
+- Do not mark every component client-only.
 
-* Keep imports tree-shakeable and heavy dependencies isolated or optional.
+- Keep imports tree-shakeable and heavy dependencies isolated or optional.
 
 Where appropriate, support deliberate customization through `className`, slots, `slotProps`, variants, sizes, tokens, controlled state, and callbacks.
 
@@ -390,19 +390,19 @@ Agents must understand and plan before modifying the repository.
 
 Before implementation:
 
-* Read the task and relevant sources of truth.
+- Read the task and relevant sources of truth.
 
-* Identify the roadmap item and acceptance criteria.
+- Identify the roadmap item and acceptance criteria.
 
-* Understand expected behavior and existing functionality.
+- Understand expected behavior and existing functionality.
 
-* Inspect the current branch, working tree, and uncommitted changes.
+- Inspect the current branch, working tree, and uncommitted changes.
 
-* Inspect relevant modules, public interfaces, dependencies, tests, and documentation.
+- Inspect relevant modules, public interfaces, dependencies, tests, and documentation.
 
-* Identify architectural, security, and compatibility constraints.
+- Identify architectural, security, and compatibility constraints.
 
-* Run relevant baseline checks and record existing failures.
+- Run relevant baseline checks and record existing failures.
 
 Never overwrite or discard unrelated user changes. Never assume existing code is correct without inspection.
 
@@ -410,25 +410,25 @@ Never overwrite or discard unrelated user changes. Never assume existing code is
 
 Determine:
 
-* Which module owns the responsibility.
+- Which module owns the responsibility.
 
-* Which existing contracts should be reused.
+- Which existing contracts should be reused.
 
-* Which public interfaces are required.
+- Which public interfaces are required.
 
-* Which dependencies are necessary.
+- Which dependencies are necessary.
 
-* Whether the implementation belongs in a package or application.
+- Whether the implementation belongs in a package or application.
 
-* Whether logic should remain framework-independent.
+- Whether logic should remain framework-independent.
 
-* How errors and relevant edge cases should behave.
+- How errors and relevant edge cases should behave.
 
-* How the implementation will be tested.
+- How the implementation will be tested.
 
-* Whether compatibility or migration concerns exist.
+- Whether compatibility or migration concerns exist.
 
-* Whether dependency direction is preserved.
+- Whether dependency direction is preserved.
 
 Choose the smallest complete design that satisfies the requirements without compromising architecture or maintainability.
 
@@ -456,35 +456,35 @@ Every implementation must satisfy professional engineering standards.
 
 Implement the actual requested behavior, not merely something that compiles.
 
-* Preserve existing functionality unless a change is required.
+- Preserve existing functionality unless a change is required.
 
-* Validate untrusted input at system boundaries.
+- Validate untrusted input at system boundaries.
 
-* Use explicit contracts and deliberate error handling.
+- Use explicit contracts and deliberate error handling.
 
-* Avoid hidden side effects, silent failures, and undocumented assumptions.
+- Avoid hidden side effects, silent failures, and undocumented assumptions.
 
-* Do not substitute mock behavior for required production functionality.
+- Do not substitute mock behavior for required production functionality.
 
-* Do not leave required functionality as placeholders or TODO comments.
+- Do not leave required functionality as placeholders or TODO comments.
 
 A feature is not complete because its interface, skeleton, or happy path exists.
 
 ### 7.2 Types and Interfaces
 
-* Use strict TypeScript.
+- Use strict TypeScript.
 
-* Prefer explicit, meaningful types.
+- Prefer explicit, meaningful types.
 
-* Avoid `any`; isolate and justify it when unavoidable.
+- Avoid `any`; isolate and justify it when unavoidable.
 
-* Prefer `unknown` for untrusted data and narrow it through validation.
+- Prefer `unknown` for untrusted data and narrow it through validation.
 
-* Avoid unsafe assertions and overly broad interfaces.
+- Avoid unsafe assertions and overly broad interfaces.
 
-* Ensure types accurately represent runtime behavior.
+- Ensure types accurately represent runtime behavior.
 
-* Remember that TypeScript types do not validate external data at runtime.
+- Remember that TypeScript types do not validate external data at runtime.
 
 Public interfaces must be small, deliberate, and designed for their expected consumers.
 
@@ -506,23 +506,23 @@ Code must be understandable and maintainable by engineers who did not write it.
 
 The following do not count as completed production functionality:
 
-* Empty methods or placeholder functions.
+- Empty methods or placeholder functions.
 
-* Hardcoded mock responses.
+- Hardcoded mock responses.
 
-* Interfaces without working implementations.
+- Interfaces without working implementations.
 
-* Static UI without required behavior.
+- Static UI without required behavior.
 
-* Buttons or forms without functional actions.
+- Buttons or forms without functional actions.
 
-* Unconnected integrations.
+- Unconnected integrations.
 
-* Missing error handling.
+- Missing error handling.
 
-* Stubbed services presented as operational.
+- Stubbed services presented as operational.
 
-* Disabled tests used to hide failures.
+- Disabled tests used to hide failures.
 
 Mocks and stubs are acceptable for controlled tests, not as substitutes for required implementations.
 
@@ -538,17 +538,17 @@ The coordinator plans, delegates, reviews, verifies, tracks, and delivers. Subag
 
 The coordinator must:
 
-* Read the task and relevant sources of truth; inspect repository state and establish the verification baseline.
+- Read the task and relevant sources of truth; inspect repository state and establish the verification baseline.
 
-* Identify responsibilities, boundaries, dependencies, and acceptance criteria; design the implementation plan and divide the work into clearly scoped tasks.
+- Identify responsibilities, boundaries, dependencies, and acceptance criteria; design the implementation plan and divide the work into clearly scoped tasks.
 
-* Delegate all implementation work to dedicated subagents; review actual changes and subagent reports.
+- Delegate all implementation work to dedicated subagents; review actual changes and subagent reports.
 
-* Identify incomplete work, defects, and architectural violations; delegate corrections and integration work.
+- Identify incomplete work, defects, and architectural violations; delegate corrections and integration work.
 
-* Run repository-level quality gates; update `TODO.md` only after verified completion.
+- Run repository-level quality gates; update `TODO.md` only after verified completion.
 
-* Commit and push coherent changes; report actual results and remaining blockers.
+- Commit and push coherent changes; report actual results and remaining blockers.
 
 The coordinator is accountable for the final result and must independently verify subagent work.
 
@@ -556,19 +556,19 @@ The coordinator is accountable for the final result and must independently verif
 
 The coordinator must not directly write, create, or modify:
 
-* Source code or implementation modules.
+- Source code or implementation modules.
 
-* Tests.
+- Tests.
 
-* Application or package logic.
+- Application or package logic.
 
-* Package configuration as implementation work.
+- Package configuration as implementation work.
 
-* Manifests or schemas as implementation work.
+- Manifests or schemas as implementation work.
 
-* Integrations.
+- Integrations.
 
-* Architecture or implementation documentation that forms part of the change.
+- Architecture or implementation documentation that forms part of the change.
 
 All such work must be delegated, including trivial fixes and documentation changes.
 
@@ -582,21 +582,21 @@ Every implementation task must have a dedicated subagent with a clearly defined 
 
 Each delegation prompt must specify:
 
-* Objective and expected behavior.
+- Objective and expected behavior.
 
-* Relevant requirements and acceptance criteria.
+- Relevant requirements and acceptance criteria.
 
-* Files and modules to inspect and own.
+- Files and modules to inspect and own.
 
-* Interfaces and architectural boundaries to preserve.
+- Interfaces and architectural boundaries to preserve.
 
-* Required edge cases and tests.
+- Required edge cases and tests.
 
-* Quality gates to run.
+- Quality gates to run.
 
-* Files or responsibilities not to modify.
+- Files or responsibilities not to modify.
 
-* Required completion report.
+- Required completion report.
 
 Provide enough context for the subagent to work without guessing about the product model.
 
@@ -606,35 +606,35 @@ Every subagent must read the relevant instructions and architecture, inspect exi
 
 Subagents must not:
 
-* Modify `TODO.md`.
+- Modify `TODO.md`.
 
-* Commit, push, or open pull requests.
+- Commit, push, or open pull requests.
 
-* Expand into another agent's scope without approval.
+- Expand into another agent's scope without approval.
 
-* Modify unrelated modules.
+- Modify unrelated modules.
 
-* Violate architecture to simplify implementation.
+- Violate architecture to simplify implementation.
 
-* Claim tests passed without running them.
+- Claim tests passed without running them.
 
-* Hide failures or present placeholders as completed work.
+- Hide failures or present placeholders as completed work.
 
 Each subagent must report its objective, implementation summary, changed files, interface changes, tests, commands and results, known defects, limitations, and incomplete work.
 
 ### 8.5 Isolation and Parallel Work
 
-* Assign clear file and module ownership.
+- Assign clear file and module ownership.
 
-* Parallelize only independent tasks.
+- Parallelize only independent tasks.
 
-* Execute dependent or overlapping work in the correct order.
+- Execute dependent or overlapping work in the correct order.
 
-* Use isolated worktrees or equivalent isolation when appropriate.
+- Use isolated worktrees or equivalent isolation when appropriate.
 
-* Never allow agents to overwrite each other's work.
+- Never allow agents to overwrite each other's work.
 
-* Review compatibility before integrating results.
+- Review compatibility before integrating results.
 
 If a subagent discovers that another module must change, it must report the dependency to the coordinator instead of silently expanding scope.
 
@@ -650,57 +650,57 @@ If subagent capability is unavailable, do not implement the task as coordinator 
 
 Every task must follow this sequence:
 
-* Understand: Read requirements, roadmap, architecture, and existing implementation.
+- Understand: Read requirements, roadmap, architecture, and existing implementation.
 
-* Inspect: Check Git state, dependencies, tests, and existing failures.
+- Inspect: Check Git state, dependencies, tests, and existing failures.
 
-* Plan: Define responsibilities, interfaces, acceptance criteria, and verification.
+- Plan: Define responsibilities, interfaces, acceptance criteria, and verification.
 
-* Delegate: Assign implementation to appropriately scoped subagents.
+- Delegate: Assign implementation to appropriately scoped subagents.
 
-* Review: Inspect actual changes and delegate corrections.
+- Review: Inspect actual changes and delegate corrections.
 
-* Verify: Run all applicable repository quality gates.
+- Verify: Run all applicable repository quality gates.
 
-* Document: Update affected documentation, architecture contracts, schemas, and manifests.
+- Document: Update affected documentation, architecture contracts, schemas, and manifests.
 
-* Track: Update `TODO.md` only after verified completion.
+- Track: Update `TODO.md` only after verified completion.
 
-* Deliver: Commit, push, and report actual results.
+- Deliver: Commit, push, and report actual results.
 
 ### 9.1 Completion Is Strictly Evidence-Based
 
 A task may be marked complete only when:
 
-* Every requirement and acceptance criterion is satisfied.
+- Every requirement and acceptance criterion is satisfied.
 
-* All necessary modules are implemented and integrated.
+- All necessary modules are implemented and integrated.
 
-* Relevant edge cases and errors are handled.
+- Relevant edge cases and errors are handled.
 
-* Required tests exist and pass.
+- Required tests exist and pass.
 
-* Applicable formatting, lint, type-check, and build gates pass.
+- Applicable formatting, lint, type-check, and build gates pass.
 
-* Architecture and security requirements are satisfied.
+- Architecture and security requirements are satisfied.
 
-* Required documentation and contracts are updated.
+- Required documentation and contracts are updated.
 
-* The coordinator has reviewed and independently verified the result.
+- The coordinator has reviewed and independently verified the result.
 
-* No known relevant defect remains.
+- No known relevant defect remains.
 
 The existence of code, interfaces, UI, endpoints, or passing happy-path tests does not prove completion.
 
 Never:
 
-* Mark partially implemented work complete.
+- Mark partially implemented work complete.
 
-* Skip difficult requirements or reduce acceptance criteria for convenience.
+- Skip difficult requirements or reduce acceptance criteria for convenience.
 
-* Mark a parent task complete while child tasks remain incomplete.
+- Mark a parent task complete while child tasks remain incomplete.
 
-* Mark tests complete without executing them; claim completion based on a subagent report alone; or remove requirements to make progress appear greater.
+- Mark tests complete without executing them; claim completion based on a subagent report alone; or remove requirements to make progress appear greater.
 
 ### 9.2 Acceptance Criteria and Evidence
 
@@ -716,17 +716,17 @@ The coordinator must retain meaningful evidence for completed work, including re
 
 If a task cannot be completed because of a genuine external blocker:
 
-* Keep it incomplete.
+- Keep it incomplete.
 
-* Mark it blocked where supported.
+- Mark it blocked where supported.
 
-* Identify the exact blocker and affected requirements.
+- Identify the exact blocker and affected requirements.
 
-* Record completed work and verification evidence.
+- Record completed work and verification evidence.
 
-* Explain what is required to unblock it.
+- Explain what is required to unblock it.
 
-* Exhaust reasonable alternatives before declaring a blocker.
+- Exhaust reasonable alternatives before declaring a blocker.
 
 Implement independent portions where possible, but never mark the overall task complete while required work remains outstanding.
 
@@ -736,15 +736,15 @@ Testing is part of implementation, not an optional final step.
 
 Every applicable change must pass:
 
-* Formatting.
+- Formatting.
 
-* Linting.
+- Linting.
 
-* Type checking.
+- Type checking.
 
-* Tests.
+- Tests.
 
-* Builds.
+- Builds.
 
 Inspect repository scripts before running commands. Use actual configured commands and never claim a check passed unless it was executed and its result verified.
 
@@ -752,21 +752,21 @@ Before implementation, establish the relevant baseline. Before completion, the c
 
 Expected coverage includes:
 
-* Registry/tooling: valid and invalid schemas, manifests, resolution, dependencies, version conflicts, validation, and reproducible artifacts.
+- Registry/tooling: valid and invalid schemas, manifests, resolution, dependencies, version conflicts, validation, and reproducible artifacts.
 
-* CLI: commands, argument validation, project detection, dry runs, conflicts, path safety, rollback, updates, and removal.
+- CLI: commands, argument validation, project detection, dry runs, conflicts, path safety, rollback, updates, and removal.
 
-* GitHub: webhook signatures, idempotency, retries, event ordering, permissions, repository lifecycle, and publishing.
+- GitHub: webhook signatures, idempotency, retries, event ordering, permissions, repository lifecycle, and publishing.
 
-* UI: accessibility, keyboard, focus, reduced motion, themes, responsiveness, and component states.
+- UI: accessibility, keyboard, focus, reduced motion, themes, responsiveness, and component states.
 
-* Blocks: loading, empty, error, pending, success, disabled, streaming, and cancellation.
+- Blocks: loading, empty, error, pending, success, disabled, streaming, and cancellation.
 
-* Logic: framework-independent unit tests, state transitions, validation, and failure handling.
+- Logic: framework-independent unit tests, state transitions, validation, and failure handling.
 
-* Integrations: contract tests, controlled services, adapter behavior, and provider failures.
+- Integrations: contract tests, controlled services, adapter behavior, and provider failures.
 
-* Installation: package, source, hybrid, fresh and existing projects, modified files, conflicts, updates, removal, rollback, and path safety.
+- Installation: package, source, hybrid, fresh and existing projects, modified files, conflicts, updates, removal, rollback, and path safety.
 
 Visual regression coverage is required for important UI components and blocks.
 
@@ -784,23 +784,23 @@ Agents must investigate and fix every defect they discover, including pre-existi
 
 This applies to:
 
-* Runtime bugs and incorrect behavior; type, build, test, lint, and formatting errors; broken imports and exports.
+- Runtime bugs and incorrect behavior; type, build, test, lint, and formatting errors; broken imports and exports.
 
-* Circular dependencies and architecture violations; security weaknesses and unsafe filesystem operations; invalid schemas, manifests, and configuration.
+- Circular dependencies and architecture violations; security weaknesses and unsafe filesystem operations; invalid schemas, manifests, and configuration.
 
-* Broken interfaces and integrations; incorrect error handling; duplicated or contradictory business logic; dead code and unhandled relevant edge cases.
+- Broken interfaces and integrations; incorrect error handling; duplicated or contradictory business logic; dead code and unhandled relevant edge cases.
 
-* Incorrect or misleading documentation; missing required tests; any reproducible issue that compromises correctness, security, maintainability, or expected behavior.
+- Incorrect or misleading documentation; missing required tests; any reproducible issue that compromises correctness, security, maintainability, or expected behavior.
 
 Do not dismiss an issue because it predates the current task or falls outside its original scope.
 
 For every discovered defect:
 
-* Establish or reproduce the problem; identify root cause and affected modules; determine the correct architectural owner.
+- Establish or reproduce the problem; identify root cause and affected modules; determine the correct architectural owner.
 
-* Assess security and regression risks; design a proper fix; delegate implementation to an appropriate subagent.
+- Assess security and regression risks; design a proper fix; delegate implementation to an appropriate subagent.
 
-* Add or update tests; verify the fix and run regression checks; integrate and document significant changes.
+- Add or update tests; verify the fix and run regression checks; integrate and document significant changes.
 
 Do not hide symptoms through broad suppressions, unsafe casts, disabled checks, discarded exceptions, weakened validation, or fake success responses.
 
@@ -814,31 +814,31 @@ Do not use "pre-existing issue" or "outside scope" as excuses to knowingly leave
 
 Security must be considered at every trust boundary.
 
-* Validate manifests, paths, dependencies, artifacts, and external input.
+- Validate manifests, paths, dependencies, artifacts, and external input.
 
-* Verify webhook signatures and reject unauthenticated events.
+- Verify webhook signatures and reject unauthenticated events.
 
-* Use least-privilege GitHub permissions and scoped publishing tokens.
+- Use least-privilege GitHub permissions and scoped publishing tokens.
 
-* Never expose or log secrets and credentials.
+- Never expose or log secrets and credentials.
 
-* Never commit secrets or environment values.
+- Never commit secrets or environment values.
 
-* Treat repositories, workflows, and external payloads as untrusted.
+- Treat repositories, workflows, and external payloads as untrusted.
 
-* Do not execute arbitrary repository code during registry ingestion.
+- Do not execute arbitrary repository code during registry ingestion.
 
-* Forked pull request workflows must not access publishing credentials.
+- Forked pull request workflows must not access publishing credentials.
 
-* Record publisher identity and publication provenance.
+- Record publisher identity and publication provenance.
 
-* Distinguish official, community, verified, deprecated, and compromised assets.
+- Distinguish official, community, verified, deprecated, and compromised assets.
 
-* Prevent path traversal and unsafe command execution.
+- Prevent path traversal and unsafe command execution.
 
-* Separate authorization from presentation.
+- Separate authorization from presentation.
 
-* Do not expose sensitive internal errors to public clients.
+- Do not expose sensitive internal errors to public clients.
 
 Never sacrifice security to simplify implementation.
 
@@ -858,15 +858,15 @@ Never document incomplete functionality as available or claim unverified compati
 
 Before adding or changing a dependency:
 
-* Check whether existing capabilities are sufficient.
+- Check whether existing capabilities are sufficient.
 
-* Verify compatibility with the locked baseline.
+- Verify compatibility with the locked baseline.
 
-* Consider security, maintenance, licensing, bundle size, and runtime impact.
+- Consider security, maintenance, licensing, bundle size, and runtime impact.
 
-* Determine whether it belongs in core or optional dependencies.
+- Determine whether it belongs in core or optional dependencies.
 
-* Avoid unnecessary transitive dependencies.
+- Avoid unnecessary transitive dependencies.
 
 Do not import provider SDKs into domain-level code or make optional integrations mandatory without justification.
 
@@ -878,29 +878,29 @@ This repository requires incremental, reviewable history.
 
 ### Branching
 
-* Do not work directly on `main` (except trivial changes such as typo/doc fixes or one-line tweaks).
+- Do not work directly on `main` (except trivial changes such as typo/doc fixes or one-line tweaks).
 
-* Create a new branch for: major features, new packages/modules, refactors touching many files, and security fixes.
+- Create a new branch for: major features, new packages/modules, refactors touching many files, and security fixes.
 
-* Do not create a branch for every change. Reuse an existing feature branch for small tweaks, related follow-up work, or background changes within the same scope.
+- Do not create a branch for every change. Reuse an existing feature branch for small tweaks, related follow-up work, or background changes within the same scope.
 
-* Inspect the working tree before switching branches.
+- Inspect the working tree before switching branches.
 
-* Never overwrite unrelated user changes.
+- Never overwrite unrelated user changes.
 
 ### Committing and Pushing
 
-* Commit after every coherent, working change.
+- Commit after every coherent, working change.
 
-* Prefer small, focused commits with clear imperative messages.
+- Prefer small, focused commits with clear imperative messages.
 
-* Each commit should leave the repository in a valid, buildable state where practical.
+- Each commit should leave the repository in a valid, buildable state where practical.
 
-* Push immediately after every commit.
+- Push immediately after every commit.
 
-* Inspect all changes before committing.
+- Inspect all changes before committing.
 
-* Never commit secrets, credentials, unintended generated data, or unrelated files.
+- Never commit secrets, credentials, unintended generated data, or unrelated files.
 
 If pushing fails, preserve the local commit, record the exact error, and report that the push did not succeed. Retry after subsequent commits as appropriate.
 
@@ -916,65 +916,65 @@ A task is complete only when all applicable requirements are satisfied:
 
 Implementation
 
-* All requirements and acceptance criteria are implemented.
+- All requirements and acceptance criteria are implemented.
 
-* Relevant edge cases and failure states are handled.
+- Relevant edge cases and failure states are handled.
 
-* All necessary modules are integrated.
+- All necessary modules are integrated.
 
-* No required behavior remains as a placeholder.
+- No required behavior remains as a placeholder.
 
 Architecture and quality
 
-* Module responsibilities and dependency direction are correct.
+- Module responsibilities and dependency direction are correct.
 
-* No circular dependencies or unintended coupling exist.
+- No circular dependencies or unintended coupling exist.
 
-* Public interfaces are deliberate.
+- Public interfaces are deliberate.
 
-* Types, validation, and error handling are correct.
+- Types, validation, and error handling are correct.
 
-* Security, readability, maintainability, and scalability requirements are satisfied.
+- Security, readability, maintainability, and scalability requirements are satisfied.
 
 Verification
 
-* Required tests exist and pass.
+- Required tests exist and pass.
 
-* Formatting, lint, type checks, and relevant builds pass.
+- Formatting, lint, type checks, and relevant builds pass.
 
-* Cross-package integration has been checked.
+- Cross-package integration has been checked.
 
-* No known relevant regression or unresolved defect remains.
+- No known relevant regression or unresolved defect remains.
 
 Documentation and tracking
 
-* Relevant documentation, schemas, and manifests are updated.
+- Relevant documentation, schemas, and manifests are updated.
 
-* Acceptance criteria are satisfied.
+- Acceptance criteria are satisfied.
 
-* Required child tasks are complete.
+- Required child tasks are complete.
 
-* Completion is supported by evidence.
+- Completion is supported by evidence.
 
 Delegation and review
 
-* Implementation was delegated.
+- Implementation was delegated.
 
-* Subagent results and actual diffs were reviewed.
+- Subagent results and actual diffs were reviewed.
 
-* Incomplete work was corrected.
+- Incomplete work was corrected.
 
-* Coordinator-level verification was performed.
+- Coordinator-level verification was performed.
 
 Git
 
-* Changes are on the correct branch.
+- Changes are on the correct branch.
 
-* User changes were preserved.
+- User changes were preserved.
 
-* Coherent changes were committed.
+- Coherent changes were committed.
 
-* Push was attempted and its result recorded.
+- Push was attempted and its result recorded.
 
 If any applicable requirement remains unsatisfied, the task must remain incomplete.
 
@@ -982,27 +982,27 @@ If any applicable requirement remains unsatisfied, the task must remain incomple
 
 Every agent must follow these principles:
 
-* Understand and inspect before acting; read sources of truth before implementation.
+- Understand and inspect before acting; read sources of truth before implementation.
 
-* Design module boundaries before writing code; keep modules cohesive, focused, and loosely coupled.
+- Design module boundaries before writing code; keep modules cohesive, focused, and loosely coupled.
 
-* Keep framework-independent logic isolated from UI and framework dependencies; use explicit contracts and deliberate public interfaces.
+- Keep framework-independent logic isolated from UI and framework dependencies; use explicit contracts and deliberate public interfaces.
 
-* Avoid unnecessary packages, dependencies, abstractions, and infrastructure.
+- Avoid unnecessary packages, dependencies, abstractions, and infrastructure.
 
-* Implement complete behavior, including relevant failure cases; never mark partially implemented work complete.
+- Implement complete behavior, including relevant failure cases; never mark partially implemented work complete.
 
-* Delegate all implementation work to dedicated subagents; never allow the coordinator to bypass its responsibilities or implement directly.
+- Delegate all implementation work to dedicated subagents; never allow the coordinator to bypass its responsibilities or implement directly.
 
-* Independently review all delegated work; fix discovered defects, including pre-existing issues.
+- Independently review all delegated work; fix discovered defects, including pre-existing issues.
 
-* Never hide failures or weaken tests; never claim verification that was not performed.
+- Never hide failures or weaken tests; never claim verification that was not performed.
 
-* Keep documentation and architecture contracts accurate; preserve user work and Git history.
+- Keep documentation and architecture contracts accurate; preserve user work and Git history.
 
-* Commit coherent changes and push after every commit; report blockers and incomplete work honestly.
+- Commit coherent changes and push after every commit; report blockers and incomplete work honestly.
 
-* Prioritize correctness, security, professionalism, maintainability, and scalability over the appearance of speed or progress.
+- Prioritize correctness, security, professionalism, maintainability, and scalability over the appearance of speed or progress.
 
 The coordinator is accountable for the final result. Subagents are accountable for their assigned implementations.
 

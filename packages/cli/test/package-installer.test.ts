@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type * as NodeFs from 'node:fs';
 import { EventEmitter } from 'node:events';
 import { PackageInstaller } from '../src/installation/package-installer.js';
 import type { PackageDependency } from '@simplify-dev/schemas';
@@ -15,7 +16,7 @@ vi.mock('node:child_process', () => ({
 }));
 
 vi.mock('node:fs', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('node:fs')>();
+  const actual = await importOriginal<typeof NodeFs>();
   return {
     ...actual,
     existsSync: mockExistsSync,

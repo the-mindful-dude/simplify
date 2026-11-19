@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type * as NodeFs from 'node:fs';
+import type * as PackageInstallerModule from '../src/installation/package-installer.js';
 import type { InstallationPlan } from '../src/installation/types.js';
 
 const mockExistsSync = vi.hoisted(() => vi.fn());
@@ -11,7 +13,7 @@ const mockRollback = vi.hoisted(() => vi.fn());
 const mockPkgInstall = vi.hoisted(() => vi.fn());
 
 vi.mock('node:fs', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('node:fs')>();
+  const actual = await importOriginal<typeof NodeFs>();
   return {
     ...actual,
     existsSync: mockExistsSync,
@@ -42,7 +44,7 @@ vi.mock('../src/installation/safe-write.js', () => ({
 }));
 
 vi.mock('../src/installation/package-installer.js', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../src/installation/package-installer.js')>();
+  const actual = await importOriginal<typeof PackageInstallerModule>();
   return {
     ...actual,
     PackageInstaller: class {

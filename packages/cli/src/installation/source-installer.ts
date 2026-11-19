@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
-import { dirname, extname, isAbsolute, join, relative, resolve } from 'node:path';
+import { basename, dirname, extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { RegistryClient } from '@simplify-dev/registry';
 import type { ProjectConfiguration } from '@simplify-dev/schemas';
 import { CONFIG_FILE_NAME, getInstallationPaths, loadConfig } from './config.js';
@@ -143,6 +143,15 @@ function unsafePath(
   details?: Readonly<Record<string, unknown>>,
 ): SourceInstallerError {
   return new SourceInstallerError('UNSAFE_PATH', message, details);
+}
+
+function isSecretEnvTarget(targetPath: string): boolean {
+  const normalized = targetPath.replace(/\\/g, '/').replace(/^\.\/+/, '');
+  const name = basename(normalized);
+  if (name === '.env.example' || name === '.env.sample' || name.endsWith('.example')) {
+    return false;
+  }
+  return name === '.env' || name.startsWith('.env.');
 }
 
 function stripJsonComments(input: string): string {
@@ -907,6 +916,12 @@ export class SourceInstaller {
       }
 
       const target = mapTargetPath(change.target, change.assetId || options.assetId, aliasContext);
+      if (isSecretEnvTarget(target)) {
+        throw unsafePath(
+          `Refusing to write secret environment file "${target}". Use .env.example for documented variables and never replace secret env values.`,
+          { target, source: change.source, assetId: change.assetId || options.assetId },
+        );
+      }
       if (seenTargets.has(target)) {
         throw new SourceInstallerError(
           'WRITE_FAILED',

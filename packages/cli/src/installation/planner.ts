@@ -8,7 +8,7 @@ import type { AssetManifest, ProjectConfiguration } from '@simplify-dev/schemas'
 import type { ProjectDetectionResult } from '../detection/types.js';
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { resolve as resolvePath, isAbsolute, sep } from 'node:path';
+import { basename, resolve as resolvePath, isAbsolute, sep } from 'node:path';
 import type { FileChange, FileConflictStatus, InstallationPlan, PlannerOptions } from './types.js';
 
 export class InstallationPlanError extends Error {
@@ -38,6 +38,15 @@ function isPathWithinRoot(targetPath: string, projectRoot: string): boolean {
   const normalizedRoot = resolvePath(projectRoot);
   const normalizedTarget = resolvePath(normalizedRoot, targetPath);
   return normalizedTarget === normalizedRoot || normalizedTarget.startsWith(normalizedRoot + sep);
+}
+
+function isSecretEnvTarget(targetPath: string): boolean {
+  const normalized = targetPath.replace(/\\/g, '/').replace(/^\.\/+/, '');
+  const name = basename(normalized);
+  if (name === '.env.example' || name === '.env.sample' || name.endsWith('.example')) {
+    return false;
+  }
+  return name === '.env' || name.startsWith('.env.');
 }
 
 async function checkFileStatus(
@@ -255,7 +264,7 @@ export async function planInstallation(
     });
   }
 
-  return {
+  const plan: InstallationPlan = {
     assetId,
     version: asset.version,
     installationMode,
@@ -267,4 +276,69 @@ export async function planInstallation(
     setupSteps: modeDefinition?.setup ?? [],
     dryRun,
   };
+
+  validateInstallationPlan(plan, projectRoot);
+  return plan;
+}
+
+/**
+ * Validates a fully resolved installation plan before it is applied.
+ * Ensures all target/source paths are safe, unique, and do not write secret env files.
+ */
+export function validateInstallationPlan(
+  plan: InstallationPlan,
+  projectRoot: string = process.cwd(),
+): void {
+  const seenTargets = new Set<string>();
+
+  for (const change of plan.fileChanges) {
+    if (!isSafeRelativePath(change.source)) {
+      throw new InstallationPlanError('UNSAFE_PATH', `Unsafe source path: "${change.source}".`, {
+        source: change.source,
+        assetId: change.assetId,
+      });
+    }
+    if (!isSafeRelativePath(change.target) || !isPathWithinRoot(change.target, projectRoot)) {
+      throw new InstallationPlanError(
+        'UNSAFE_PATH',
+        `Unsafe target path: "${change.target}". Paths must be relative and stay within the project root.`,
+        { target: change.target, assetId: change.assetId },
+      );
+    }
+    if (isSecretEnvTarget(change.target)) {
+      throw new InstallationPlanError(
+        'UNSAFE_PATH',
+        `Refusing to write secret environment file "${change.target}". Use .env.example for documented variables and never replace secret env values.`,
+        { target: change.target, assetId: change.assetId },
+      );
+    }
+    if (seenTargets.has(change.target)) {
+      throw new InstallationPlanError(
+        'DUPLICATE_FILE_TARGET',
+        `Duplicate file target "${change.target}".`,
+        { target: change.target, assetId: change.assetId },
+      );
+    }
+    seenTargets.add(change.target);
+  }
+
+  for (const configChange of plan.configurationChanges) {
+    if (
+      !isSafeRelativePath(configChange.file) ||
+      !isPathWithinRoot(configChange.file, projectRoot)
+    ) {
+      throw new InstallationPlanError(
+        'UNSAFE_PATH',
+        `Unsafe configuration target path: "${configChange.file}".`,
+        { file: configChange.file },
+      );
+    }
+    if (isSecretEnvTarget(configChange.file)) {
+      throw new InstallationPlanError(
+        'UNSAFE_PATH',
+        `Refusing to modify secret environment file "${configChange.file}" via configuration changes.`,
+        { file: configChange.file },
+      );
+    }
+  }
 }

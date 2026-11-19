@@ -1,11 +1,10 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 
 import { ProjectDetector } from '../src/detection/index.js';
 import { DetectionError } from '../src/detection/types.js';
-import type { ProjectDetectionResult } from '../src/detection/types.js';
 
 function createTempDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'simplify-detect-'));

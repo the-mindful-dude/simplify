@@ -3,11 +3,12 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   renameSync,
   unlinkSync,
   writeFileSync,
 } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { basename, dirname, resolve } from 'node:path';
 import { assertSafePath } from './path-safety.js';
 
 export type SafeWriteErrorCode =
@@ -181,4 +182,36 @@ export async function rollback(backups: BackupRecord[]): Promise<void> {
       errors,
     });
   }
+}
+
+/**
+ * Removes stale temporary write artifacts left by interrupted operations for a target path.
+ * Returns the number of artifacts removed.
+ */
+export async function cleanupStaleTempArtifacts(
+  targetPath: string,
+  cwd: string = process.cwd(),
+): Promise<number> {
+  ensureSafe(targetPath, cwd);
+  const absoluteTarget = toAbsolute(targetPath, cwd);
+  const dir = dirname(absoluteTarget);
+  const name = basename(absoluteTarget);
+  if (!existsSync(dir)) {
+    return 0;
+  }
+
+  let removed = 0;
+  for (const entry of readdirSync(dir)) {
+    if (!entry.startsWith(`${name}.tmp-`)) {
+      continue;
+    }
+    const candidate = resolve(dir, entry);
+    try {
+      unlinkSync(candidate);
+      removed += 1;
+    } catch {
+      // Best-effort cleanup; leave unpredictable artifacts for manual recovery.
+    }
+  }
+  return removed;
 }

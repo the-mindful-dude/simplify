@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type * as NodeFs from 'node:fs';
 import { planInstallation } from '../src/installation/planner.js';
 import type {
   PlannerOptions,
@@ -27,7 +28,7 @@ vi.mock('@simplify-dev/registry', () => {
 });
 
 vi.mock('node:fs', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('node:fs')>();
+  const actual = await importOriginal<typeof NodeFs>();
   return {
     ...actual,
     existsSync: vi.fn(() => false),

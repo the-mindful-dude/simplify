@@ -11,7 +11,6 @@ import {
   RepositoryMetadataService,
   verifyWebhookSignature,
 } from '../src/index.js';
-import { InMemoryRepositoryLinkStore } from '../src/memory.js';
 import type {
   GitHubAppClient,
   GitHubRepositorySummary,

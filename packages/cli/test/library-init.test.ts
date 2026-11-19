@@ -85,8 +85,9 @@ describe('library-init', () => {
   });
 
   it('defaults category to library', async () => {
-    const { category, ...rest } = optionsFor();
-    await libraryInitCommand.handler(makeContext({ options: rest }));
+    const options = optionsFor();
+    delete options.category;
+    await libraryInitCommand.handler(makeContext({ options }));
 
     const manifest = (await readManifest(join(testDir, 'simplify', 'library.json'))) as {
       readonly assets: readonly string[];

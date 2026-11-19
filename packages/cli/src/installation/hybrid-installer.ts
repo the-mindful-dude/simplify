@@ -9,6 +9,7 @@ import {
 } from './package-installer.js';
 import { RegistryClient } from '@simplify-dev/registry';
 import { assertSafePath } from './path-safety.js';
+import { validateInstallationPlan } from './planner.js';
 import {
   rollback,
   safeWrite,
@@ -215,6 +216,20 @@ export class HybridInstaller {
     const envChanges: string[] = [];
     const manualSteps = plan.setupSteps.map((step) => step.description);
     const backups: BackupRecord[] = [];
+
+    try {
+      validateInstallationPlan(plan, cwd);
+    } catch (error) {
+      throw new HybridInstallerError(
+        'UNSAFE_PATH',
+        error instanceof Error ? error.message : 'Invalid installation plan.',
+        {
+          ...(error instanceof Error && 'details' in error
+            ? ((error as { details?: Record<string, unknown> }).details ?? {})
+            : {}),
+        },
+      );
+    }
 
     const tryRollback = async (): Promise<boolean> => {
       if (backups.length === 0) {

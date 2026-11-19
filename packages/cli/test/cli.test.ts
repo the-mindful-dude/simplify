@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { existsSync, mkdirSync, writeFileSync, unlinkSync, rmdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { run, parseArgs, CliError, success, error, info, warning } from '../src/cli.js';
+import { run, parseArgs, CliError, success, error } from '../src/cli.js';
 import { RegistryClient } from '@simplify-dev/registry';
 
 vi.mock('@simplify-dev/registry', () => {

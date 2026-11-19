@@ -14,5 +14,4 @@ export type {
   PlanSummary,
 } from './types.js';
 
-export { InstallationPlanError } from './planner.js';
-export { planInstallation } from './planner.js';
+export { InstallationPlanError, planInstallation, validateInstallationPlan } from './planner.js';
