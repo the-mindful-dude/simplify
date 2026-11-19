@@ -20,6 +20,10 @@ defines the product model and non-negotiable boundaries.
    configuration, and registry index contracts.
 8. [`github-integration.md`](./github-integration.md) — GitHub App, repository
    connections, webhooks, and publishing pipeline responsibilities.
+9. [`ADR-001-next16-react19-upgrade.md`](./ADR-001-next16-react19-upgrade.md) — approved Next.js 16.4.6 / React 19 upgrade and Node floor change.
+10. [`ADR-002-dual-lockfiles.md`](./ADR-002-dual-lockfiles.md) — pnpm-primary with both lockfiles tracked.
+11. [`ADR-003-canonical-tokens-and-ui-contracts.md`](./ADR-003-canonical-tokens-and-ui-contracts.md) — canonical tokens and `packages/ui` component contracts.
+12. [`ADR-004-phase9-scope-and-tooling.md`](./ADR-004-phase9-scope-and-tooling.md) — Phase 9 scope, tooling baseline, Radix/DOM testing, and responsive API.
 
 ## Documentation Rules
 
@@ -35,11 +39,15 @@ defines the product model and non-negotiable boundaries.
 
 ## Status
 
-| Document                    | Status  |
-| --------------------------- | ------- |
-| `product-scope.md`          | Initial |
-| `github-workflow.md`        | Initial |
-| `naming-and-identifiers.md` | Initial |
-| `technical-standards.md`    | Initial |
+| Document                                       | Status   |
+| ---------------------------------------------- | -------- |
+| `product-scope.md`                             | Initial  |
+| `github-workflow.md`                           | Initial  |
+| `naming-and-identifiers.md`                    | Initial  |
+| `technical-standards.md`                       | Initial  |
+| `ADR-001-next16-react19-upgrade.md`            | Accepted |
+| `ADR-002-dual-lockfiles.md`                    | Accepted |
+| `ADR-003-canonical-tokens-and-ui-contracts.md` | Accepted |
+| `ADR-004-phase9-scope-and-tooling.md`          | Accepted |
 
 The documents are considered stable once workspace tooling enforces their rules in CI.

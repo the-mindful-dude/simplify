@@ -6,6 +6,19 @@ Tasks should be completed in order unless explicitly marked as independent. Each
 
 GitHub is the primary environment for creating, maintaining, versioning, and publishing libraries. simplify.dev provides the registry, discovery, validation, distribution, and installation infrastructure around those repositories. The platform must not require developers to maintain their library source code exclusively through the simplify.dev website.
 
+## Verified Status (2026-11-19)
+
+Work verified complete on `feat/phase-9-complete-premium-ui`:
+
+- **Toolchain** — pnpm 9.15.9 provisioned via Corepack, Node floor raised to `>=20.9`, `apps/web` upgraded to Next.js 16.4.6 / React 19: `66afa11`.
+- **Phase 9 — Installation Engine** (9.1–9.6, including safe file/configuration operations) and pre-existing lint/test/error fixes: `339086b`.
+- **Phase 11 — Design Tokens** and **Phase 12 — Core React UI Package** (canonical tokens plus the 17-component `packages/ui` library): `4271bad`.
+- **Registry browser** in `apps/web` (sections 15.1 and 15.4) and the UI CSS asset build fix: `f548e28`.
+
+All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`, and `dev` returning `200` on `GET /`. Completion is recorded at phase/section granularity below; the detailed checklists are retained as the original planning breakdown.
+
+**Phase 8 — GitHub-First Library Creation and Publishing is open and blocked:** no GitHub App credentials or secrets are available in this environment, so no Phase 8 implementation was performed. Its items below remain unchecked.
+
 ## Phase 1 — Product Scope and Technical Decisions
 
 ### 1.1 Define the Initial Product Scope
@@ -394,6 +407,8 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 
 ## Phase 8 — GitHub-First Library Creation and Publishing
 
+> Status: open and blocked — no GitHub App credentials or secrets are available in this environment. No Phase 8 work was performed; do not report this phase as complete.
+
 ### 8.1 Implement Library Creation from an Existing Repository
 
 - [ ] Allow a developer to connect an existing GitHub repository to simplify.dev.
@@ -538,7 +553,7 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 - [ ] Document common workflow failures and recovery steps.
 - [ ] Document how to disconnect or reconnect a repository.
 
-## Phase 9 — Installation Engine
+## Phase 9 — Installation Engine (completed in `339086b`)
 
 ### 9.1 Implement Installation Planning
 
@@ -653,7 +668,7 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 - [ ] Update the lock file and installation metadata.
 - [ ] Display the removal plan before applying destructive changes.
 
-## Phase 11 — Design Tokens and Theme Infrastructure
+## Phase 11 — Design Tokens and Theme Infrastructure (completed in `4271bad`)
 
 ### 11.1 Define the Token Model
 
@@ -692,7 +707,7 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 - [ ] Add contrast validation for text, surfaces, borders, and focus indicators.
 - [ ] Test theme inheritance and overrides.
 
-## Phase 12 — Core React UI Package
+## Phase 12 — Core React UI Package (completed in `4271bad`)
 
 ### 12.1 Establish the UI Package
 
@@ -882,7 +897,7 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 
 ## Phase 15 — Web Application and Registry Browser
 
-### 15.1 Establish the Web Application
+### 15.1 Establish the Web Application (completed in `f548e28`)
 
 - [ ] Create the `apps/web` application.
 - [ ] Configure the application framework, styling, and routing.
@@ -921,7 +936,7 @@ GitHub is the primary environment for creating, maintaining, versioning, and pub
 - [ ] Implement library metadata editing without making the web application the canonical source of implementation code.
 - [ ] Ensure metadata changes that belong in the repository are committed through a GitHub-backed workflow or clearly identified as registry-managed metadata.
 
-### 15.4 Implement Registry Discovery
+### 15.4 Implement Registry Discovery (completed in `f548e28`)
 
 - [ ] Implement the registry landing page.
 - [ ] Implement asset browsing by category.
