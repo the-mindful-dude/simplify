@@ -1,0 +1,50 @@
+.footer {
+  padding-block: var(--sd-spacing-10) var(--sd-spacing-12);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sd-spacing-8);
+  padding-block-start: var(--sd-spacing-8);
+}
+
+.brand {
+  letter-spacing: -0.02em;
+}
+
+.sourceBlock {
+  min-inline-size: 0;
+}
+
+.sourceList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sd-spacing-2);
+  list-style: none;
+}
+
+.code {
+  display: inline-block;
+  border: 1px solid var(--sd-color-border);
+  border-radius: var(--sd-radius-sm);
+  padding: var(--sd-spacing-1) var(--sd-spacing-2);
+  background: var(--sd-color-surface);
+  color: var(--sd-color-foreground-muted);
+  font-family: var(--sd-font-family-mono);
+  font-size: var(--sd-font-size-xs);
+}
+
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sd-spacing-1);
+  padding-block-start: var(--sd-spacing-4);
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -16,7 +16,7 @@
     "styles"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/copy-css.mjs",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
