@@ -245,16 +245,121 @@ tasks:
     evidence:
       - 'pnpm exec prettier --check on 16 paths => exit 0; full pnpm format:check => exit 0.'
     commit: fe3e2ab
+  - id: T-017
+    objective: 'ui-ux-designer audit: design/token spec approval, visual review, WCAG accessibility audit.'
+    owner: ui-ux-designer
+    dependencies: []
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-017 }
+    evidence:
+      - 'Token architecture APPROVED; surface APPROVED_WITH_CHANGES; WCAG AA NOT APPROVED — 5 P0 + 4 P1 findings with file:line.'
+      - 'P0: foregroundSubtle/borderStrong contrast, destructive button text, outline border, silent result count, Button asChild slot loss.'
+    commit: null
+  - id: T-018
+    objective: 'foundation needs-driven infrastructure assessment and proposal.'
+    owner: foundation
+    dependencies: []
+    status: done
+    lease: { owner: foundation, paths: [], task: T-018 }
+    evidence:
+      - 'Found CI/Docker/Changesets ALREADY EXIST; proposed alignment + hardening; user approved CI/Node pin + Dependabot only.'
+    commit: null
+  - id: T-019
+    objective: 'Fix P0 token/Button contrast defects and remove stale light-token stylesheet.'
+    owner: coder
+    dependencies: [T-017]
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          [
+            'packages/tokens/**',
+            'packages/ui/src/primitives/Button/**',
+            'packages/ui/styles/**',
+            'packages/ui/package.json',
+          ],
+        task: T-019,
+      }
+    evidence:
+      - 'foregroundSubtle #71717a→#90909a (min 4.71:1), borderStrong #3f3f46→#73737d (min 3.18:1); generated outputs regenerated.'
+      - 'Destructive text 2.68→6.31:1; outline border 1.90→4.22:1; Slottable preserves asChild slots; stale styles.css removed.'
+      - 'Tokens 6 tests, UI 42 tests; all gates exit 0.'
+    commit: c1e4878
+  - id: T-020
+    objective: 'Fix P0/P1 web-component accessibility defects from T-017.'
+    owner: ui-ux-designer
+    dependencies: [T-017]
+    status: done
+    lease:
+      {
+        owner: ui-ux-designer,
+        paths:
+          ['apps/web/components/{registry-browser,site-header,catalog-skeleton,asset-detail}.tsx'],
+        task: T-020,
+      }
+    evidence:
+      - 'result count role="status"; header id="top"; dangling aria-labelledby removed; h4→h3 in dialog; gates pass.'
+    commit: c1e4878
+  - id: T-021
+    objective: 'Final ui-ux-designer sign-off after remediation.'
+    owner: ui-ux-designer
+    dependencies: [T-019, T-020]
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-021 }
+    evidence:
+      - 'APPROVED_WITH_NON_BLOCKING_NOTES; all P0/P1 resolved; independent contrast recompute confirmed; no files modified.'
+      - 'Non-blocking notes: border token advisory on inputs, narrow subtle/muted separation, stale docs references, dark-only theme intentional.'
+    commit: null
+  - id: T-022
+    objective: 'Implement approved foundation scope: Node 20.19.0 pin in CI/Docker + Dependabot.'
+    owner: foundation
+    dependencies: [T-018, user approval]
+    status: done
+    lease:
+      {
+        owner: foundation,
+        paths: ['.github/workflows/ci.yml', 'Dockerfile', '.github/dependabot.yml'],
+        task: T-022,
+      }
+    evidence:
+      - 'ci.yml:34 node-version 20→20.19.0; Dockerfile:3,32 node:20→node:20.19.0-bookworm-slim; dependabot.yml added (weekly, limit 5, grouped patch/minor).'
+      - 'YAML parse + prettier pass; all 5 gates exit 0; security SECURE_WITH_MINOR; reviewer APPROVE.'
+    commit: 3506dea
+  - id: T-023
+    objective: 'Security sign-off for foundation CI/infrastructure changes.'
+    owner: security
+    dependencies: [T-022]
+    status: done
+    lease: { owner: security, paths: [], task: T-023 }
+    evidence:
+      - 'SECURE_WITH_MINOR; least privilege preserved; no secrets/permissions; Docker tag-mutability and dual-lockfile Dependabot risk documented as low; no files modified.'
+    commit: null
+  - id: T-024
+    objective: 'Independent reviewer sign-off for foundation CI/infrastructure changes.'
+    owner: reviewer
+    dependencies: [T-022]
+    status: done
+    lease: { owner: reviewer, paths: [], task: T-024 }
+    evidence:
+      - 'APPROVE; all 3 changes match user decisions; YAML valid; Node pin consistent; 5 CI gates preserved; no weakening; no files modified.'
+    commit: null
 final_verification:
   - 'pnpm format:check => exit 0'
   - 'pnpm lint => exit 0 (19/19 tasks)'
   - 'pnpm typecheck => exit 0 (19/19 tasks)'
-  - 'pnpm test => exit 0 (19/19 tasks; root 9, github 17, registry 74, tooling 30, tokens 3, ui 40, cli 205)'
+  - 'pnpm test => exit 0 (19/19 tasks; root 9, github 17, registry 74, tooling 30, tokens 6, ui 42, cli 205)'
   - 'pnpm build => exit 0 (11/11 tasks)'
   - 'pnpm dev (timeout) => GET http://localhost:3000/ => 200, 296KB HTML, no module-not-found'
+  - 'ui-ux-designer final sign-off => APPROVED_WITH_NON_BLOCKING_NOTES'
+  - 'foundation CI changes: security SECURE_WITH_MINOR, reviewer APPROVE'
 open_risks:
   - 'Phase 8 (GitHub App integration) intentionally skipped — no credentials/secrets; TODO.md documents blocker.'
   - 'ADR-003/public types re-exported from internal/responsive (type-only) — reviewer minor, non-blocking.'
   - 'UI build has no clean step for stale JS/.d.ts (copy-css handles stale CSS only) — reviewer minor, non-blocking.'
   - 'Security low residuals: lexical symlink containment, hybrid-installer default overwrite (CLI path protected), npm lock root-only.'
   - 'Transitive dependency advisory audits not run (read-only security review).'
+  - 'UI/UX non-blocking notes: border token 1.31:1 on input/secondary-button boundaries (label provides identification), narrow subtle/muted tone separation, stale stylesheet references in TODO.md:719 and packages/ui/README.md:11, dark-only theme intentional.'
+  - 'Docker base image pinned by tag not digest (tag mutability low risk); Dependabot cannot exclude secondary package-lock.json (reviewer reconciliation per ADR-002 required).'
+  - 'Release automation deferred by user; no publish workflow or registry/credentials decisions.'
+  - 'Untracked .idea/ IDE directory preserved and intentionally not committed.'
