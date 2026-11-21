@@ -37,3 +37,59 @@ describe('canonical token source', () => {
     });
   });
 });
+
+/** WCAG relative luminance for a canonical `#rrggbb` token value. */
+function relativeLuminance(hex: string): number {
+  const channels = [0, 2, 4].map((offset) => {
+    const channel = Number.parseInt(hex.slice(offset + 1, offset + 3), 16) / 255;
+    return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+/** WCAG contrast ratio between two canonical token values. */
+function contrastRatio(foreground: string, background: string): number {
+  const lighter = Math.max(relativeLuminance(foreground), relativeLuminance(background));
+  const darker = Math.min(relativeLuminance(foreground), relativeLuminance(background));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+const darkSurfaces = [
+  'background',
+  'backgroundSubtle',
+  'surface',
+  'surfaceRaised',
+  'surfaceHover',
+  'surfaceOverlay',
+  'accentMuted',
+  'dangerSurface',
+  'successSurface',
+  'warningSurface',
+  'infoSurface',
+  'overlay',
+] as const;
+
+describe('semantic token contrast', () => {
+  it('keeps subtle text at WCAG AA normal-text contrast on every dark surface', () => {
+    for (const surface of darkSurfaces) {
+      const ratio = contrastRatio(source.color.foregroundSubtle, source.color[surface]);
+      expect(ratio).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('keeps strong borders at WCAG 1.4.11 non-text contrast on every dark surface', () => {
+    for (const surface of darkSurfaces) {
+      const ratio = contrastRatio(source.color.borderStrong, source.color[surface]);
+      expect(ratio).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('keeps both destructive button states readable', () => {
+    expect(
+      contrastRatio(source.color.foregroundOnAccent, source.color.danger),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrastRatio(source.color.foreground, source.color.dangerSurface),
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+});

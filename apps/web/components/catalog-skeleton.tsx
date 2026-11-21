@@ -5,7 +5,7 @@ import styles from '../styles/browser.module.css';
 /** Streaming fallback that reserves the same shape as the real catalog grid. */
 export function CatalogSkeleton() {
   return (
-    <section className={styles.section} aria-labelledby="browse-title" aria-busy="true">
+    <section className={styles.section} aria-busy="true">
       <Container size="lg">
         <div role="status" aria-label="Loading registry assets">
           <Stack gap="6">

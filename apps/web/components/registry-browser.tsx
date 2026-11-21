@@ -132,7 +132,7 @@ export function RegistryBrowser({ snapshot }: RegistryBrowserProps) {
                 source.
               </Text>
             </Stack>
-            <div className={styles.resultCount}>
+            <div className={styles.resultCount} role="status">
               <Badge variant={results.length === 0 ? 'warning' : 'success'} size="md" dot>
                 {results.length} shown
               </Badge>

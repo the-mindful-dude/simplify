@@ -90,12 +90,13 @@
 
 .destructive {
   background: var(--sd-color-danger);
-  color: var(--sd-color-foreground);
+  color: var(--sd-color-foreground-on-accent);
 }
 
 .destructive:hover:not(:disabled) {
   background: var(--sd-color-danger-surface);
   border-color: var(--sd-color-danger);
+  color: var(--sd-color-foreground);
 }
 
 .sm {

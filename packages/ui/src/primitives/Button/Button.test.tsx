@@ -69,6 +69,37 @@ describe('Button', () => {
     expect(link).toHaveAttribute('data-variant', 'ghost');
   });
 
+  it('keeps composed leading and trailing slots inside asChild', () => {
+    render(
+      <Button
+        asChild
+        leading={<span data-testid="leading-arrow">arrow</span>}
+        trailing={<span data-testid="trailing-chevron">chevron</span>}
+      >
+        <a href="/docs">Docs</a>
+      </Button>,
+    );
+
+    const link = screen.getByRole('link', { name: 'Docs' });
+    expect(link).toHaveAttribute('href', '/docs');
+    expect(link).toContainElement(screen.getByTestId('leading-arrow'));
+    expect(link).toContainElement(screen.getByTestId('trailing-chevron'));
+    expect(link).toHaveTextContent('Docs');
+  });
+
+  it('renders the loading indicator inside asChild', () => {
+    render(
+      <Button asChild loading loadingLabel="Saving">
+        <a href="/docs">Docs</a>
+      </Button>,
+    );
+
+    const link = screen.getByRole('link');
+    expect(link).toContainElement(screen.getByRole('status', { name: 'Saving' }));
+    expect(link).toHaveAttribute('aria-busy', 'true');
+    expect(link).toHaveTextContent('Docs');
+  });
+
   it('exposes responsive visibility flags as data attributes', () => {
     render(
       <Button hiddenBelow="md" hiddenAbove="2xl" collapsedBelow="sm">

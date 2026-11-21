@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { Spinner } from '../Spinner/Spinner';
@@ -66,7 +66,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     ...visibilityAttributes({ hiddenBelow, hiddenAbove, collapsedBelow }),
   };
 
-  const content = (
+  /** Compose the visual slots around the label supplied by the rendered element. */
+  const renderContent = (label: ReactNode) => (
     <>
       {loading ? (
         <Spinner size="sm" label={loadingLabel} />
@@ -75,7 +76,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           {leading}
         </span>
       ) : null}
-      <span className={styles.label}>{children}</span>
+      <span className={styles.label}>{label}</span>
       {!loading && trailing ? (
         <span className={styles.slot} aria-hidden="true">
           {trailing}
@@ -94,7 +95,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         {...attributes}
         {...rest}
       >
-        {children}
+        <Slottable child={children}>{renderContent}</Slottable>
       </Slot>
     );
   }
@@ -109,7 +110,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...attributes}
       {...rest}
     >
-      {content}
+      {renderContent(children)}
     </button>
   );
 });

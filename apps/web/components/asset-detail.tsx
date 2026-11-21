@@ -124,7 +124,7 @@ export function AssetDetail({ asset, open, onOpenChange }: AssetDetailProps) {
                 <>
                   <Separator />
                   <Stack gap="3">
-                    <Text as="h4" variant="label" tone="subtle">
+                    <Text as="h3" variant="label" tone="subtle">
                       Implementations
                     </Text>
                     <ul className={styles.plainList}>
@@ -155,7 +155,7 @@ export function AssetDetail({ asset, open, onOpenChange }: AssetDetailProps) {
                 <>
                   <Separator />
                   <Stack gap="3">
-                    <Text as="h4" variant="label" tone="subtle">
+                    <Text as="h3" variant="label" tone="subtle">
                       Documentation examples
                     </Text>
                     <Stack direction="row" gap="2" wrap>
@@ -175,7 +175,7 @@ export function AssetDetail({ asset, open, onOpenChange }: AssetDetailProps) {
             <TabsContent value="dependencies" className={styles.tabPanel}>
               <Stack gap="5">
                 <Stack gap="3">
-                  <Text as="h4" variant="label" tone="subtle">
+                  <Text as="h3" variant="label" tone="subtle">
                     Registry dependencies
                   </Text>
                   {manifest.registryDependencies.length > 0 ? (
@@ -213,7 +213,7 @@ export function AssetDetail({ asset, open, onOpenChange }: AssetDetailProps) {
                 <Separator />
 
                 <Stack gap="3">
-                  <Text as="h4" variant="label" tone="subtle">
+                  <Text as="h3" variant="label" tone="subtle">
                     Package dependencies
                   </Text>
                   {manifest.packageDependencies.length > 0 ? (

@@ -11,7 +11,7 @@ interface SiteHeaderProps {
 /** Sticky product header. Server-rendered; navigation targets real page sections. */
 export function SiteHeader({ assetCount, libraryCount, schemaVersion }: SiteHeaderProps) {
   return (
-    <header className={styles.header}>
+    <header className={styles.header} id="top">
       <Container size="full" className={styles.inner}>
         <a className={styles.brand} href="#top" aria-label="simplify.dev, back to top">
           <span className={styles.mark} aria-hidden="true" />
