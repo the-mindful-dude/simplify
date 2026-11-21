@@ -1,7 +1,7 @@
 version: 1
 branch: feat/phase-9-complete-premium-ui
 base_head: 558db78740ce3ef1ba2d1c4d0bf750af0f03414d
-final_head: fe3e2ab
+final_head: a466446
 objective: 'Complete Phase 9; fix npm run dev by provisioning pnpm and reinstalling; upgrade apps/web to latest stable Next.js 16.4.6 + React 19; deliver a production-grade dark monochrome registry browser; build a reusable token-driven component library in packages/ui with per-component READMEs; fix every pre-existing error; track both lockfiles with ADRs.'
 user_decisions:
   - 'Next phase = complete Phase 9 (branch continuity); Phase 8 skipped (no GitHub credentials).'
@@ -343,6 +343,17 @@ tasks:
     lease: { owner: reviewer, paths: [], task: T-024 }
     evidence:
       - 'APPROVE; all 3 changes match user decisions; YAML valid; Node pin consistent; 5 CI gates preserved; no weakening; no files modified.'
+    commit: null
+  - id: T-025
+    objective: 'Mark only evidence-verified completed items in root TODO.md as complete.'
+    owner: documenter
+    dependencies: ['T-013..T-024']
+    status: done
+    lease: { owner: documenter, paths: ['TODO.md'], task: T-025 }
+    evidence:
+      - '113 items marked complete (unchecked 666→553, checked 288→401); Phase 8 remains entirely unchecked.'
+      - 'Verified sections: 9.1-9.5, portions of 9.6/11/12/15; all unverified/future/publishing items left unchecked.'
+      - 'Verified Status note updated with c1e4878/3506dea/a466446 + sign-offs; prettier exit 0.'
     commit: null
 final_verification:
   - 'pnpm format:check => exit 0'

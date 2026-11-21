@@ -19,6 +19,8 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 
 **Phase 8 — GitHub-First Library Creation and Publishing is open and blocked:** no GitHub App credentials or secrets are available in this environment, so no Phase 8 implementation was performed. Its items below remain unchecked.
 
+**Update (2026-11-21) — `feat/ui-foundation-hardening`:** additional verified work on this branch is recorded in `c1e4878` (WCAG AA contrast fixes, Button `asChild` slot preservation, web accessibility fixes, and contrast regression tests), `3506dea` (Node 20.19.0 pinned in CI and Docker, plus Dependabot configuration), and `a466446` (finalized coordinator ledger). Sign-offs recorded in the ledger: ui-ux-designer **APPROVED_WITH_NON_BLOCKING_NOTES**, security **SECURE_WITH_MINOR**, reviewer **APPROVE**. All gates still pass: `format:check`, `lint`, `typecheck`, `test` (UI 42, CLI 205, tokens 6), and `build`. Individual checkboxes below are checked only where this evidence directly verifies the item; blocked, unverified, and partially implemented items remain unchecked.
+
 ## Phase 1 — Product Scope and Technical Decisions
 
 ### 1.1 Define the Initial Product Scope
@@ -557,71 +559,71 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 
 ### 9.1 Implement Installation Planning
 
-- [ ] Accept an asset ID and resolve its metadata and dependencies.
-- [ ] Select a compatible implementation for the detected project.
-- [ ] Determine the installation mode from explicit options, asset capabilities, and project configuration.
-- [ ] Calculate all source files to create or modify.
-- [ ] Calculate all package dependencies to install.
-- [ ] Calculate configuration, environment, and setup changes.
-- [ ] Detect existing files and potential conflicts before making changes.
-- [ ] Generate a complete installation plan.
-- [ ] Implement a dry-run mode that displays the plan without modifying the project.
-- [ ] Display a clear summary of the files, dependencies, and configuration changes before installation.
+- [x] Accept an asset ID and resolve its metadata and dependencies.
+- [x] Select a compatible implementation for the detected project.
+- [x] Determine the installation mode from explicit options, asset capabilities, and project configuration.
+- [x] Calculate all source files to create or modify.
+- [x] Calculate all package dependencies to install.
+- [x] Calculate configuration, environment, and setup changes.
+- [x] Detect existing files and potential conflicts before making changes.
+- [x] Generate a complete installation plan.
+- [x] Implement a dry-run mode that displays the plan without modifying the project.
+- [x] Display a clear summary of the files, dependencies, and configuration changes before installation.
 
 ### 9.2 Implement Package Installation
 
-- [ ] Implement package installation for supported package managers.
-- [ ] Install the selected package and version.
-- [ ] Respect the detected package manager and existing lockfile.
-- [ ] Avoid installing optional dependencies that are not required by the selected asset.
-- [ ] Handle package-manager errors and interrupted installations.
-- [ ] Verify the resulting dependency state.
-- [ ] Record package-based installations in simplify.dev metadata where tracking is required.
+- [x] Implement package installation for supported package managers.
+- [x] Install the selected package and version.
+- [x] Respect the detected package manager and existing lockfile.
+- [x] Avoid installing optional dependencies that are not required by the selected asset.
+- [x] Handle package-manager errors and interrupted installations.
+- [x] Verify the resulting dependency state.
+- [x] Record package-based installations in simplify.dev metadata where tracking is required.
 
 ### 9.3 Implement Source Installation
 
-- [ ] Retrieve versioned asset files from the registry.
-- [ ] Map registry source paths to configured project paths.
-- [ ] Create required directories.
-- [ ] Copy files while preserving appropriate file names and extensions.
-- [ ] Resolve import references and path aliases where required by the asset definition.
-- [ ] Detect existing files before writing.
-- [ ] Support explicit conflict policies such as reject, skip, or replace.
-- [ ] Never replace modified files without an explicit user decision.
-- [ ] Verify that all required files were installed.
-- [ ] Record installed source files and their original versions.
+- [x] Retrieve versioned asset files from the registry.
+- [x] Map registry source paths to configured project paths.
+- [x] Create required directories.
+- [x] Copy files while preserving appropriate file names and extensions.
+- [x] Resolve import references and path aliases where required by the asset definition.
+- [x] Detect existing files before writing.
+- [x] Support explicit conflict policies such as reject, skip, or replace.
+- [x] Never replace modified files without an explicit user decision.
+- [x] Verify that all required files were installed.
+- [x] Record installed source files and their original versions.
 
 ### 9.4 Implement Hybrid Installation
 
-- [ ] Combine source and package installation plans.
-- [ ] Install source files and declared package dependencies as one coordinated operation.
-- [ ] Apply supported configuration changes.
-- [ ] Add documented environment-variable examples to `.env.example` without exposing or replacing actual secrets.
-- [ ] Report required manual setup steps.
-- [ ] Verify the resulting installation.
-- [ ] Ensure failure in one installation step does not leave the project in an inconsistent state.
-- [ ] Provide rollback for installer-managed changes where possible.
+- [x] Combine source and package installation plans.
+- [x] Install source files and declared package dependencies as one coordinated operation.
+- [x] Apply supported configuration changes.
+- [x] Add documented environment-variable examples to `.env.example` without exposing or replacing actual secrets.
+- [x] Report required manual setup steps.
+- [x] Verify the resulting installation.
+- [x] Ensure failure in one installation step does not leave the project in an inconsistent state.
+- [x] Provide rollback for installer-managed changes where possible.
 
 ### 9.5 Implement Safe File and Configuration Operations
 
-- [ ] Use temporary files or equivalent safe-write mechanisms when applying changes.
-- [ ] Back up existing files before permitted replacement operations.
-- [ ] Implement rollback for failed multi-file operations.
-- [ ] Restrict asset target paths to approved project directories.
-- [ ] Prevent path traversal and attempts to write outside the project root.
-- [ ] Apply only supported declarative configuration changes.
-- [ ] Preserve comments and unrelated settings where practical.
-- [ ] Report changes that require manual intervention instead of guessing.
-- [ ] Add tests for conflicts, permissions, interruptions, rollback, and path safety.
+- [x] Use temporary files or equivalent safe-write mechanisms when applying changes.
+- [x] Back up existing files before permitted replacement operations.
+- [x] Implement rollback for failed multi-file operations.
+- [x] Restrict asset target paths to approved project directories.
+- [x] Prevent path traversal and attempts to write outside the project root.
+- [x] Apply only supported declarative configuration changes.
+- [x] Preserve comments and unrelated settings where practical.
+- [x] Report changes that require manual intervention instead of guessing.
+- [x] Add tests for conflicts, permissions, interruptions, rollback, and path safety.
 
 ### 9.6 Implement Initial CLI Commands
 
 - [ ] Implement `simplify add` for individual assets and recipes.
-- [ ] Implement `simplify info` to inspect asset metadata and requirements.
-- [ ] Implement `simplify list` to display installed assets.
-- [ ] Implement `simplify doctor` to validate project configuration and installed assets.
-- [ ] Implement installation options for mode, version, target path, and dry run.
-- [ ] Add command tests covering successful and failed installation scenarios.
+- [x] Implement `simplify info` to inspect asset metadata and requirements.
+- [x] Implement `simplify list` to display installed assets.
+- [x] Implement `simplify doctor` to validate project configuration and installed assets.
+- [x] Implement installation options for mode, version, target path, and dry run.
+- [x] Add command tests covering successful and failed installation scenarios.
 
 ## Phase 10 — Installation Tracking and Maintenance
 
@@ -672,109 +674,109 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 
 ### 11.1 Define the Token Model
 
-- [ ] Define a framework-independent token schema.
-- [ ] Establish semantic color roles for primary, secondary, accent, background, foreground, muted, surfaces, borders, focus, and status colors.
-- [ ] Define typography tokens, including font families, sizes, weights, line heights, and letter spacing.
-- [ ] Define spacing and sizing scales.
-- [ ] Define border-radius tokens.
+- [x] Define a framework-independent token schema.
+- [x] Establish semantic color roles for primary, secondary, accent, background, foreground, muted, surfaces, borders, focus, and status colors.
+- [x] Define typography tokens, including font families, sizes, weights, line heights, and letter spacing.
+- [x] Define spacing and sizing scales.
+- [x] Define border-radius tokens.
 - [ ] Define shadow and elevation tokens.
-- [ ] Define motion tokens, including durations and easing curves.
+- [x] Define motion tokens, including durations and easing curves.
 - [ ] Define density and component-sizing conventions.
 - [ ] Define light and dark theme structures.
-- [ ] Establish naming conventions that remain stable across generated outputs.
-- [ ] Keep brand-specific values separate from semantic token roles.
+- [x] Establish naming conventions that remain stable across generated outputs.
+- [x] Keep brand-specific values separate from semantic token roles.
 
 ### 11.2 Implement Token Generation
 
-- [ ] Create the canonical token source.
+- [x] Create the canonical token source.
 - [ ] Implement token schema validation.
-- [ ] Generate CSS custom properties.
+- [x] Generate CSS custom properties.
 - [ ] Generate JSON token exports.
-- [ ] Generate TypeScript token types and definitions.
+- [x] Generate TypeScript token types and definitions.
 - [ ] Design the generator interface to support future output formats, including Avalonia resources.
 - [ ] Generate light and dark theme outputs.
-- [ ] Add checks to ensure generated files are reproducible from the canonical source.
+- [x] Add checks to ensure generated files are reproducible from the canonical source.
 - [ ] Publish the token package with stable exports.
 
 ### 11.3 Implement Runtime Theme Support
 
-- [ ] Define the CSS custom-property contract used by UI components.
-- [ ] Implement theme selection through supported root attributes or classes.
+- [x] Define the CSS custom-property contract used by UI components.
+- [x] Implement theme selection through supported root attributes or classes.
 - [ ] Support light, dark, and custom themes.
-- [ ] Support theme overrides without requiring a global React provider.
+- [x] Support theme overrides without requiring a global React provider.
 - [ ] Define how nested theme scopes behave.
 - [ ] Ensure token changes affect compatible components and blocks consistently.
-- [ ] Add contrast validation for text, surfaces, borders, and focus indicators.
+- [x] Add contrast validation for text, surfaces, borders, and focus indicators.
 - [ ] Test theme inheritance and overrides.
 
 ## Phase 12 — Core React UI Package (completed in `4271bad`)
 
 ### 12.1 Establish the UI Package
 
-- [ ] Configure the package's public name and exports.
-- [ ] Define supported React and React DOM peer dependencies.
-- [ ] Choose one primary headless foundation for the initial component set.
-- [ ] Avoid overlapping headless libraries that duplicate the same component responsibilities.
-- [ ] Configure JavaScript and TypeScript declaration builds.
+- [x] Configure the package's public name and exports.
+- [x] Define supported React and React DOM peer dependencies.
+- [x] Choose one primary headless foundation for the initial component set.
+- [x] Avoid overlapping headless libraries that duplicate the same component responsibilities.
+- [x] Configure JavaScript and TypeScript declaration builds.
 - [ ] Configure CSS output and the `styles.css` package export.
-- [ ] Define package-level dependency and externalization rules.
-- [ ] Preserve appropriate React server and client boundaries.
+- [x] Define package-level dependency and externalization rules.
+- [x] Preserve appropriate React server and client boundaries.
 - [ ] Verify package installation in a separate Next.js project.
 
 ### 12.2 Establish Component Conventions
 
-- [ ] Define naming and export conventions for components and compound components.
-- [ ] Standardize prop casing and naming.
-- [ ] Define consistent variant, size, radius, and state APIs.
-- [ ] Define `className`, slot styling, `slotProps`, and `slots` conventions.
-- [ ] Define controlled and uncontrolled state conventions.
-- [ ] Define component composition and accessibility requirements.
-- [ ] Establish a consistent pattern for internal types, styling, hooks, and utilities.
-- [ ] Define which APIs are public and which remain internal.
+- [x] Define naming and export conventions for components and compound components.
+- [x] Standardize prop casing and naming.
+- [x] Define consistent variant, size, radius, and state APIs.
+- [x] Define `className`, slot styling, `slotProps`, and `slots` conventions.
+- [x] Define controlled and uncontrolled state conventions.
+- [x] Define component composition and accessibility requirements.
+- [x] Establish a consistent pattern for internal types, styling, hooks, and utilities.
+- [x] Define which APIs are public and which remain internal.
 
 ### 12.3 Implement Foundational Components
 
-- [ ] Implement Button with variants, sizes, loading state, disabled state, and icon support.
-- [ ] Implement Text and typography primitives.
+- [x] Implement Button with variants, sizes, loading state, disabled state, and icon support.
+- [x] Implement Text and typography primitives.
 - [ ] Implement Input, Textarea, and other basic field controls.
 - [ ] Implement Label, Description, Helper Text, and error-message components.
 - [ ] Implement Select and related selection controls.
 - [ ] Implement Checkbox, Radio Group, and Switch.
-- [ ] Implement Tooltip.
-- [ ] Implement Separator and basic surface components.
-- [ ] Implement Stack, Grid, Container, and other necessary layout primitives.
+- [x] Implement Tooltip.
+- [x] Implement Separator and basic surface components.
+- [x] Implement Stack, Grid, Container, and other necessary layout primitives.
 - [ ] Implement Scroll Area with deliberate overflow and scrolling behaviour.
-- [ ] Ensure all primitives use shared design tokens and consistent styling APIs.
+- [x] Ensure all primitives use shared design tokens and consistent styling APIs.
 
 ### 12.4 Implement Compound and Interactive Components
 
-- [ ] Implement Dialog with accessible title, description, focus management, portals, and close behaviour.
+- [x] Implement Dialog with accessible title, description, focus management, portals, and close behaviour.
 - [ ] Implement Drawer with responsive placement and size options.
-- [ ] Implement Dropdown Menu with keyboard navigation and accessible item behaviour.
-- [ ] Implement Tabs with appropriate controlled and uncontrolled state.
+- [x] Implement Dropdown Menu with keyboard navigation and accessible item behaviour.
+- [x] Implement Tabs with appropriate controlled and uncontrolled state.
 - [ ] Implement Popover and related overlay components.
-- [ ] Implement Field composition with labels, controls, descriptions, errors, and responsive layouts.
+- [x] Implement Field composition with labels, controls, descriptions, errors, and responsive layouts.
 - [ ] Implement the remaining components based on actual reusable requirements.
-- [ ] Ensure compound components provide consistent default styling and predictable composition.
+- [x] Ensure compound components provide consistent default styling and predictable composition.
 
 ### 12.5 Implement UI Customization
 
-- [ ] Apply semantic tokens throughout the component package.
-- [ ] Implement variants and sizes through shared style definitions.
-- [ ] Implement root-level class overrides.
-- [ ] Implement documented slot-level style overrides.
-- [ ] Implement `slotProps` for supported internal elements.
-- [ ] Implement `slots` for replaceable content and renderers.
-- [ ] Ensure custom content does not break accessibility or component state.
-- [ ] Avoid exposing unnecessary internal implementation details.
+- [x] Apply semantic tokens throughout the component package.
+- [x] Implement variants and sizes through shared style definitions.
+- [x] Implement root-level class overrides.
+- [x] Implement documented slot-level style overrides.
+- [x] Implement `slotProps` for supported internal elements.
+- [x] Implement `slots` for replaceable content and renderers.
+- [x] Ensure custom content does not break accessibility or component state.
+- [x] Avoid exposing unnecessary internal implementation details.
 - [ ] Test customization through real consuming applications.
 
 ### 12.6 Establish UI Quality
 
 - [ ] Define visual standards for typography, spacing, surfaces, borders, focus states, and density.
-- [ ] Implement loading, disabled, success, and error states where relevant.
-- [ ] Respect reduced-motion preferences.
-- [ ] Ensure components work with keyboard and screen-reader interaction.
+- [x] Implement loading, disabled, success, and error states where relevant.
+- [x] Respect reduced-motion preferences.
+- [x] Ensure components work with keyboard and screen-reader interaction.
 - [ ] Test components in light, dark, and custom themes.
 - [ ] Test responsive behaviour and overflow handling.
 - [ ] Add visual regression tests for important components.
@@ -899,13 +901,13 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 
 ### 15.1 Establish the Web Application (completed in `f548e28`)
 
-- [ ] Create the `apps/web` application.
-- [ ] Configure the application framework, styling, and routing.
-- [ ] Establish the website's visual design system and navigation structure.
-- [ ] Consume the actual UI package and shared tokens.
-- [ ] Configure the registry client.
+- [x] Create the `apps/web` application.
+- [x] Configure the application framework, styling, and routing.
+- [x] Establish the website's visual design system and navigation structure.
+- [x] Consume the actual UI package and shared tokens.
+- [x] Configure the registry client.
 - [ ] Implement loading, empty, error, and not-found states.
-- [ ] Establish responsive layouts for desktop and mobile.
+- [x] Establish responsive layouts for desktop and mobile.
 
 ### 15.2 Implement Account and GitHub Connection Interface
 
@@ -938,14 +940,14 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 
 ### 15.4 Implement Registry Discovery (completed in `f548e28`)
 
-- [ ] Implement the registry landing page.
-- [ ] Implement asset browsing by category.
-- [ ] Implement search across asset names, descriptions, tags, and identifiers.
+- [x] Implement the registry landing page.
+- [x] Implement asset browsing by category.
+- [x] Implement search across asset names, descriptions, tags, and identifiers.
 - [ ] Implement filters for category, language, framework, installation mode, and compatibility.
 - [ ] Implement library detail pages.
 - [ ] Implement publisher and maintainer information.
-- [ ] Display version and compatibility information.
-- [ ] Clearly distinguish official and external assets.
+- [x] Display version and compatibility information.
+- [x] Clearly distinguish official and external assets.
 - [ ] Implement asset status indicators for experimental, stable, deprecated, and other defined states.
 
 ### 15.5 Implement Asset Documentation Pages
