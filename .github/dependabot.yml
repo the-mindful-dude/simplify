@@ -1,0 +1,22 @@
+# Dependabot version updates for the pnpm-primary workspace.
+# pnpm-lock.yaml is authoritative per ADR-002
+# (docs/architecture/ADR-002-dual-lockfiles.md); package-lock.json is tracked only
+# as a secondary npm-compatibility artifact and is not a source of truth.
+# Dependabot's npm ecosystem supports pnpm (v7-v12) and exposes no key for
+# selecting or ignoring an individual lockfile, so reviewers must still confirm
+# generated PRs keep pnpm-lock.yaml authoritative and reconcile package-lock.json
+# per ADR-002 before merge. Config only: no auto-merge and no extra permissions.
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    groups:
+      patch-and-minor:
+        patterns:
+          - '*'
+        update-types:
+          - 'patch'
+          - 'minor'

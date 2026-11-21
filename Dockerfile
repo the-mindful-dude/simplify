@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:20-bookworm-slim AS base
+FROM node:20.19.0-bookworm-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -29,7 +29,7 @@ COPY --from=pruner /app/out/full/ ./
 EXPOSE 3000
 CMD ["pnpm", "--filter", "@simplify-dev/web", "dev"]
 
-FROM node:20-bookworm-slim AS runner
+FROM node:20.19.0-bookworm-slim AS runner
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000

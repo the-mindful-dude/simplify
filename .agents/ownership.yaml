@@ -1,3 +1,12 @@
 version: 1
-# Path ownership map. Populated with explicit owners before any mutating task is dispatched.
-owners: []
+# Path ownership map. Every mutating task has exactly one owner per leased path.
+owners:
+  - path: .github/workflows/ci.yml
+    owner: foundation
+    task: T-022
+  - path: Dockerfile
+    owner: foundation
+    task: T-022
+  - path: .github/dependabot.yml
+    owner: foundation
+    task: T-022
