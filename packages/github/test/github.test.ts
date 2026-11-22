@@ -337,7 +337,7 @@ describe('webhook handler', () => {
     const payload = JSON.stringify({ ref: 'refs/heads/main' });
     await expect(
       handle(payload, headers('push', 'delivery-bad-sig-1', 'sha256=invalid')),
-    ).rejects.toHaveProperty('message', 'signature_invalid');
+    ).rejects.toMatchObject({ name: 'GitHubIntegrationError', code: 'signature_invalid' });
   });
 
   it('rejects missing event headers', async () => {
@@ -347,12 +347,12 @@ describe('webhook handler', () => {
         'x-github-delivery': 'delivery-missing-1',
         'x-hub-signature-256': signatureFor(payload),
       } as Record<string, string | string[] | undefined>),
-    ).rejects.toHaveProperty('message', 'payload_invalid');
+    ).rejects.toMatchObject({ name: 'GitHubIntegrationError', code: 'payload_invalid' });
   });
 
   it('rejects invalid JSON payloads', async () => {
     await expect(
       handle('not-json', headers('push', 'delivery-bad-json-1', signatureFor('not-json'))),
-    ).rejects.toHaveProperty('message', 'payload_invalid');
+    ).rejects.toMatchObject({ name: 'GitHubIntegrationError', code: 'payload_invalid' });
   });
 });

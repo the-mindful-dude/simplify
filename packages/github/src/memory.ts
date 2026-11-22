@@ -32,15 +32,22 @@ export class InMemoryRepositoryLinkStore implements RepositoryLinkStore {
 export class InMemoryWebhookDeliveryStore implements WebhookDeliveryStore {
   private readonly deliveries = new Map<string, WebhookDeliveryRecord>();
 
-  async has(deliveryId: string): Promise<boolean> {
-    return this.deliveries.has(deliveryId);
-  }
-
   async record(record: WebhookDeliveryRecord): Promise<void> {
     this.deliveries.set(record.deliveryId, record);
   }
 
+  /** Test helper for inspecting a finalized delivery; not part of the port. */
   async get(deliveryId: string): Promise<WebhookDeliveryRecord | undefined> {
     return this.deliveries.get(deliveryId);
+  }
+
+  async claim(record: WebhookDeliveryRecord): Promise<boolean> {
+    // No await between the check and the write: within a single event-loop
+    // turn no other caller can interleave, so only one claimant can win.
+    if (this.deliveries.has(record.deliveryId)) {
+      return false;
+    }
+    this.deliveries.set(record.deliveryId, record);
+    return true;
   }
 }

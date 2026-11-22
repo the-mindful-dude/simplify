@@ -76,7 +76,40 @@ export interface WebhookDeliveryRecord {
 }
 
 export interface WebhookDeliveryStore {
-  has(deliveryId: string): Promise<boolean>;
   record(record: WebhookDeliveryRecord): Promise<void>;
-  get(deliveryId: string): Promise<WebhookDeliveryRecord | undefined>;
+  /**
+   * Atomically reserves a delivery id.
+   *
+   * Returns `true` when this caller owns the delivery and `false` when it was
+   * already claimed. Implementations must not interleave an await between the
+   * membership check and the reservation, or concurrent duplicates can both
+   * be processed.
+   */
+  claim(record: WebhookDeliveryRecord): Promise<boolean>;
+}
+
+/** Normalized repository lifecycle data passed to an injected event port. */
+export interface RepositoryLifecycleEvent {
+  readonly action: string;
+  readonly repositoryId?: string;
+  readonly fullName?: string;
+  readonly installationId?: number;
+}
+
+/** Normalized installation lifecycle data passed to an injected event port. */
+export interface InstallationLifecycleEvent {
+  readonly event: 'installation' | 'installation_repositories';
+  readonly action: string;
+  readonly installationId?: number;
+  readonly account?: string;
+  readonly repositoryIds: readonly string[];
+}
+
+/**
+ * Optional sinks for webhook lifecycle events. Implementations own any
+ * side effects; the webhook handler performs no GitHub API calls of its own.
+ */
+export interface WebhookEventPort {
+  onRepositoryLifecycle?(event: RepositoryLifecycleEvent): Promise<void> | void;
+  onInstallationLifecycle?(event: InstallationLifecycleEvent): Promise<void> | void;
 }

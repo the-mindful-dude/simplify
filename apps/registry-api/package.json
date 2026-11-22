@@ -19,8 +19,8 @@
     "lint": "eslint src",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
-    "start": "node dist/server.js",
-    "dev": "pnpm run build && node dist/server.js",
+    "start": "node --env-file=../../.env.local ../../scripts/dev/start-registry-api.mjs",
+    "dev": "pnpm run build && node --env-file=../../.env.local ../../scripts/dev/start-registry-api.mjs",
     "clean": "rm -rf dist"
   },
   "dependencies": {

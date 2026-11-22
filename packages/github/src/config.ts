@@ -1,4 +1,6 @@
 import { GitHubIntegrationError } from './errors.js';
+import { loadWebhookReceiverConfig } from './webhooks/webhook-config.js';
+import type { WebhookReceiverConfig } from './webhooks/webhook-config.js';
 
 export interface GitHubAppConfig {
   readonly appId: number;
@@ -8,6 +10,12 @@ export interface GitHubAppConfig {
   readonly webhookSecret: string;
   readonly appSlug?: string;
 }
+
+/**
+ * Backwards-compatible name for the ADR-005 `WebhookReceiverConfig`.
+ * Retained because existing consumers import it; remove once they migrate.
+ */
+export type GitHubWebhookConfig = WebhookReceiverConfig;
 
 const requiredKeys = [
   'GITHUB_APP_ID',
@@ -27,6 +35,12 @@ function readRequired(env: NodeJS.ProcessEnv, key: (typeof requiredKeys)[number]
   }
   return value;
 }
+
+/**
+ * Backwards-compatible alias for the ADR-005 `loadWebhookReceiverConfig`.
+ * Retained because existing consumers import it; remove once they migrate.
+ */
+export const loadGitHubWebhookConfig = loadWebhookReceiverConfig;
 
 export function loadGitHubAppConfig(env: NodeJS.ProcessEnv = process.env): GitHubAppConfig {
   const missing = requiredKeys.filter((key) => !env[key]?.trim());

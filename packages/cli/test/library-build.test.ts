@@ -27,9 +27,7 @@ const buildResult = {
     sourceCommitSha: 'abc123',
     assets: [],
     files: [],
-    publicationRecord: {},
   },
-  publicationRecord: {},
   deterministic: true,
 };
 
@@ -114,6 +112,8 @@ describe('library-build command', () => {
     expect(parsed.metadata.libraryId).toBe('ui-library');
     expect(parsed.metadata.version).toBe('1.0.0');
     expect(parsed.deterministic).toBe(true);
+    // ADR-006: tooling must not emit immutable publication claims.
+    expect(JSON.stringify(parsed)).not.toContain('"immutable"');
   });
 
   it('rejects positional arguments', async () => {

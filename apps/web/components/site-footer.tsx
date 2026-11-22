@@ -10,6 +10,9 @@ interface SiteFooterProps {
 
 /** Footer documenting exactly which local files produced the rendered data. */
 export function SiteFooter({ snapshot }: SiteFooterProps) {
+  const invalidIssues = snapshot.manifestIssues.filter((issue) => issue.kind === 'invalid');
+  const absentIssues = snapshot.manifestIssues.filter((issue) => issue.kind === 'absent');
+
   return (
     <footer className={styles.footer} id="sources">
       <Container size="lg">
@@ -22,10 +25,9 @@ export function SiteFooter({ snapshot }: SiteFooterProps) {
             <Text as="p" variant="caption" tone="subtle">
               Registry browser · index generated {formatGeneratedAt(snapshot.generatedAt)}
             </Text>
-            {snapshot.manifestIssues.length > 0 ? (
+            {invalidIssues.length > 0 ? (
               <Badge variant="warning" size="sm" dot>
-                {snapshot.manifestIssues.length} manifest issue
-                {snapshot.manifestIssues.length === 1 ? '' : 's'}
+                {invalidIssues.length} manifest issue{invalidIssues.length === 1 ? '' : 's'}
               </Badge>
             ) : null}
           </Stack>
@@ -43,16 +45,22 @@ export function SiteFooter({ snapshot }: SiteFooterProps) {
             </ul>
           </Stack>
         </div>
-        {snapshot.manifestIssues.length > 0 ? (
+        {invalidIssues.length > 0 ? (
           <ul className={styles.issues}>
-            {snapshot.manifestIssues.map((issue) => (
-              <li key={issue}>
+            {invalidIssues.map((issue) => (
+              <li key={`${issue.assetId}-${issue.detail}`}>
                 <Text as="span" variant="caption" tone="subtle">
-                  {issue}
+                  {issue.assetId}: {issue.detail}
                 </Text>
               </li>
             ))}
           </ul>
+        ) : null}
+        {absentIssues.length > 0 ? (
+          <Text as="p" variant="caption" tone="subtle">
+            {absentIssues.length} asset{absentIssues.length === 1 ? '' : 's'} use index summaries
+            (no versioned manifest).
+          </Text>
         ) : null}
       </Container>
     </footer>

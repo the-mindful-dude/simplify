@@ -105,6 +105,17 @@ export interface CategoryCount {
   readonly count: number;
 }
 
+/** Stable, non-sensitive reason a versioned asset manifest could not be used. */
+export interface ManifestIssue {
+  readonly kind: 'invalid' | 'absent';
+  readonly assetId: string;
+  readonly detail: string;
+}
+
+/** Stable causes of an unusable registry source; safe to map to public copy. */
+export type RegistryDataErrorCode =
+  'registry_source_not_found' | 'index_read_failed' | 'index_invalid';
+
 /** A fully materialized, serializable view of the local registry source. */
 export interface RegistrySnapshot {
   readonly generatedAt: string;
@@ -114,7 +125,7 @@ export interface RegistrySnapshot {
   readonly categoryCounts: readonly CategoryCount[];
   readonly manifestCount: number;
   readonly sourceFiles: readonly string[];
-  readonly manifestIssues: readonly string[];
+  readonly manifestIssues: readonly ManifestIssue[];
 }
 
 export type SortKey = 'name' | 'category' | 'version';

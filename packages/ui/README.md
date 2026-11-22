@@ -8,7 +8,7 @@ Accessible React components built on semantic design tokens.
 - `src/components/` — compound and interactive components.
 - `src/hooks/` — shared React hooks.
 - `src/internal/` — non-exported implementation utilities.
-- `styles/` — token-driven CSS and the `styles.css` package export.
+- `dist/` — compiled JavaScript and type declarations plus CSS Modules copied from `src/` by `scripts/copy-css.mjs`; there is no separate `styles.css` package export.
 
 ## Boundaries
 
@@ -21,4 +21,4 @@ Accessible React components built on semantic design tokens.
 
 ## Status
 
-Foundation scaffold. The component surface is not implemented yet.
+Foundation implemented. The package exports the primitives, layouts, overlays and navigation components listed in `src/index.ts`, built on Radix UI, CSS Modules and semantic `@simplify-dev/tokens`. Public responsive types are re-exported from `src/types.ts`; no `internal/` path is exported.

@@ -1,10 +1,12 @@
 export {
   buildLibrary,
+  PublicationProvenanceError,
   type AssetBuildEntry,
   type BuildMetadata,
   type BuildOptions,
   type BuildResult,
   type BuiltArtifact,
+  type ProvenanceCandidate,
 } from './library-builder/index.js';
 export {
   validateAssetManifest,

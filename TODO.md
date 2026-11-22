@@ -21,6 +21,8 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 
 **Update (2026-11-21) — `feat/ui-foundation-hardening`:** additional verified work on this branch is recorded in `c1e4878` (WCAG AA contrast fixes, Button `asChild` slot preservation, web accessibility fixes, and contrast regression tests), `3506dea` (Node 20.19.0 pinned in CI and Docker, plus Dependabot configuration), and `a466446` (finalized coordinator ledger). Sign-offs recorded in the ledger: ui-ux-designer **APPROVED_WITH_NON_BLOCKING_NOTES**, security **SECURE_WITH_MINOR**, reviewer **APPROVE**. All gates still pass: `format:check`, `lint`, `typecheck`, `test` (UI 42, CLI 205, tokens 6), and `build`. Individual checkboxes below are checked only where this evidence directly verifies the item; blocked, unverified, and partially implemented items remain unchecked.
 
+**Update (2026-11-22) — `feat/ui-foundation-hardening` (base `b63b1b9`):** final tree passed `pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build` (lint/typecheck 19/19, test 19/19 — root 9, tokens 6, UI 44, registry 74, tooling 55, CLI 205, github 27, registry-api 15; build 11/11; two non-fatal Turbopack warnings in `apps/web/lib/registry-data.ts`). Sign-offs: reviewer T-033b **APPROVE**, security T-034b **APPROVED** (low local-dev residuals with pre-production gates), performance T-035 **APPROVED**, UI T-036 **APPROVED WITH LIMITATIONS** (code and recorded DOM smoke only; no browser or axe run), architect ADR-005/ADR-006 complete. Verified in this phase: webhook-only receiver config, atomic delivery claiming/dedup, signed local sender, Cloudflare quick-tunnel harness, env template/dev scripts and compose wiring, repository-link adapter, event dispatch, structured errors, status UI, and a provenance `ProvenanceCandidate` with strict SHA/repository/publisher validation and no local `immutable` claim. These are local foundation and dev-harness capabilities, not hosted publishing. **Phase 8 remains open and blocked:** no GitHub App credentials or secrets; hosted publishing and immutable registry publication records are not implemented. The Phase 4.5 and 7.4 boxes were already checked at base `b63b1b9` and remain checked; newly checked boxes are limited to 15.1 loading/empty/error/not-found states and 17.1 webhook signature verification with unauthenticated-event rejection. All other unverified, blocked, and future-phase items remain unchecked.
+
 ## Phase 1 — Product Scope and Technical Decisions
 
 ### 1.1 Define the Initial Product Scope
@@ -906,7 +908,7 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 - [x] Establish the website's visual design system and navigation structure.
 - [x] Consume the actual UI package and shared tokens.
 - [x] Configure the registry client.
-- [ ] Implement loading, empty, error, and not-found states.
+- [x] Implement loading, empty, error, and not-found states.
 - [x] Establish responsive layouts for desktop and mobile.
 
 ### 15.2 Implement Account and GitHub Connection Interface
@@ -1025,7 +1027,7 @@ All repository gates pass: `format:check`, `lint`, `typecheck`, `test`, `build`,
 ### 17.1 GitHub Integration Security
 
 - [ ] Review GitHub App permissions and remove unnecessary access.
-- [ ] Verify webhook signatures and reject unauthenticated events.
+- [x] Verify webhook signatures and reject unauthenticated events.
 - [ ] Protect GitHub App private keys and installation credentials.
 - [ ] Ensure installation tokens expire and are not reused beyond their intended scope.
 - [ ] Protect publishing tokens and prevent exposure in logs.

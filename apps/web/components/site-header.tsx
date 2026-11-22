@@ -24,6 +24,9 @@ export function SiteHeader({ assetCount, libraryCount, schemaVersion }: SiteHead
           <Button asChild variant="ghost" size="sm">
             <a href="#browse">Browse</a>
           </Button>
+          <Button asChild variant="ghost" size="sm">
+            <a href="#status">Status</a>
+          </Button>
           <Button asChild variant="ghost" size="sm" hiddenBelow="md">
             <a href="#libraries">Libraries</a>
           </Button>

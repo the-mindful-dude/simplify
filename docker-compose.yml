@@ -45,6 +45,13 @@ services:
       PORT: '3002'
       HOSTNAME: 0.0.0.0
       NEXT_TELEMETRY_DISABLED: '1'
+      # All five required GitHub App variables are passed through from the
+      # environment/.env file. No secret values are committed here. Values may
+      # be empty for webhook-only local testing; full flows require all five.
+      GITHUB_APP_ID: '${GITHUB_APP_ID}'
+      GITHUB_APP_PRIVATE_KEY: '${GITHUB_APP_PRIVATE_KEY}'
+      GITHUB_APP_CLIENT_ID: '${GITHUB_APP_CLIENT_ID}'
+      GITHUB_APP_CLIENT_SECRET: '${GITHUB_APP_CLIENT_SECRET}'
       GITHUB_APP_WEBHOOK_SECRET: '${GITHUB_APP_WEBHOOK_SECRET}'
     healthcheck:
       test:

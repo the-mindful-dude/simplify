@@ -9,6 +9,7 @@ export type GitHubErrorCode =
   | 'library_already_linked'
   | 'signature_invalid'
   | 'payload_invalid'
+  | 'payload_too_large'
   | 'delivery_duplicate'
   | 'unsupported_event';
 

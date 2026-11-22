@@ -52,6 +52,45 @@ Next.js loads `.env.local` automatically. Container runs use the values supplied
 `docker-compose.yml` or a local `.env` file. Shell variables take precedence over file
 values. Never place credentials in `.env.example`, source code, or container images.
 
+## Local Webhook Delivery
+
+The registry API exposes `POST /webhooks/github` (and `GET /healthz`) for local development. You
+can exercise it with signed fixtures and, optionally, a public Cloudflare quick tunnel. Signed
+fixture testing needs no GitHub account, GitHub App, or credentials.
+
+Copy `.env.example` to `.env.local` at the repository root and set `GITHUB_APP_WEBHOOK_SECRET` to
+a throwaway value. The receiver verifies the `X-Hub-Signature-256` header with this value, so the
+local sender must use the exact same value. Leave the other `GITHUB_APP_*` variables empty: they
+are required only for full App flows (authentication, repository APIs, publishing), not for
+webhook-only testing. `.env.local` is ignored by Git and loaded with Node's `--env-file`; no
+dotenv dependency is needed.
+
+```bash
+pnpm dev:webhooks                  # build and start the API on REGISTRY_API_PORT (default 3002)
+pnpm webhook:send -- --help        # list sender options
+pnpm webhook:send -- --event push  # sign a fixture and POST it to the local endpoint
+pnpm webhook:tunnel                # optional: open a public quick tunnel
+```
+
+`pnpm webhook:send` signs a fixture with `GITHUB_APP_WEBHOOK_SECRET` and POSTs it to
+`http://localhost:<REGISTRY_API_PORT>/webhooks/github` by default. Use `--url <url>` to target a
+different endpoint, `--event <name>` to choose the fixture, or `--delivery <id>` to control the
+delivery id; a repeated id is answered as a duplicate. The sender needs the API built first —
+`pnpm dev:webhooks` builds it, or run `pnpm --filter @simplify-dev/registry-api build` manually.
+
+`pnpm webhook:tunnel` opens a Cloudflare quick tunnel to the local API and prints an ephemeral
+`https://*.trycloudflare.com` base URL together with the full webhook URL
+(`<base>/webhooks/github`). Quick tunnels require no Cloudflare account. Copy the URL into a
+GitHub App's webhook settings manually and use the same secret. This repository does not download,
+vendor, or commit `cloudflared`: the harness only checks whether `cloudflared` is on `PATH`, and
+if it is missing it prints Cloudflare's download instructions and exits. Install it yourself if
+you want a public tunnel.
+
+Treat all tunnel-originated requests as untrusted until signature verification succeeds. Keep the
+API bound locally and do not expose its raw port publicly. Local fixture delivery does not verify
+real GitHub delivery; that requires a GitHub App configured with the matching secret and a current
+tunnel URL. Keep real credentials out of fixtures and logs, and never commit `.env.local`.
+
 ## Monorepo Rules
 
 - Packages are ESM-only and expose deliberate `exports`.

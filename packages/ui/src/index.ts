@@ -115,9 +115,4 @@ export type {
   TabsTriggerProps,
 } from './navigation/Tabs/Tabs';
 
-export type {
-  Breakpoint,
-  ResponsiveValue,
-  ResponsiveVisibilityProps,
-  SpacingValue,
-} from './internal/responsive';
+export type { Breakpoint, ResponsiveValue, ResponsiveVisibilityProps, SpacingValue } from './types';

@@ -2,12 +2,8 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, relative, sep as pathSep } from 'node:path';
 
-import type { AssetManifest, LibraryManifest, PublicationRecord } from '@simplify-dev/registry';
-import {
-  validateAssetManifest,
-  validateLibraryManifest,
-  validatePublicationRecord,
-} from '@simplify-dev/registry';
+import type { AssetManifest, LibraryManifest } from '@simplify-dev/registry';
+import { validateAssetManifest, validateLibraryManifest } from '@simplify-dev/registry';
 
 export interface BuildOptions {
   readonly libraryRoot?: string;
@@ -31,6 +27,28 @@ export interface AssetBuildEntry {
   readonly files: readonly BuiltArtifact[];
 }
 
+/**
+ * Locally observable provenance for a build. This is an unverified candidate:
+ * the publishing service alone verifies source identity and mints an immutable
+ * `PublicationRecord` (ADR-006). No `immutable` or `verified` claim belongs here.
+ */
+export interface ProvenanceCandidate {
+  readonly source: {
+    readonly repositoryId: string;
+    readonly owner: string;
+    readonly name: string;
+    readonly url: string;
+    readonly commitSha: string;
+  };
+  /** Attributed claim from local inputs; correlation only, never authentication. */
+  readonly publisher: string;
+  readonly generatedAt: string;
+  readonly artifact: {
+    readonly url: string;
+    readonly integrity: string;
+  };
+}
+
 export interface BuildMetadata {
   readonly schemaVersion: number;
   readonly libraryId: string;
@@ -39,19 +57,120 @@ export interface BuildMetadata {
   readonly sourceCommitSha: string | null;
   readonly assets: readonly AssetBuildEntry[];
   readonly files: readonly BuiltArtifact[];
-  readonly publicationRecord: PublicationRecord;
+  readonly provenance: ProvenanceCandidate;
 }
 
 export interface BuildResult {
   readonly artifacts: readonly BuiltArtifact[];
   readonly metadata: BuildMetadata;
-  readonly publicationRecord: PublicationRecord;
+  readonly provenance: ProvenanceCandidate;
   readonly deterministic: boolean;
 }
 
 const SCHEMA_VERSION = 1;
 const DEFAULT_EXCLUDES = ['**/.env*', '**/.git/**', '**/node_modules/**', '**/dist/**'];
 const LIBRARY_MANIFEST_NAMES = ['simplify/library.json', 'library.json'];
+const COMMIT_SHA_PATTERN = /^[0-9a-f]{40}$/i;
+const ZERO_SHA_PATTERN = /^0{40}$/;
+const GITHUB_HOST = 'github.com';
+const OWNER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
+const NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
+
+export type PublicationProvenanceErrorCode = 'publication_provenance_unavailable';
+
+/**
+ * Raised when locally observable provenance is missing or malformed. Placeholder
+ * or unverifiable values are never emitted as if they were valid provenance.
+ */
+export class PublicationProvenanceError extends Error {
+  readonly code: PublicationProvenanceErrorCode = 'publication_provenance_unavailable';
+  readonly missing: readonly string[];
+
+  constructor(missing: readonly string[]) {
+    super(
+      `Cannot establish local publication provenance: invalid or missing ${missing.join('; ')}. ` +
+        'Declare a valid GitHub repository URL in the library manifest, provide a non-zero ' +
+        '40-hex commit SHA (GITHUB_SHA or .git metadata), and attribute a publisher ' +
+        '(GITHUB_ACTOR, a maintainer, or the repository owner).',
+    );
+    this.name = 'PublicationProvenanceError';
+    this.missing = missing;
+  }
+}
+
+interface RepositoryIdentity {
+  readonly repositoryId: string;
+  readonly owner: string;
+  readonly name: string;
+  readonly url: string;
+}
+
+function nonEmpty(value: string | undefined): string | null {
+  return value !== undefined && value.trim().length > 0 ? value.trim() : null;
+}
+
+function rejectRepositoryIdentity(reason: string): never {
+  throw new PublicationProvenanceError([`source.repository identity (${reason})`]);
+}
+
+function parseRepositoryIdentity(repository: string | undefined): RepositoryIdentity | null {
+  const value = nonEmpty(repository);
+  if (value === null) {
+    return null;
+  }
+
+  let path: string;
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
+    let parsed: URL;
+    try {
+      parsed = new URL(value);
+    } catch {
+      return rejectRepositoryIdentity('malformed repository URL');
+    }
+    if (parsed.protocol !== 'https:') {
+      return rejectRepositoryIdentity('repository URL must use https');
+    }
+    if (parsed.hostname.toLowerCase() !== GITHUB_HOST) {
+      return rejectRepositoryIdentity('repository host must be github.com');
+    }
+    if (
+      parsed.username !== '' ||
+      parsed.password !== '' ||
+      parsed.port !== '' ||
+      parsed.search !== '' ||
+      parsed.hash !== ''
+    ) {
+      return rejectRepositoryIdentity(
+        'repository URL must not contain credentials, a port, a query or a fragment',
+      );
+    }
+    path = parsed.pathname;
+  } else {
+    const scp = /^(?:([^@/\s]+)@)?([^:/\s]+):(.+)$/.exec(value);
+    if (scp !== null) {
+      if (scp[2]!.toLowerCase() !== GITHUB_HOST) {
+        return rejectRepositoryIdentity('repository host must be github.com');
+      }
+      path = scp[3]!;
+    } else {
+      path = value;
+    }
+  }
+
+  const segments = path.split('/').filter((segment) => segment.length > 0);
+  if (segments.length !== 2) {
+    return rejectRepositoryIdentity('expected exactly <owner>/<name>');
+  }
+  const owner = segments[0]!;
+  const rawName = segments[1]!;
+  const name = rawName.endsWith('.git') ? rawName.slice(0, -4) : rawName;
+  if (!OWNER_PATTERN.test(owner) || name === '.' || name === '..' || !NAME_PATTERN.test(name)) {
+    return rejectRepositoryIdentity('invalid owner or repository name');
+  }
+
+  const url = `https://${GITHUB_HOST}/${owner}/${name}`;
+  return { repositoryId: url, owner, name, url };
+}
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.+^${}()|[\]\\]/g, '\\$&');
@@ -103,10 +222,19 @@ function isExcluded(filePath: string, excludePatterns: readonly string[]): boole
   return excludePatterns.some((pattern) => matchesGlob(filePath, pattern));
 }
 
+function validateCommitSha(value: string, source: string): string {
+  if (!COMMIT_SHA_PATTERN.test(value) || ZERO_SHA_PATTERN.test(value)) {
+    throw new PublicationProvenanceError([
+      `source.commitSha (${source} must be a non-zero 40-hex commit SHA)`,
+    ]);
+  }
+  return value.toLowerCase();
+}
+
 async function resolveCommitSha(libraryRoot: string): Promise<string | null> {
-  const envSha = process.env.GITHUB_SHA;
-  if (envSha !== undefined && envSha.length > 0) {
-    return envSha;
+  const envSha = nonEmpty(process.env.GITHUB_SHA);
+  if (envSha !== null) {
+    return validateCommitSha(envSha, 'GITHUB_SHA');
   }
 
   const headPath = join(libraryRoot, '.git', 'HEAD');
@@ -116,23 +244,23 @@ async function resolveCommitSha(libraryRoot: string): Promise<string | null> {
   } catch {
     return null;
   }
+  if (head.length === 0) {
+    return null;
+  }
 
   if (head.startsWith('ref: ')) {
     const ref = head.slice(5).trim();
     const refPath = join(libraryRoot, '.git', ...ref.split('/'));
+    let refValue: string;
     try {
-      const refValue = (await readFile(refPath, 'utf8')).trim();
-      return refValue.length > 0 ? refValue : null;
+      refValue = (await readFile(refPath, 'utf8')).trim();
     } catch {
       return null;
     }
+    return refValue.length > 0 ? validateCommitSha(refValue, '.git HEAD ref') : null;
   }
 
-  if (/^[0-9a-fA-F]{40}$/.test(head)) {
-    return head;
-  }
-
-  return null;
+  return validateCommitSha(head, '.git HEAD');
 }
 
 function hashBytes(bytes: Uint8Array): string {
@@ -180,7 +308,44 @@ export async function buildLibrary(
 
   const buildVersion = version ?? libraryManifest.version;
   const commitSha = await resolveCommitSha(root);
-  const deterministic = commitSha !== null;
+  const repositoryIdentity = parseRepositoryIdentity(libraryManifest.repository);
+  const publisher =
+    nonEmpty(process.env.GITHUB_ACTOR) ??
+    nonEmpty(
+      libraryManifest.maintainers?.find((maintainer) => nonEmpty(maintainer.name) !== null)?.name,
+    ) ??
+    repositoryIdentity?.owner ??
+    null;
+
+  if (repositoryIdentity === null || commitSha === null || publisher === null) {
+    const missing: string[] = [];
+    if (repositoryIdentity === null) {
+      missing.push('source.repository identity (declare "repository" in the library manifest)');
+    }
+    if (commitSha === null) {
+      missing.push('source.commitSha (set GITHUB_SHA or provide .git metadata)');
+    }
+    if (publisher === null) {
+      missing.push('publisher (set GITHUB_ACTOR or declare a maintainer)');
+    }
+    throw new PublicationProvenanceError(missing);
+  }
+
+  // Correlation only (never authentication): in Actions, runner-provided
+  // repository evidence must agree with the validated manifest repository.
+  const actionsRepository = nonEmpty(process.env.GITHUB_REPOSITORY);
+  if (
+    process.env.GITHUB_ACTIONS === 'true' &&
+    actionsRepository !== null &&
+    actionsRepository.toLowerCase() !==
+      `${repositoryIdentity.owner}/${repositoryIdentity.name}`.toLowerCase()
+  ) {
+    throw new PublicationProvenanceError([
+      `publisher attribution (GITHUB_REPOSITORY "${actionsRepository}" does not match the manifest repository)`,
+    ]);
+  }
+
+  const deterministic = true;
   const generatedAt = new Date().toISOString();
 
   const includePatterns =
@@ -284,35 +449,21 @@ export async function buildLibrary(
     .update(artifacts.map((a) => a.hash).join(''))
     .digest('base64')}`;
 
-  const publicationRecord: PublicationRecord = {
-    schemaVersion: SCHEMA_VERSION,
-    libraryId: libraryManifest.id,
-    version: buildVersion,
+  const provenance: ProvenanceCandidate = {
     source: {
-      repositoryId:
-        libraryManifest.repository ?? `https://github.com/unknown/${libraryManifest.id}`,
-      owner: 'unknown',
-      name: libraryManifest.id,
-      url: libraryManifest.repository ?? `https://github.com/unknown/${libraryManifest.id}`,
-      commitSha: commitSha ?? '0000000000000000000000000000000000000000',
+      repositoryId: repositoryIdentity.repositoryId,
+      owner: repositoryIdentity.owner,
+      name: repositoryIdentity.name,
+      url: repositoryIdentity.url,
+      commitSha,
     },
-    publishedAt: generatedAt,
+    publisher,
+    generatedAt,
     artifact: {
       url: `https://registry.simplify.dev/libraries/${libraryManifest.id}/@${buildVersion}`,
       integrity: combinedIntegrity,
     },
-    publisher: 'unknown',
-    immutable: true,
   };
-
-  const publicationValidation = validatePublicationRecord(publicationRecord);
-  if (!publicationValidation.valid) {
-    throw new Error(
-      `Failed to build a valid publication record: ${publicationValidation.issues
-        .map((issue) => `${issue.path}: ${issue.message}`)
-        .join('; ')}`,
-    );
-  }
 
   const artifactsByTarget = new Map(artifacts.map((artifact) => [artifact.target, artifact]));
   const assets: AssetBuildEntry[] = assetEntries.map((entry) => {
@@ -333,10 +484,10 @@ export async function buildLibrary(
     libraryId: libraryManifest.id,
     version: buildVersion,
     generatedAt,
-    sourceCommitSha: commitSha ?? null,
+    sourceCommitSha: commitSha,
     assets,
     files: artifacts,
-    publicationRecord,
+    provenance,
   };
 
   const metadataJson = JSON.stringify(metadata);
@@ -358,7 +509,7 @@ export async function buildLibrary(
   return {
     artifacts,
     metadata,
-    publicationRecord,
+    provenance,
     deterministic,
   };
 }

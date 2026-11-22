@@ -13,8 +13,10 @@ import { buildCategoryCounts, buildTags, toTargetView } from './catalog';
 import type {
   DocumentationView,
   InstallationModeView,
+  ManifestIssue,
   ManifestView,
   RegistryAssetView,
+  RegistryDataErrorCode,
   RegistryLibraryView,
   RegistrySnapshot,
 } from './types';
@@ -24,9 +26,12 @@ const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?
 
 /** Raised when the local registry source cannot be turned into a usable snapshot. */
 export class RegistryDataError extends Error {
-  constructor(message: string, options?: { cause?: unknown }) {
+  readonly code: RegistryDataErrorCode;
+
+  constructor(code: RegistryDataErrorCode, message: string, options?: { cause?: unknown }) {
     super(message, options);
     this.name = 'RegistryDataError';
+    this.code = code;
   }
 }
 
@@ -48,20 +53,27 @@ function findRegistryRoot(): { root: string; repoRoot: string } {
     current = parent;
   }
   throw new RegistryDataError(
+    'registry_source_not_found',
     'Could not locate registry/index.json. Expected the repository registry source to be available.',
   );
 }
 
 /** Resolve and validate a manifest path before any filesystem access. */
-function manifestPath(root: string, assetId: string, version: string): string | null {
+function manifestPath(
+  root: string,
+  assetId: string,
+  version: string,
+): { target: string | null; issue: string | null } {
+  // Messages are kept free of input values so an untrusted index cannot inject
+  // content into the public issue list.
   if (!ASSET_ID_PATTERN.test(assetId) || !VERSION_PATTERN.test(version)) {
-    return null;
+    return { target: null, issue: 'invalid asset id or version format' };
   }
   const target = resolve(root, assetId, `@${version}`, 'asset.json');
   if (target !== root && !target.startsWith(`${root}${sep}`)) {
-    return null;
+    return { target: null, issue: 'manifest path escapes the registry root' };
   }
-  return target;
+  return { target, issue: null };
 }
 
 function toPosixPath(from: string, to: string): string {
@@ -126,20 +138,35 @@ async function loadManifest(
   repoRoot: string,
   assetId: string,
   version: string,
-): Promise<{ view: ManifestView | null; issue: string | null }> {
-  const target = manifestPath(root, assetId, version);
+): Promise<{ view: ManifestView | null; issue: ManifestIssue | null }> {
+  const { target, issue: pathIssue } = manifestPath(root, assetId, version);
+  if (pathIssue) {
+    return { view: null, issue: { kind: 'invalid', assetId, detail: pathIssue } };
+  }
   if (!target || !existsSync(target)) {
-    return { view: null, issue: null };
+    return {
+      view: null,
+      issue: {
+        kind: 'absent',
+        assetId,
+        detail: `no versioned manifest at ${assetId}/@${version}/asset.json`,
+      },
+    };
   }
 
   const sourcePath = toPosixPath(repoRoot, target);
   let raw: unknown;
   try {
     raw = JSON.parse(await readFile(target, 'utf8')) as unknown;
-  } catch (error) {
+  } catch {
+    // Do not echo parser errors: they can contain absolute paths and snippets.
     return {
       view: null,
-      issue: `${sourcePath}: unreadable JSON (${error instanceof Error ? error.message : String(error)})`,
+      issue: {
+        kind: 'invalid',
+        assetId,
+        detail: `${sourcePath}: manifest JSON could not be parsed`,
+      },
     };
   }
 
@@ -148,7 +175,11 @@ async function loadManifest(
     const firstIssue = validation.issues[0];
     return {
       view: null,
-      issue: `${sourcePath}: invalid manifest (${firstIssue ? `${firstIssue.path} ${firstIssue.message}` : 'schema validation failed'})`,
+      issue: {
+        kind: 'invalid',
+        assetId,
+        detail: `${sourcePath}: invalid manifest (${firstIssue ? `${firstIssue.path} ${firstIssue.message}` : 'schema validation failed'})`,
+      },
     };
   }
 
@@ -165,6 +196,7 @@ export async function getRegistrySnapshot(): Promise<RegistrySnapshot> {
     rawIndex = await client.getRegistryIndex();
   } catch (error) {
     throw new RegistryDataError(
+      'index_read_failed',
       `Failed to read the registry index: ${error instanceof Error ? error.message : String(error)}`,
       { cause: error },
     );
@@ -174,6 +206,7 @@ export async function getRegistrySnapshot(): Promise<RegistrySnapshot> {
   if (!validation.valid || !validation.value) {
     const firstIssue = validation.issues[0];
     throw new RegistryDataError(
+      'index_invalid',
       `registry/index.json failed schema validation (${firstIssue ? `${firstIssue.path} ${firstIssue.message}` : 'unknown issue'}).`,
     );
   }
@@ -189,7 +222,7 @@ export async function getRegistrySnapshot(): Promise<RegistrySnapshot> {
   }
 
   const sourceFiles = ['registry/index.json'];
-  const manifestIssues: string[] = [];
+  const manifestIssues: ManifestIssue[] = [];
   const assets: RegistryAssetView[] = [];
 
   for (const asset of index.assets) {

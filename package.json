@@ -23,7 +23,10 @@
     "docker:build": "docker compose build web",
     "docker:up": "docker compose up --build web",
     "docker:down": "docker compose down",
-    "docker:dev": "docker compose --profile dev up --build web-dev"
+    "docker:dev": "docker compose --profile dev up --build web-dev",
+    "dev:webhooks": "pnpm --filter @simplify-dev/registry-api dev",
+    "webhook:tunnel": "node --env-file=.env.local scripts/dev/webhook-tunnel.mjs",
+    "webhook:send": "node --env-file=.env.local scripts/dev/send-webhook.mjs"
   },
   "overrides": {
     "@octokit/request": "^9.4.0"

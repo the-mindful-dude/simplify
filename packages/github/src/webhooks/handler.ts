@@ -1,11 +1,19 @@
+import { GitHubIntegrationError } from '../errors.js';
+import type { RepositoryLinkStore, WebhookDeliveryStore, WebhookEventPort } from '../ports.js';
+import {
+  parseGitHubWebhookEvent,
+  toInstallationLifecycleEvent,
+  toRepositoryLifecycleEvent,
+} from './events.js';
 import type { NormalizedGitHubWebhookEvent } from './events.js';
+import { createRepositoryLinkEventPort } from './repository-link-port.js';
 import { verifyWebhookSignature } from './signature.js';
-import type { RepositoryLinkStore, WebhookDeliveryStore } from '../ports.js';
 
 export interface GitHubWebhookHandlerOptions {
   readonly secret: string;
   readonly deliveryStore: WebhookDeliveryStore;
   readonly repositoryLinkStore?: RepositoryLinkStore;
+  readonly eventHandlers?: WebhookEventPort;
 }
 
 export interface WebhookResult {
@@ -18,8 +26,21 @@ export interface WebhookResult {
 
 const stableReleaseEvents = new Set(['create', 'release']);
 
+function readRefType(payload: unknown): string | undefined {
+  if (typeof payload !== 'object' || payload === null) {
+    return undefined;
+  }
+  const value = (payload as Record<string, unknown>)['ref_type'];
+  return typeof value === 'string' ? value : undefined;
+}
+
 export function createGitHubWebhookHandler(options: GitHubWebhookHandlerOptions) {
   const now = () => new Date().toISOString();
+  const eventPort: WebhookEventPort | undefined =
+    options.eventHandlers ??
+    (options.repositoryLinkStore
+      ? createRepositoryLinkEventPort(options.repositoryLinkStore)
+      : undefined);
 
   async function handle(
     rawPayload: string,
@@ -30,16 +51,20 @@ export function createGitHubWebhookHandler(options: GitHubWebhookHandlerOptions)
 
     const signature = first(headers['x-hub-signature-256']);
     if (!verifyWebhookSignature(options.secret, rawPayload, signature)) {
-      throw new Error('signature_invalid');
+      throw new GitHubIntegrationError('signature_invalid', 'GitHub webhook signature is invalid.');
     }
 
-    const event = first(headers['x-github-event']);
-    const deliveryId = first(headers['x-github-delivery']);
-    if (!event || !deliveryId) {
-      throw new Error('payload_invalid');
-    }
+    const normalized: NormalizedGitHubWebhookEvent = parseGitHubWebhookEvent(rawPayload, headers);
+    const { deliveryId, event } = normalized;
+    const receivedAt = now();
 
-    if (await options.deliveryStore.has(deliveryId)) {
+    const claimed = await options.deliveryStore.claim({
+      deliveryId,
+      event,
+      receivedAt,
+      status: 'processed',
+    });
+    if (!claimed) {
       return {
         deliveryId,
         event,
@@ -48,54 +73,40 @@ export function createGitHubWebhookHandler(options: GitHubWebhookHandlerOptions)
       };
     }
 
-    let payload: unknown;
-    try {
-      payload = JSON.parse(rawPayload);
-    } catch {
-      throw new Error('payload_invalid');
-    }
-
-    const normalized: NormalizedGitHubWebhookEvent = {
-      deliveryId,
-      event,
-      payload,
-      rawPayload,
-    };
-
     let stableReleaseCandidate = false;
     let action: string | undefined;
 
-    if (event === 'push') {
-      // Ordinary pushes must never become stable releases. They may only
-      // contribute to development snapshots through a separate sync pipeline.
-      stableReleaseCandidate = false;
-    } else if (stableReleaseEvents.has(event)) {
-      stableReleaseCandidate = true;
-      if (event === 'create' && normalized.payload) {
-        const ref = (normalized.payload as { readonly ref_type?: string; readonly ref?: string })
-          .ref_type;
-        if (ref === 'tag') {
+    try {
+      if (event === 'push') {
+        // Ordinary pushes must never become stable releases. They may only
+        // contribute to development snapshots through a separate sync pipeline.
+        stableReleaseCandidate = false;
+      } else if (stableReleaseEvents.has(event)) {
+        stableReleaseCandidate = true;
+        if (event === 'create' && readRefType(normalized.payload) === 'tag') {
           action = 'tag_created';
+        } else if (event === 'release') {
+          action = 'release_published';
         }
-      } else if (event === 'release') {
-        action = 'release_published';
+      } else if (event === 'repository') {
+        const lifecycle = toRepositoryLifecycleEvent(normalized);
+        action = lifecycle.action || undefined;
+        await eventPort?.onRepositoryLifecycle?.(lifecycle);
+      } else if (event === 'installation' || event === 'installation_repositories') {
+        const lifecycle = toInstallationLifecycleEvent(normalized, event);
+        action = lifecycle.action || undefined;
+        await eventPort?.onInstallationLifecycle?.(lifecycle);
       }
-    } else if (event === 'repository') {
-      action = (normalized.payload as { readonly action?: string }).action;
-      if (options.repositoryLinkStore && action) {
-        // Repository lifecycle handling is delegated to the connection service;
-        // the webhook handler only records that the event was observed.
-      }
-    } else if (event === 'installation' || event === 'installation_repositories') {
-      action = (normalized.payload as { readonly action?: string }).action;
+    } catch (error) {
+      await options.deliveryStore.record({
+        deliveryId,
+        event,
+        receivedAt,
+        status: 'failed',
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
     }
-
-    await options.deliveryStore.record({
-      deliveryId,
-      event,
-      receivedAt: now(),
-      status: 'processed',
-    });
 
     return {
       deliveryId,

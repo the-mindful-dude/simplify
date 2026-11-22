@@ -1,20 +1,21 @@
 import { breakpoints } from '@simplify-dev/tokens';
-import type { spacing } from '@simplify-dev/tokens';
 import type { CSSProperties } from 'react';
 
-/** Breakpoint names shared by every responsive component API. */
-export type Breakpoint = keyof typeof breakpoints;
+import type {
+  Breakpoint,
+  ResponsiveValue,
+  ResponsiveVisibilityProps,
+  SpacingValue,
+} from '../types';
+
+export type {
+  Breakpoint,
+  ResponsiveValue,
+  ResponsiveVisibilityProps,
+  SpacingValue,
+} from '../types';
+
 export type ResponsiveKey = Breakpoint | 'base';
-
-/** A value plus optional per-breakpoint overrides. */
-export type ResponsiveValue<T> = { base?: T } & { [K in Breakpoint]?: T };
-
-/** Visibility/collapse flags implemented entirely by CSS media queries. */
-export interface ResponsiveVisibilityProps {
-  hiddenBelow?: Breakpoint | undefined;
-  hiddenAbove?: Breakpoint | undefined;
-  collapsedBelow?: Breakpoint | undefined;
-}
 
 const BREAKPOINTS = Object.keys(breakpoints) as Breakpoint[];
 
@@ -32,9 +33,6 @@ export function normalizeResponsive<T>(
   if (isResponsiveValue(value)) return value;
   return { base: value };
 }
-
-/** Spacing scale step accepted by layout components. */
-export type SpacingValue = keyof typeof spacing;
 
 /**
  * Emit one CSS custom property per provided breakpoint, converting each value

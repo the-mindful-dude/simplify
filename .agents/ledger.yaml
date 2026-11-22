@@ -1,8 +1,8 @@
 version: 1
-branch: feat/phase-9-complete-premium-ui
-base_head: 558db78740ce3ef1ba2d1c4d0bf750af0f03414d
-final_head: a466446
-objective: 'Complete Phase 9; fix npm run dev by provisioning pnpm and reinstalling; upgrade apps/web to latest stable Next.js 16.4.6 + React 19; deliver a production-grade dark monochrome registry browser; build a reusable token-driven component library in packages/ui with per-component READMEs; fix every pre-existing error; track both lockfiles with ADRs.'
+branch: feat/ui-foundation-hardening
+base_head: b63b1b9df85a9edea05cdee27f9610923159119b
+final_head: null
+objective: 'Deliver the credential-free local webhook foundation and Cloudflare Tunnel workflow, harden webhook processing and publication provenance, implement the status UI and documented residual fixes, synchronize documentation, verify all gates and sign-offs, and commit the completed phase.'
 user_decisions:
   - 'Next phase = complete Phase 9 (branch continuity); Phase 8 skipped (no GitHub credentials).'
   - 'Fix npm run dev via Corepack pnpm@9.15.9 + pnpm reinstall + Node >=20.9.'
@@ -15,6 +15,11 @@ user_decisions:
   - 'Responsive API = simple flags + responsive value objects.'
   - 'Component set = broader: Button, InputField, Container, SplitView, AutoGrid, Stack, Dialog, Text, Badge, Card, Separator, Skeleton, Spinner, Tabs, DropdownMenu, Tooltip, Avatar.'
   - 'Every reusable component gets a README.md with complete, specific, non-generic usage docs and no phase references.'
+  - 'DECISION-003: next phase = credential-free webhook foundation + Cloudflare Tunnel quick tunnel.'
+  - 'No GitHub credentials available; test with local GITHUB_APP_WEBHOOK_SECRET fixture only.'
+  - 'Use .env.example to enumerate every required secret/token and explain what the user puts in .env.local.'
+  - 'ui-ux-designer scope = webhook/sync/GitHub status UI design plus documented UI residuals.'
+  - 'DECISION-003 supersedes DECISION-002 foundation path restriction for this phase; docs remain with documenter.'
 preserve:
   - 'package-lock.json (was untracked at start; user wanted it tracked; deleted-never; refreshed in T-014).'
   - '.agents/ (coordinator scaffold created at start).'
@@ -355,22 +360,360 @@ tasks:
       - 'Verified sections: 9.1-9.5, portions of 9.6/11/12/15; all unverified/future/publishing items left unchecked.'
       - 'Verified Status note updated with c1e4878/3506dea/a466446 + sign-offs; prettier exit 0.'
     commit: null
+  # --- Phase: credential-free webhook foundation + Cloudflare tunnel (DECISION-003) ---
+  - id: T-026
+    objective: 'Architecture/ADR review for webhook-only config, atomic dedup, event dispatch, and Cloudflare tunnel local-dev boundaries.'
+    owner: architect
+    dependencies: []
+    acceptance:
+      - 'Recommendation recorded under .agents/decisions/ with boundaries, alternatives, and compatibility notes.'
+      - 'No change to public registry asset model or GitHub-specific leakage into core registry.'
+    verification:
+      - 'Read .agents/decisions/DECISION-003-webhook-foundation-phase.md and research findings.'
+      - 'Return explicit sign-off or required changes with file:line evidence.'
+    status: done
+    lease: { owner: architect, paths: ['.agents/decisions/**'], task: T-026 }
+    evidence:
+      - 'ADR-005 accepted: webhook-only config, atomic dedup, tunnel trust boundary, no dev helper in production package.'
+      - 'T-026b co-signed compose interpolation and app-local status UI exception.'
+      - 'T-026c aligned ADR-005 config path to packages/github/src/webhooks/webhook-config.ts; grep found no stale path.'
+    reports:
+      [
+        '.agents/decisions/ADR-005-credential-free-webhook-boundaries.md',
+        '.agents/decisions/DECISION-004-boundary-conflicts.md',
+      ]
+    open_risks: []
+    commit: null
+  - id: T-027
+    objective: 'Establish a repeatable performance baseline and budget for the registry browser and webhook receiver.'
+    owner: performance
+    dependencies: []
+    acceptance:
+      - 'Measured baseline with exact commands and observed values.'
+      - 'Named performance risks and a concrete measurement method for post-change sign-off.'
+    verification:
+      - 'Inspect apps/web bundle diagnostics and registry data loading; identify measurable checks.'
+    status: done
+    lease: { owner: performance, paths: [], task: T-027 }
+    evidence:
+      - 'Baseline at b63b1b9: / 609,447 B / 6 chunks; /_not-found 457,165 B / 5; all static chunks 722,041 B; registry 18,288 B / 39 assets / 7 libraries.'
+    reports: ['.agents/reports/R-001-R003-baseline.md']
+    open_risks: []
+    commit: null
+  - id: T-028
+    objective: 'Design spec and accessibility plan for webhook/sync/GitHub status views and UI residual audit.'
+    owner: ui-ux-designer
+    dependencies: []
+    acceptance:
+      - 'Design spec with token plan, states, keyboard/focus/announcement behavior, and component boundary decisions.'
+      - 'Every documented UI residual confirmed with current file:line and a proposed fix.'
+    verification:
+      - 'Read research findings; confirm design before implementation task T-032 starts.'
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-028 }
+    evidence:
+      - 'Design approved: nine-state model, token-only styling, live announcer, focus preservation, no new ui exports/packages.'
+      - 'UI residual audit confirmed stale styles export, stale JS cleanup, raw error display, Suspense fallback, and contrast advisory fixes.'
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-029
+    objective: 'Local webhook development foundation: env templates, dev scripts, compose env wiring, and tunnel harness.'
+    owner: foundation
+    dependencies: ['DECISION-003 user approval']
+    scope:
+      [
+        'package.json',
+        '.env.example',
+        'apps/registry-api/package.json',
+        'docker-compose.yml',
+        '.github/dependabot.yml',
+        'scripts/**',
+      ]
+    acceptance:
+      - '.env.example enumerates every required secret/token with instructions for .env.local, including the webhook-only path.'
+      - 'A Cloudflare quick-tunnel harness exposes the local webhook endpoint without committing binaries or secrets.'
+      - 'docker-compose registry-api receives all five required GitHub App variables (or documented env_file pattern).'
+      - 'Root API dev scripts use Node --env-file so .env.local is actually loaded.'
+      - 'No tunnel binary or secret is downloaded/committed during implementation.'
+    verification:
+      - 'pnpm format:check; YAML parse of docker-compose.yml and dependabot.yml; pnpm --filter @simplify-dev/registry-api build.'
+    status: done
+    lease:
+      {
+        owner: foundation,
+        paths:
+          [
+            'package.json',
+            '.env.example',
+            'apps/registry-api/package.json',
+            'docker-compose.yml',
+            '.github/dependabot.yml',
+            'scripts/**',
+          ],
+        task: T-029,
+      }
+    evidence:
+      - 'Root/app scripts add dev:webhooks, webhook:tunnel, webhook:send and Node --env-file loading; no dependencies added.'
+      - '.env.example enumerates all five GITHUB_APP_* variables and webhook secret; docker-compose uses host interpolation; no secrets committed.'
+      - 'scripts/dev/webhook-tunnel.mjs exposes local endpoint through user-invoked Cloudflare quick tunnel; no binary committed.'
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-030
+    objective: 'Harden webhook core: webhook-only config, atomic dedup, structured errors, event dispatch, HTTP tests, local signed sender.'
+    owner: coder
+    dependencies: []
+    scope:
+      [
+        'packages/github/src/**',
+        'packages/github/test/**',
+        'apps/registry-api/src/**',
+        'apps/registry-api/test/**',
+      ]
+    acceptance:
+      - 'Signed delivery works with only GITHUB_APP_WEBHOOK_SECRET configured; full App config still required for authenticated API actions.'
+      - 'Delivery claim is atomic; concurrent duplicate deliveries cannot both be processed.'
+      - 'Errors use GitHubIntegrationError codes; oversized bodies receive a response before socket teardown.'
+      - 'repository/installation events invoke declared handlers; parseGitHubWebhookEvent is used at the boundary.'
+      - 'HTTP-level tests cover 200/401/400/500, duplicate, event dispatch, and webhook-only config.'
+      - 'Local signed-request helper exists for credential-free testing.'
+    verification:
+      - 'pnpm --filter @simplify-dev/github test; pnpm --filter @simplify-dev/registry-api test; pnpm lint; pnpm typecheck.'
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          [
+            'packages/github/src/**',
+            'packages/github/test/**',
+            'apps/registry-api/src/**',
+            'apps/registry-api/test/**',
+          ],
+        task: T-030,
+      }
+    evidence:
+      - 'Webhook-only receiver config, HMAC-before-parse, 1 MB body cap, atomic claim, structured errors, event dispatch, and generic wire errors implemented.'
+      - 'Local signed sender and helper live only in apps/registry-api/src/dev; removed from packages/github public API and stale dist artifacts.'
+      - 'Final targeted tests: github 27/27, registry-api 15/15; full suite/build pass.'
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-031
+    objective: 'Fix pre-existing publication provenance placeholders in the library builder.'
+    owner: bugfixer
+    dependencies: []
+    scope: ['packages/tooling/src/library-builder/**', 'packages/tooling/test/**']
+    acceptance:
+      - 'Publication records no longer emit owner/publisher "unknown" or zero SHA as valid provenance.'
+      - 'Actionable error or documented fallback behavior is covered by regression tests.'
+    verification:
+      - 'pnpm --filter @simplify-dev/tooling test; pnpm lint; pnpm typecheck.'
+    status: done
+    lease:
+      {
+        owner: bugfixer,
+        paths: ['packages/tooling/src/library-builder/**', 'packages/tooling/test/**'],
+        task: T-031,
+      }
+    evidence:
+      - 'Initial placeholder fix superseded by ADR-006/T-042b: ProvenanceCandidate has no immutable/verified claim; SHA/repository/publisher validation is fail-fast before writes.'
+      - 'tooling 55/55 and CLI no-immutable guard pass; no validatePublicationRecord or publicationRecord emission remains.'
+    reports: ['.agents/decisions/ADR-006-publication-provenance-boundary.md']
+    open_risks: []
+    commit: null
+  - id: T-032
+    objective: 'Implement status UI and resolve documented UI residuals.'
+    owner: ui-ux-designer
+    dependencies: [T-028]
+    scope:
+      [
+        'apps/web/app/**',
+        'apps/web/components/**',
+        'apps/web/styles/**',
+        'apps/web/lib/**',
+        'packages/ui/src/**',
+        'packages/ui/package.json',
+        'packages/ui/scripts/**',
+      ]
+    acceptance:
+      - 'Status presentation for webhook/sync state uses tokens, live regions, and accessible loading/error/empty states.'
+      - 'Stale styles export claim/packaging, contrast advisory, unreachable Suspense fallback, raw error display, and UI stale-JS cleanup are resolved.'
+      - 'Design spec from T-028 is implemented; visual and accessibility self-review recorded.'
+    verification:
+      - 'pnpm --filter @simplify-dev/ui test; pnpm --filter @simplify-dev/web build; pnpm format:check; pnpm lint; pnpm typecheck.'
+    status: done
+    lease:
+      {
+        owner: ui-ux-designer,
+        paths:
+          [
+            'apps/web/app/**',
+            'apps/web/components/**',
+            'apps/web/styles/**',
+            'apps/web/lib/**',
+            'packages/ui/src/**',
+            'packages/ui/package.json',
+            'packages/ui/scripts/**',
+          ],
+        task: T-032,
+      }
+    evidence:
+      - 'Nine-state status UI, loading/error/not-found routes, sanitized DataError, structured manifest issues, skip link, Suspense, live announcer, focus-preserving retry, and reduced-motion styling implemented.'
+      - 'Stale packages/ui styles export claim and CSS cleanup verified; UI 44/44 tests and web build pass.'
+    reports: ['.agents/reports/T-032b-design.md']
+    open_risks: []
+    commit: null
+  - id: T-033
+    objective: 'Independent correctness and regression review of all phase diffs.'
+    owner: reviewer
+    dependencies: [T-029, T-030, T-031, T-032]
+    acceptance:
+      - 'Actual diff inspected for lease violations, acceptance gaps, weakened tests, and regressions.'
+      - 'Explicit APPROVE or REQUEST_CHANGES with file:line evidence.'
+    verification:
+      - 'git diff against base_head; targeted tests; gate results.'
+    status: done
+    lease: { owner: reviewer, paths: [], task: T-033 }
+    evidence:
+      - 'Initial review CHANGES REQUIRED (F1-F4); all findings resolved and T-033b re-review status APPROVE.'
+      - 'T-033b verified no weakened tests, secrets, debug artifacts, or public-contract leaks; final full gates passed by coordinator.'
+    reports: ['.agents/reports/T-033b-review.md']
+    open_risks: []
+    commit: null
+  - id: T-034
+    objective: 'Security sign-off for webhook, secrets, tunnel harness, and new UI surface.'
+    owner: security
+    dependencies: [T-029, T-030, T-032]
+    acceptance:
+      - 'Signature verification, secret handling, tunnel trust boundary, error disclosure, and resource limits assessed.'
+      - 'No committed secrets; no arbitrary script execution; explicit sign-off with residual risks.'
+    verification:
+      - 'Static review of final diff; no mutating checks.'
+    status: done
+    lease: { owner: security, paths: [], task: T-034 }
+    evidence:
+      - 'Initial review blocked on fake immutable provenance; ADR-006 implementation resolved the block; T-034b status APPROVED.'
+      - 'No critical/high findings; three low local-dev findings documented with pre-production gates.'
+    reports: ['.agents/reports/T-034b-security.md']
+    open_risks:
+      - 'Before hosted exposure: add webhook request timeouts/concurrency cap, validate WEBHOOK_SENDER_MODULE path, cap tunnel log buffer.'
+      - 'Before trusted immutable publication: implement Phase 8 registry-side verification and persistent dedup adapter.'
+    commit: null
+  - id: T-035
+    objective: 'Post-change performance measurement and sign-off.'
+    owner: performance
+    dependencies: [T-029, T-030, T-032]
+    acceptance:
+      - 'Baseline from T-027 compared with post-change measurements using the same commands.'
+      - 'No unexplained regression; explicit sign-off or required remediation.'
+    verification:
+      - 'Same measurement commands as T-027; report exact values.'
+    status: done
+    lease: { owner: performance, paths: [], task: T-035 }
+    evidence:
+      - 'T-035 APPROVED: no unexplained bundle/runtime regression; no new runtime dependencies; static web build remains successful.'
+      - 'Final test 19/19 tasks and build 11/11 tasks pass.'
+    reports: ['.agents/reports/T-035-performance.md']
+    open_risks: []
+    commit: null
+  - id: T-036
+    objective: 'Final ui-ux-designer visual and accessibility sign-off.'
+    owner: ui-ux-designer
+    dependencies: [T-032]
+    acceptance:
+      - 'Visual review and accessibility audit results confirmed against T-028 spec.'
+      - 'Explicit APPROVE / APPROVED_WITH_NOTES / REQUEST_CHANGES.'
+    verification:
+      - 'Review final diff and test evidence; no file modifications.'
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-036 }
+    evidence:
+      - 'T-036 APPROVED WITH LIMITATIONS: design/token match, nine states, semantics, focus, live regions, reduced motion, and static error copy confirmed by code review.'
+      - 'No browser screenshot/axe run; recorded limitation accepted as non-blocking.'
+    reports: ['.agents/reports/T-036-design.md']
+    open_risks: []
+    commit: null
+  - id: T-037
+    objective: 'Synchronize docs, ADRs, AGENTS.md locked table, READMEs, and TODO.md with verified phase state.'
+    owner: documenter
+    dependencies: [T-026, T-033, T-034, T-035, T-036]
+    scope:
+      [
+        'docs/**',
+        'README.md',
+        'CONTRIBUTING.md',
+        'apps/web/README.md',
+        'packages/github/README.md',
+        'packages/ui/README.md',
+        'AGENTS.md',
+        'TODO.md',
+      ]
+    acceptance:
+      - 'Local webhook/tunnel setup guide documented from verified final state.'
+      - 'Stale React 18/Next 14 claims corrected to ADR-001 decision; stale README/styles references corrected.'
+      - 'TODO.md checkboxes changed only where evidence verifies them; Phase 8 remains blocked.'
+    verification:
+      - 'pnpm format:check; cross-check claims against final diff and gate evidence.'
+    status: done
+    lease:
+      {
+        owner: documenter,
+        paths:
+          [
+            'docs/**',
+            'README.md',
+            'CONTRIBUTING.md',
+            'apps/web/README.md',
+            'packages/github/README.md',
+            'packages/ui/README.md',
+            'AGENTS.md',
+            'TODO.md',
+          ],
+        task: T-037,
+      }
+    evidence:
+      - 'docs/development/README.md Local Webhook Delivery section and packages/ui README corrections completed; doc report formatted.'
+      - 'T-037b updated TODO.md with verified status note and two newly verified boxes; Phase 8 remains blocked/unchecked; prettier exit 0.'
+    reports: ['.agents/reports/T-037-docs.md', '.agents/reports/T-037b-docs.md']
+    open_risks: []
+    commit: null
+  - id: T-038
+    objective: 'Coordinator integration: verify gates, inspect final diff, commit completed changes.'
+    owner: coordinator
+    dependencies: [T-037]
+    acceptance:
+      - 'All five repository gates pass on final tree.'
+      - 'Every acceptance criterion has recorded evidence; all sign-offs present; commit hash recorded.'
+    verification:
+      - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build; git status --short --branch.'
+    status: in_progress
+    lease: { owner: coordinator, paths: [], task: T-038 }
+    evidence:
+      - 'Final gates pass on final tree: format exit 0; lint 19/19; typecheck 19/19; test 19/19; build 11/11.'
+      - 'Test counts: root 9, tokens 6, UI 44, registry 74, tooling 55, CLI 205, github 27, registry-api 15.'
+      - 'Staged diff review and commit pending; commit hash to be recorded after commit.'
+    reports: ['.agents/reports/T-038-final.md']
+    open_risks: []
+    commit: null
 final_verification:
-  - 'pnpm format:check => exit 0'
-  - 'pnpm lint => exit 0 (19/19 tasks)'
-  - 'pnpm typecheck => exit 0 (19/19 tasks)'
-  - 'pnpm test => exit 0 (19/19 tasks; root 9, github 17, registry 74, tooling 30, tokens 6, ui 42, cli 205)'
-  - 'pnpm build => exit 0 (11/11 tasks)'
-  - 'pnpm dev (timeout) => GET http://localhost:3000/ => 200, 296KB HTML, no module-not-found'
-  - 'ui-ux-designer final sign-off => APPROVED_WITH_NON_BLOCKING_NOTES'
-  - 'foundation CI changes: security SECURE_WITH_MINOR, reviewer APPROVE'
+  - 'BASELINE 2026-11-21 @ b63b1b9 (coordinator, clean tree): pnpm format:check => exit 0; pnpm lint => 19/19; pnpm typecheck => 19/19; pnpm test => 19/19 (root 9, tokens 6, ui 42, github 17, registry 74, tooling 30, cli 205); pnpm build => 11/11 exit 0.'
+  - 'FINAL 2026-11-22 @ b63b1b9 + phase diff: pnpm format:check => exit 0; pnpm lint => 19/19; pnpm typecheck => 19/19; pnpm test => 19/19 (root 9, tokens 6, ui 44, registry 74, tooling 55, cli 205, github 27, registry-api 15); pnpm build => 11/11 exit 0.'
+  - 'Final web build emitted two non-fatal Turbopack warnings for dynamic filesystem access in apps/web/lib/registry-data.ts.'
+  - 'Sign-offs: reviewer APPROVE; security APPROVED; performance APPROVED; ui-ux-designer APPROVED WITH LIMITATIONS; architect ADR-005/ADR-006 complete.'
+  - 'pnpm dev baseline result at b63b1b9: GET http://localhost:3000/ => 200, 296KB HTML, no module-not-found.'
+  - 'Phase 8 remains intentionally blocked: no GitHub App credentials/secrets and no hosted publishing implementation.'
 open_risks:
-  - 'Phase 8 (GitHub App integration) intentionally skipped — no credentials/secrets; TODO.md documents blocker.'
-  - 'ADR-003/public types re-exported from internal/responsive (type-only) — reviewer minor, non-blocking.'
-  - 'UI build has no clean step for stale JS/.d.ts (copy-css handles stale CSS only) — reviewer minor, non-blocking.'
-  - 'Security low residuals: lexical symlink containment, hybrid-installer default overwrite (CLI path protected), npm lock root-only.'
+  - 'Phase 8 (GitHub App hosted integration and publishing) intentionally skipped — no credentials/secrets; TODO.md documents blocker.'
+  - 'Webhook delivery was tested with local signed fixtures; no real GitHub App webhook or quick-tunnel round trip was performed.'
+  - 'UI sign-off is code review plus recorded DOM markers; no browser screenshot, axe, Lighthouse, or screen-reader runtime pass.'
+  - 'Turbopack build warnings for dynamic filesystem access in apps/web/lib/registry-data.ts are non-fatal; static scoping/ignore comment is future hardening.'
+  - 'Before hosted exposure: add webhook request timeouts/concurrency cap, validate WEBHOOK_SENDER_MODULE path, and cap tunnel log buffer.'
+  - 'Before trusted immutable publication: implement Phase 8 registry-side verification, publisher binding, artifact/SHA match, once-only version write, and persistent dedup adapter.'
+  - 'repositoryId representation drift (URL vs GitHub node id) needs an ADR before Phase 8 publishes records.'
+  - 'Local provenance can still be forged by controlling untrusted env/manifest strings; ADR-006 accepts this because no immutable/verified claim is emitted and registry verification is mandatory in Phase 8.'
   - 'Transitive dependency advisory audits not run (read-only security review).'
-  - 'UI/UX non-blocking notes: border token 1.31:1 on input/secondary-button boundaries (label provides identification), narrow subtle/muted tone separation, stale stylesheet references in TODO.md:719 and packages/ui/README.md:11, dark-only theme intentional.'
   - 'Docker base image pinned by tag not digest (tag mutability low risk); Dependabot cannot exclude secondary package-lock.json (reviewer reconciliation per ADR-002 required).'
   - 'Release automation deferred by user; no publish workflow or registry/credentials decisions.'
-  - 'Untracked .idea/ IDE directory preserved and intentionally not committed.'
+  - 'Untracked .idea/ IDE directory is ignored/preserved and intentionally not committed.'
