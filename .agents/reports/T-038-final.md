@@ -31,6 +31,12 @@ Executed on the final tree before commit:
 - Coordinator added missing sign-off reports under `.agents/reports/**` and reconciled the ledger.
 - No push was performed; push requires explicit user authorization.
 
+## Commit
+
+- Integration commit: `9850027` on `feat/ui-foundation-hardening`.
+- Message: `feat(github): add credential-free webhook foundation and provenance hardening`.
+- Push intentionally not performed; explicit authorization is required.
+
 ## Residual risks
 
 - Phase 8 hosted publishing remains blocked without GitHub App credentials.

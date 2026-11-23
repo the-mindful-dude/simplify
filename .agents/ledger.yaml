@@ -1,7 +1,7 @@
 version: 1
 branch: feat/ui-foundation-hardening
 base_head: b63b1b9df85a9edea05cdee27f9610923159119b
-final_head: null
+final_head: 9850027
 objective: 'Deliver the credential-free local webhook foundation and Cloudflare Tunnel workflow, harden webhook processing and publication provenance, implement the status UI and documented residual fixes, synchronize documentation, verify all gates and sign-offs, and commit the completed phase.'
 user_decisions:
   - 'Next phase = complete Phase 9 (branch continuity); Phase 8 skipped (no GitHub credentials).'
@@ -53,6 +53,11 @@ commits:
       hash: fe3e2ab,
       task: 'T-013/T-014/T-015/T-016',
       message: 'fix: implement functional init, align npm lockfile, correct ADR status and format docs',
+    }
+  - {
+      hash: 9850027,
+      task: 'T-026/T-027/T-028/T-029/T-030/T-031/T-032/T-033/T-034/T-035/T-036/T-037/T-038',
+      message: 'feat(github): add credential-free webhook foundation and provenance hardening',
     }
 tasks:
   - id: T-001
@@ -688,15 +693,16 @@ tasks:
       - 'Every acceptance criterion has recorded evidence; all sign-offs present; commit hash recorded.'
     verification:
       - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build; git status --short --branch.'
-    status: in_progress
+    status: done
     lease: { owner: coordinator, paths: [], task: T-038 }
     evidence:
       - 'Final gates pass on final tree: format exit 0; lint 19/19; typecheck 19/19; test 19/19; build 11/11.'
       - 'Test counts: root 9, tokens 6, UI 44, registry 74, tooling 55, CLI 205, github 27, registry-api 15.'
-      - 'Staged diff review and commit pending; commit hash to be recorded after commit.'
+      - 'Staged diff inspected; 72 files, 4517 insertions, 373 deletions; no secrets, debug artifacts, unrelated files, or user changes lost.'
+      - 'Integration commit 9850027 created on feat/ui-foundation-hardening; push intentionally not performed without explicit authorization.'
     reports: ['.agents/reports/T-038-final.md']
     open_risks: []
-    commit: null
+    commit: 9850027
 final_verification:
   - 'BASELINE 2026-11-21 @ b63b1b9 (coordinator, clean tree): pnpm format:check => exit 0; pnpm lint => 19/19; pnpm typecheck => 19/19; pnpm test => 19/19 (root 9, tokens 6, ui 42, github 17, registry 74, tooling 30, cli 205); pnpm build => 11/11 exit 0.'
   - 'FINAL 2026-11-22 @ b63b1b9 + phase diff: pnpm format:check => exit 0; pnpm lint => 19/19; pnpm typecheck => 19/19; pnpm test => 19/19 (root 9, tokens 6, ui 44, registry 74, tooling 55, cli 205, github 27, registry-api 15); pnpm build => 11/11 exit 0.'
