@@ -50,6 +50,12 @@ owners:
   - path: docs/**
     owner: documenter
     task: I-F1.5
+  - path: .agents/decisions/ADR-00[7-9]-*.md
+    owner: documenter
+    task: I-F1.5
+  - path: .agents/decisions/ADR-01[0-5]-*.md
+    owner: documenter
+    task: I-F1.5
   - path: README.md
     owner: documenter
     task: I-F1.5
