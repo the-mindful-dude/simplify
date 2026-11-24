@@ -3,10 +3,62 @@ version: 1
 owners:
   - path: .github/workflows/ci.yml
     owner: foundation
-    task: T-022
+    task: I-F1.1
   - path: Dockerfile
     owner: foundation
     task: T-022
   - path: .github/dependabot.yml
     owner: foundation
     task: T-022
+  # --- Phase 1 implementation leases (FE-FOUNDATION-2026-11) ---
+  - path: pnpm-workspace.yaml
+    owner: foundation
+    task: I-F1.1
+  - path: turbo.json
+    owner: foundation
+    task: I-F1.1
+  - path: tsconfig.base.json
+    owner: foundation
+    task: I-F1.1
+  - path: eslint.config.mjs
+    owner: foundation
+    task: I-F1.1
+  - path: scripts/**
+    owner: foundation
+    task: I-F1.1
+  - path: modules/core/**
+    owner: coder
+    task: I-F1.2
+  - path: packages/registry/**
+    owner: coder
+    task: I-F1.3
+  - path: modules/registry/**
+    owner: coder
+    task: I-F1.4
+  - path: apps/web/lib/registry-data.ts
+    owner: coder
+    task: I-F1.4
+  - path: apps/web/lib/catalog.ts
+    owner: coder
+    task: I-F1.4
+  - path: apps/web/lib/types.ts
+    owner: coder
+    task: I-F1.4
+  - path: AGENTS.md
+    owner: documenter
+    task: I-F1.5
+  - path: docs/**
+    owner: documenter
+    task: I-F1.5
+  - path: README.md
+    owner: documenter
+    task: I-F1.5
+  - path: packages/blocks/package.json
+    owner: bugfixer
+    task: I-F1.6
+  - path: package-lock.json
+    owner: bugfixer
+    task: I-F1.6
+  - path: pnpm-lock.yaml
+    owner: bugfixer
+    task: I-F1.6

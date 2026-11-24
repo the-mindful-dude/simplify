@@ -796,3 +796,126 @@ planning_phase:
         - 'All 8 user decisions + addenda recorded in .agents/decisions/DECISION-FE-FOUNDATION-001.md.'
         - 'No source/test/config/docs/TODO/AGENTS changes made; planning only.'
   commit: c4d2a95
+
+# --- Phase 1 implementation (authorized 2026-11-24; user said "proceed") ---
+implementation_phase:
+  plan: '.agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md'
+  decisions:
+    - '.agents/decisions/DECISION-FE-FOUNDATION-002.md'
+  scope: 'F1.0-F1.6 only; later phases require separate authorization'
+  tasks:
+    - id: I-F1.0
+      objective: 'Fresh baseline gates + read-only registry artifact-layout verification.'
+      owner: coordinator
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'Fresh baseline gate results recorded with exact commands/outcomes.'
+        - 'Canonical artifact layout verified with file:line and command evidence.'
+      verification:
+        - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
+      status: in_progress
+      lease: null
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.1
+      objective: 'Workspace wiring, private module manifests, report-only boundary/export/hex/JSX gates.'
+      owner: foundation
+      reviewer: null
+      signoff: []
+      dependencies: [I-F1.0]
+      acceptance:
+        - 'modules/* in pnpm-workspace.yaml; all module manifests private with deliberate exports.'
+        - 'Gates run report-only; CI wired; zero current forbidden edges.'
+      verification:
+        - 'pnpm format:check && pnpm lint; boundary checker output'
+      status: not_started
+      lease: { owner: foundation, paths: [pnpm-workspace.yaml, turbo.json, tsconfig.base.json, eslint.config.mjs, .github/workflows/ci.yml, scripts/**], task: I-F1.1 }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.2
+      objective: 'Implement modules/core pure contracts and scoped QueryClient factory.'
+      owner: coder
+      reviewer: null
+      signoff: []
+      dependencies: [I-F1.1]
+      acceptance:
+        - 'No I/O, React components, next/* or domain entities in core.'
+        - 'Tests prove distinct QueryClient instances and pure contracts.'
+      verification:
+        - 'pnpm --filter @simplify-dev/module-core test|typecheck|lint; boundary checker'
+      status: not_started
+      lease: { owner: coder, paths: [modules/core/**], task: I-F1.2 }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.3
+      objective: 'Add registry artifact resolver and correct RegistryClient path with tests.'
+      owner: coder
+      reviewer: null
+      signoff: []
+      dependencies: [I-F1.0]
+      acceptance:
+        - 'One resolver; CLI and web resolve the same checked-in asset; client.test.ts updated with justification.'
+      verification:
+        - 'pnpm --filter @simplify-dev/registry test; pnpm --filter @simplify-dev/cli test; pnpm typecheck'
+      status: not_started
+      lease: { owner: coder, paths: [packages/registry/**], task: I-F1.3 }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.4
+      objective: 'Create frontend modules/registry with repository port, server adapter, queries and view mapping.'
+      owner: coder
+      reviewer: null
+      signoff: []
+      dependencies: [I-F1.2, I-F1.3]
+      acceptance:
+        - 'Only module-registry/server reads fs; server-only assertion passes; web page unchanged; no duplicated validation.'
+      verification:
+        - 'module tests; pnpm --filter @simplify-dev/web build; boundary checker'
+      status: not_started
+      lease: { owner: coder, paths: [modules/registry/**, apps/web/lib/registry-data.ts, apps/web/lib/catalog.ts, apps/web/lib/types.ts], task: I-F1.4 }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.5
+      objective: 'Reconcile framework docs/ADRs and ratify ADR-007..015.'
+      owner: documenter
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'Zero stale React 18/Next 14 claims; ADR index lists 001..015; module conventions documented.'
+      verification:
+        - 'pnpm format:check; cross-check claims against code'
+      status: not_started
+      lease: { owner: documenter, paths: [AGENTS.md, docs/**, README.md], task: I-F1.5 }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.6
+      objective: 'Fix blocks React 19 peers and stale web/token READMEs; verify unused blocks dependency.'
+      owner: bugfixer
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'No React 18 peers; accurate READMEs; both lockfiles consistent; gates pass.'
+      verification:
+        - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
+      status: not_started
+      lease: { owner: bugfixer, paths: [packages/blocks/**, package-lock.json, pnpm-lock.yaml, apps/web/README.md, packages/tokens/README.md], task: I-F1.6 }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
