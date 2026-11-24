@@ -26,12 +26,12 @@ Forces: a new animation library must add capability CSS cannot provide, must not
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| CSS-only for all motion | Sufficient for hover/collapse but not for coordinated presence/exit and interruptible orchestration; user explicitly approved Motion for React. |
-| Framer Motion alongside Motion | Competing/duplicate dependency; same capability; violates `AGENTS.md:103`. |
-| Global animation provider in `packages/ui` | Would force the runtime on every consumer and violate "no mandatory global providers" (`AGENTS.md:338`, `ADR-003:58`). |
-| Motion values hardcoded in components | Duplicates token source and breaks theming (`AGENTS.md:328`, `ADR-003:30`). |
+| Alternative                                | Why rejected                                                                                                                                    |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| CSS-only for all motion                    | Sufficient for hover/collapse but not for coordinated presence/exit and interruptible orchestration; user explicitly approved Motion for React. |
+| Framer Motion alongside Motion             | Competing/duplicate dependency; same capability; violates `AGENTS.md:103`.                                                                      |
+| Global animation provider in `packages/ui` | Would force the runtime on every consumer and violate "no mandatory global providers" (`AGENTS.md:338`, `ADR-003:58`).                          |
+| Motion values hardcoded in components      | Duplicates token source and breaks theming (`AGENTS.md:328`, `ADR-003:30`).                                                                     |
 
 ## Consequences
 
@@ -54,11 +54,11 @@ Added: `modules/app -> motion` (React entry). No edge from `modules/core`, domai
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Motion leaks into published UI package | medium | medium | Boundary check forbids `motion` in `packages/*`; ADR amendment required | architect |
-| Reduced-motion not honored in one surface | medium | high | Shared guard hook, mandatory test per surface | implementer |
-| Bundle size regression | medium | medium | Dynamic import optional capability; measure before optimizing further | performance reviewer |
+| Risk                                      | Likelihood | Impact | Mitigation                                                              | Owner                |
+| ----------------------------------------- | ---------- | ------ | ----------------------------------------------------------------------- | -------------------- |
+| Motion leaks into published UI package    | medium     | medium | Boundary check forbids `motion` in `packages/*`; ADR amendment required | architect            |
+| Reduced-motion not honored in one surface | medium     | high   | Shared guard hook, mandatory test per surface                           | implementer          |
+| Bundle size regression                    | medium     | medium | Dynamic import optional capability; measure before optimizing further   | performance reviewer |
 
 ## Verification
 

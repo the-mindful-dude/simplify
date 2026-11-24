@@ -20,7 +20,7 @@ Forces: the user's later decision is authoritative for the new scope, but the ea
 
 1. Add `modules/*` to `pnpm-workspace.yaml` and create **private** (`"private": true`) packages named `@simplify-dev/module-<name>`. They are application-internal workspace packages, never published contracts.
 2. Create now, with real code in the first implementation increment:
-   - `modules/core` — cross-domain contracts and pure infrastructure (query-client factory, structured `AsyncState`/`RepositoryError`, `APP_ROUTES`, navigation/workspace *types*, minimal fixture repository helper). No I/O, no React components, no domain entity types, no `next/*`.
+   - `modules/core` — cross-domain contracts and pure infrastructure (query-client factory, structured `AsyncState`/`RepositoryError`, `APP_ROUTES`, navigation/workspace _types_, minimal fixture repository helper). No I/O, no React components, no domain entity types, no `next/*`.
    - `modules/app` — application shell, nav config, sidebar composition, providers, command/mobile hosts. Depends on `core` + `@simplify-dev/ui` + `@tanstack/react-query`. Only `modules/app` and `apps/web` may import `next/*`; domain modules must not.
    - `modules/registry` (frontend feature module) — registry repository port, query keys, hooks and view mappers; real on-disk adapter behind a deliberate `./server` subpath. Depends on `core` + `@simplify-dev/registry` (canonical types/client) + `@tanstack/react-query`.
 3. Create later, only when their own queries/components/fixtures exist: `modules/dashboard`, `modules/assets`, `modules/collections`, `modules/compositions`, `modules/publishers`, `modules/settings`. Do not create placeholder packages or `modules/auth` (visual-only auth pages belong to `apps/web` route files).
@@ -29,13 +29,13 @@ Forces: the user's later decision is authoritative for the new scope, but the ea
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| One `modules/web` god package containing shell, data and all domains | Violates `AGENTS.md:196` (god modules), `AGENTS.md:180-181` (one responsibility) and the user's no-duplication rule; makes single-ownership unenforceable. |
-| Create all nine modules immediately with placeholder exports | Violates `AGENTS.md:379-383` ("no fake implementations", "do not create packages merely to organize files"); DECISION-004's original rationale remains valid for empty shells. |
-| Keep everything app-local in `apps/web` (status-quo precedent) | Contradicts the later explicit user decision (DECISION-FE-FOUNDATION-001:11) and concentrates filter/sort/detail state in `registry-browser.tsx:90-108,235-307`. |
-| Put shell/nav in `packages/ui` because it is visual | `packages/ui` owns reusable primitives, not route/workspace policy (ADR-003:33-45); would leak app concerns into a published package. |
-| Let domains depend on `modules/app` for shell types | Creates a cycle (`app` composes domains at the route level) and inverts the agreed direction. |
+| Alternative                                                          | Why rejected                                                                                                                                                                   |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| One `modules/web` god package containing shell, data and all domains | Violates `AGENTS.md:196` (god modules), `AGENTS.md:180-181` (one responsibility) and the user's no-duplication rule; makes single-ownership unenforceable.                     |
+| Create all nine modules immediately with placeholder exports         | Violates `AGENTS.md:379-383` ("no fake implementations", "do not create packages merely to organize files"); DECISION-004's original rationale remains valid for empty shells. |
+| Keep everything app-local in `apps/web` (status-quo precedent)       | Contradicts the later explicit user decision (DECISION-FE-FOUNDATION-001:11) and concentrates filter/sort/detail state in `registry-browser.tsx:90-108,235-307`.               |
+| Put shell/nav in `packages/ui` because it is visual                  | `packages/ui` owns reusable primitives, not route/workspace policy (ADR-003:33-45); would leak app concerns into a published package.                                          |
+| Let domains depend on `modules/app` for shell types                  | Creates a cycle (`app` composes domains at the route level) and inverts the agreed direction.                                                                                  |
 
 ## Consequences
 
@@ -62,11 +62,11 @@ Removed edges: none. Changed edge: none. Published package graph unchanged. `app
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| `core` becomes a dumping ground | medium | high | Explicit export allowlist in its `package.json`; reject imports of domain entity types; boundary check asserts no `node:fs`/`next/*` in `core` | architect + implementer |
-| Modules accidentally published | low | high | `"private": true` on every module manifest; CI assertion | foundation |
-| Prior DECISION-004 §2 read as still forbidding modules | medium | medium | This ADR records the supersession and rationale; coordinator briefs all agents | coordinator |
+| Risk                                                   | Likelihood | Impact | Mitigation                                                                                                                                     | Owner                   |
+| ------------------------------------------------------ | ---------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `core` becomes a dumping ground                        | medium     | high   | Explicit export allowlist in its `package.json`; reject imports of domain entity types; boundary check asserts no `node:fs`/`next/*` in `core` | architect + implementer |
+| Modules accidentally published                         | low        | high   | `"private": true` on every module manifest; CI assertion                                                                                       | foundation              |
+| Prior DECISION-004 §2 read as still forbidding modules | medium     | medium | This ADR records the supersession and rationale; coordinator briefs all agents                                                                 | coordinator             |
 
 ## Verification
 

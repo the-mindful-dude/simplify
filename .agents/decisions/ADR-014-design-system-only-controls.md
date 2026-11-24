@@ -29,12 +29,12 @@ Forces: semantic HTML is still required for accessibility, but it must be emitte
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| Allow native controls where convenient | Directly contradicts `DECISION-FE-FOUNDATION-001.md:21` and produces inconsistent styling/a11y. |
-| Per-page wrapper components | Duplicates logic across routes; violates single-owner rule (`AGENTS.md:196,499`). |
-| Enforce by review only | Not mechanical; drifts as pages are added; `technical-standards.md:127` already expects automated boundary checks. |
-| CSS-only reset to hide native controls | Does not address semantics, keyboard behavior or duplicated logic; insufficient. |
+| Alternative                            | Why rejected                                                                                                       |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Allow native controls where convenient | Directly contradicts `DECISION-FE-FOUNDATION-001.md:21` and produces inconsistent styling/a11y.                    |
+| Per-page wrapper components            | Duplicates logic across routes; violates single-owner rule (`AGENTS.md:196,499`).                                  |
+| Enforce by review only                 | Not mechanical; drifts as pages are added; `technical-standards.md:127` already expects automated boundary checks. |
+| CSS-only reset to hide native controls | Does not address semantics, keyboard behavior or duplicated logic; insufficient.                                   |
 
 ## Consequences
 
@@ -57,11 +57,11 @@ Added: `apps/web -> @simplify-dev/ui` (only for UI composition); `modules/app ->
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Legitimate semantic element blocked by rule | medium | low | Scoped intrinsic list + documented exemption in `packages/ui` only | foundation |
-| Rule added but existing violations remain | high | medium | Report-only run, defect task, CI fail after clean baseline | reviewer |
-| Missing primitives encourage workarounds | medium | high | Ship primitives before enabling hard fail | implementer |
+| Risk                                        | Likelihood | Impact | Mitigation                                                         | Owner       |
+| ------------------------------------------- | ---------- | ------ | ------------------------------------------------------------------ | ----------- |
+| Legitimate semantic element blocked by rule | medium     | low    | Scoped intrinsic list + documented exemption in `packages/ui` only | foundation  |
+| Rule added but existing violations remain   | high       | medium | Report-only run, defect task, CI fail after clean baseline         | reviewer    |
+| Missing primitives encourage workarounds    | medium     | high   | Ship primitives before enabling hard fail                          | implementer |
 
 ## Verification
 

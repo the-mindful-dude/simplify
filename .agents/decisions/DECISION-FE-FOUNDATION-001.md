@@ -5,6 +5,7 @@ Owner: coordinator
 Related: T-P003, T-P004, T-P005
 
 ## User decisions (verbatim choice labels)
+
 1. Plan scope — **Detail all 7 phases now**: full task-level specs, acceptance criteria, and validation for every phase, not just the foundation.
 2. Palette policy — **Evolve tokens, preserve a11y**: map the guide's visual direction into the canonical token source, add radius/control-height tokens, regenerate, re-verify WCAG.
 3. Dependencies — **All proposed libraries**: TanStack Query, Motion for React, Radix Context Menu, and cmdk, each justified with an ADR under AGENTS.md Section 3.
@@ -15,6 +16,7 @@ Related: T-P003, T-P004, T-P005
 8. Defects — **Yes, bounded remediation**: all discovered pre-existing defects get owned tasks with tests plus a fresh baseline gate run; AGENTS.md/ADR text changes require an ADR.
 
 ## User addenda (same session, after the Q&A)
+
 - Sidebar must have **hover animations** and be **collapsible**.
 - No logic or component may be **duplicated everywhere**; establish single ownership and reuse deliberately.
 - Work must be **professional**.
@@ -22,4 +24,5 @@ Related: T-P003, T-P004, T-P005
 - **Update design rules/docs to the current implementation**: stale AGENTS.md/technical-standards/README/ADR statements must be reconciled as part of the work.
 
 ## Hard constraint carried from the user's original message
+
 - `modules/registry/` (frontend domain module) is **not** `apps/registry-api/` (Node webhook ingestion service). They must remain distinct in all plans, docs, and agent briefs.

@@ -27,12 +27,12 @@ Forces: a command palette is a third-party UI engine, must be isolated behind th
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
+| Alternative                                   | Why rejected                                                                                                                                       |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Build a palette from hand-rolled input + list | Reimplements cmdk's filtering, keyboard and a11y behavior; duplicates logic; fails the user's no-native-controls rule if a bare `<input>` is used. |
-| Import cmdk directly in `apps/web` pages | Leaks third-party code into pages, duplicates wrappers across routes, violates ADR-003's single component home. |
-| A second palette library | Competing tool; violates `AGENTS.md:103`. |
-| Hardcoded command list | Fake implementation (`AGENTS.md:505-527`) and a second navigation source of truth. |
+| Import cmdk directly in `apps/web` pages      | Leaks third-party code into pages, duplicates wrappers across routes, violates ADR-003's single component home.                                    |
+| A second palette library                      | Competing tool; violates `AGENTS.md:103`.                                                                                                          |
+| Hardcoded command list                        | Fake implementation (`AGENTS.md:505-527`) and a second navigation source of truth.                                                                 |
 
 ## Consequences
 
@@ -55,11 +55,11 @@ Added: `packages/ui -> cmdk`; `modules/app -> @simplify-dev/ui` (planned), `modu
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Command duplication (sidebar vs palette) | medium | high | Single `Command[]` built from `navConfig` + registry hooks in the composition root; no per-page command arrays | architect |
-| cmdk imported outside `packages/ui` | low | medium | ESLint no-restricted-imports for `cmdk` outside `packages/ui/src/**` | foundation |
-| Fake/static commands shipped | medium | medium | Acceptance test that palette results come from repository-backed hooks; fixtures only in tests | reviewer |
+| Risk                                     | Likelihood | Impact | Mitigation                                                                                                     | Owner      |
+| ---------------------------------------- | ---------- | ------ | -------------------------------------------------------------------------------------------------------------- | ---------- |
+| Command duplication (sidebar vs palette) | medium     | high   | Single `Command[]` built from `navConfig` + registry hooks in the composition root; no per-page command arrays | architect  |
+| cmdk imported outside `packages/ui`      | low        | medium | ESLint no-restricted-imports for `cmdk` outside `packages/ui/src/**`                                           | foundation |
+| Fake/static commands shipped             | medium     | medium | Acceptance test that palette results come from repository-backed hooks; fixtures only in tests                 | reviewer   |
 
 ## Verification
 

@@ -18,19 +18,19 @@ Forces: context-menu behavior (right-click, keyboard `ContextMenu` key, focus ma
 ## Decision
 
 1. Add `@radix-ui/react-context-menu` to `packages/ui` and expose a **single** `ContextMenu` compound component with item/group/sub/separator/checkbox/radio parts consistent with the existing `DropdownMenu` API shape (`packages/ui/src/index.ts:74-95`).
-2. `packages/ui` owns the primitive, its CSS Module, keyboard/focus/a11y tests and README. `modules/app` owns the *action definitions* for sidebar items (one set of actions, used by both the context menu and any overflow dropdown via shared data).
+2. `packages/ui` owns the primitive, its CSS Module, keyboard/focus/a11y tests and README. `modules/app` owns the _action definitions_ for sidebar items (one set of actions, used by both the context menu and any overflow dropdown via shared data).
 3. Visual styling consumes `var(--sd-*)` tokens only; no hardcoded colors; `"use client"` only in the interactive entry module, consistent with the existing overlay pattern.
 4. Where the same action list can be rendered as a dropdown, share the action **data** (and the item renderer) rather than duplicating JSX; do not create a second generic "menu system".
 5. This extends the locked Radix decision rather than changing it; no competing headless menu library is introduced.
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| Hand-rolled context menu with `onContextMenu` + absolutely positioned div | Fails keyboard/focus/overlay semantics required by `technical-standards.md:143-153` and duplicates Radix behavior. |
-| Reuse DropdownMenu only (trigger on right-click) | DropdownMenu does not own the context-menu keyboard/focus contract; forces custom event hacks. |
-| Put ContextMenu in `modules/app` | Would create a second component system outside the canonical `packages/ui` home (ADR-003:35), violating the no-duplication rule. |
-| Add a second headless menu library | Violates `AGENTS.md:97,103` and ADR-003:54. |
+| Alternative                                                               | Why rejected                                                                                                                     |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Hand-rolled context menu with `onContextMenu` + absolutely positioned div | Fails keyboard/focus/overlay semantics required by `technical-standards.md:143-153` and duplicates Radix behavior.               |
+| Reuse DropdownMenu only (trigger on right-click)                          | DropdownMenu does not own the context-menu keyboard/focus contract; forces custom event hacks.                                   |
+| Put ContextMenu in `modules/app`                                          | Would create a second component system outside the canonical `packages/ui` home (ADR-003:35), violating the no-duplication rule. |
+| Add a second headless menu library                                        | Violates `AGENTS.md:97,103` and ADR-003:54.                                                                                      |
 
 ## Consequences
 
@@ -53,11 +53,11 @@ Added: `packages/ui -> @radix-ui/react-context-menu`; `modules/app -> @simplify-
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Divergent styling from DropdownMenu | medium | low | Share token-driven style module conventions; visual regression test | ui-ux implementer |
-| Duplicate action definitions in app and pages | medium | medium | Boundary/review rule: actions declared once in `modules/app`; pages import data, not JSX copies | architect |
-| Missing keyboard test | low | high | Required RTL test covering ContextMenu key, arrow navigation, Escape, focus restore | implementer |
+| Risk                                          | Likelihood | Impact | Mitigation                                                                                      | Owner             |
+| --------------------------------------------- | ---------- | ------ | ----------------------------------------------------------------------------------------------- | ----------------- |
+| Divergent styling from DropdownMenu           | medium     | low    | Share token-driven style module conventions; visual regression test                             | ui-ux implementer |
+| Duplicate action definitions in app and pages | medium     | medium | Boundary/review rule: actions declared once in `modules/app`; pages import data, not JSX copies | architect         |
+| Missing keyboard test                         | low        | high   | Required RTL test covering ContextMenu key, arrow navigation, Escape, focus restore             | implementer       |
 
 ## Verification
 

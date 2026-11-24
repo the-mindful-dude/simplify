@@ -815,11 +815,17 @@ implementation_phase:
         - 'Canonical artifact layout verified with file:line and command evidence.'
       verification:
         - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
-      status: in_progress
+      status: done
       lease: null
-      evidence: []
-      reports: []
-      open_risks: []
+      evidence:
+        - 'BASELINE_EXIT:0 on re-run; format 1/1, lint 19/19, typecheck 19/19, test 19/19 plus 9 root tests, build 11/11; 2 known Turbopack warnings at apps/web/lib/registry-data.ts:146,160.'
+        - 'First baseline attempt failed on 17 unformatted coordinator .agents files; fixed with pnpm exec prettier --write ".agents/**/*.{md,yaml}".'
+        - 'Read-only explore verification: canonical registry/<category>/<name>/@<version>/asset.json; client doubling defect at packages/registry/src/client/index.ts:57-63 confirmed by runtime probe.'
+      reports:
+        - '.agents/reports/I-F1.0-artifact-verification.md'
+      open_risks:
+        - 'Published on-disk artifact layout undefined; F1.3 implements source-v1 and rejects unsupported layouts instead of inventing a shape.'
+        - 'CLI source installs still lack tracked asset source files (registry/ui/button/@1.0.0/src/button.tsx absent).'
       commit: null
     - id: I-F1.1
       objective: 'Workspace wiring, private module manifests, report-only boundary/export/hex/JSX gates.'
@@ -833,7 +839,20 @@ implementation_phase:
       verification:
         - 'pnpm format:check && pnpm lint; boundary checker output'
       status: not_started
-      lease: { owner: foundation, paths: [pnpm-workspace.yaml, turbo.json, tsconfig.base.json, eslint.config.mjs, .github/workflows/ci.yml, scripts/**], task: I-F1.1 }
+      lease:
+        {
+          owner: foundation,
+          paths:
+            [
+              pnpm-workspace.yaml,
+              turbo.json,
+              tsconfig.base.json,
+              eslint.config.mjs,
+              .github/workflows/ci.yml,
+              scripts/**,
+            ],
+          task: I-F1.1,
+        }
       evidence: []
       reports: []
       open_risks: []
@@ -882,7 +901,18 @@ implementation_phase:
       verification:
         - 'module tests; pnpm --filter @simplify-dev/web build; boundary checker'
       status: not_started
-      lease: { owner: coder, paths: [modules/registry/**, apps/web/lib/registry-data.ts, apps/web/lib/catalog.ts, apps/web/lib/types.ts], task: I-F1.4 }
+      lease:
+        {
+          owner: coder,
+          paths:
+            [
+              modules/registry/**,
+              apps/web/lib/registry-data.ts,
+              apps/web/lib/catalog.ts,
+              apps/web/lib/types.ts,
+            ],
+          task: I-F1.4,
+        }
       evidence: []
       reports: []
       open_risks: []
@@ -914,7 +944,19 @@ implementation_phase:
       verification:
         - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
       status: not_started
-      lease: { owner: bugfixer, paths: [packages/blocks/**, package-lock.json, pnpm-lock.yaml, apps/web/README.md, packages/tokens/README.md], task: I-F1.6 }
+      lease:
+        {
+          owner: bugfixer,
+          paths:
+            [
+              packages/blocks/**,
+              package-lock.json,
+              pnpm-lock.yaml,
+              apps/web/README.md,
+              packages/tokens/README.md,
+            ],
+          task: I-F1.6,
+        }
       evidence: []
       reports: []
       open_risks: []

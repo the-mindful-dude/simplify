@@ -30,12 +30,12 @@ Forces: global navigation policy must not be duplicated across pages or domains;
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| Put `AppSidebar` directly in `apps/web` | Duplicates nav policy across route files, couples shell to Next.js internals, violates module boundary and ADR-007. |
-| Put nav routes and workspace policy inside `packages/ui` | Policy leak: published UI would depend on application routes/contracts; violates ADR-003:33-45. |
-| Let each domain render its own menu items as components | Creates competing nav representations and cross-module imports; no single owner. |
-| Reuse `registry-browser.tsx` Tabs as global nav | Confuses content filters with application navigation; duplicates state and accessibility contracts. |
+| Alternative                                              | Why rejected                                                                                                        |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Put `AppSidebar` directly in `apps/web`                  | Duplicates nav policy across route files, couples shell to Next.js internals, violates module boundary and ADR-007. |
+| Put nav routes and workspace policy inside `packages/ui` | Policy leak: published UI would depend on application routes/contracts; violates ADR-003:33-45.                     |
+| Let each domain render its own menu items as components  | Creates competing nav representations and cross-module imports; no single owner.                                    |
+| Reuse `registry-browser.tsx` Tabs as global nav          | Confuses content filters with application navigation; duplicates state and accessibility contracts.                 |
 
 ## Consequences
 
@@ -58,12 +58,12 @@ Added: `modules/app -> @simplify-dev/ui`; `apps/web -> modules/app`. Added to `p
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Duplicate nav state between header and sidebar | medium | high | Single `navConfig`; ESLint ownership rule; review of composition root only | architect |
-| Core becomes a dumping ground for nav types | low | medium | Export allowlist; boundary checker | foundation |
-| Motion leaks into `packages/ui` or pages | medium | medium | ADR-009 guard; dependency assertion | reviewer |
-| Mobile nav uses native dialog/details | medium | medium | ADR-014 lint rule; ui `Drawer` only | foundation |
+| Risk                                           | Likelihood | Impact | Mitigation                                                                 | Owner      |
+| ---------------------------------------------- | ---------- | ------ | -------------------------------------------------------------------------- | ---------- |
+| Duplicate nav state between header and sidebar | medium     | high   | Single `navConfig`; ESLint ownership rule; review of composition root only | architect  |
+| Core becomes a dumping ground for nav types    | low        | medium | Export allowlist; boundary checker                                         | foundation |
+| Motion leaks into `packages/ui` or pages       | medium     | medium | ADR-009 guard; dependency assertion                                        | reviewer   |
+| Mobile nav uses native dialog/details          | medium     | medium | ADR-014 lint rule; ui `Drawer` only                                        | foundation |
 
 ## Verification
 

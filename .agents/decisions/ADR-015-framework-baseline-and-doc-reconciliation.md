@@ -28,12 +28,12 @@ Forces: code must target the accepted runtime, documentation must not contradict
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| Downgrade code/docs to React 18 / Next 14 | Contradicts accepted ADR-001 and installed deps; would remove shipped functionality. |
-| Edit `AGENTS.md` in this task | Violates T-P004 lease and AGENTS.md:39-41 conflict-resolution rule; requires explicit approval. |
-| Ignore stale docs | Guarantees future agents implement against the wrong baseline; violates AGENTS.md:817-833. |
-| Treat ADR-005/006 as authoritative without transcription | Leaves `docs/architecture/` incomplete; ledger evidence contradicts reality. |
+| Alternative                                              | Why rejected                                                                                    |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Downgrade code/docs to React 18 / Next 14                | Contradicts accepted ADR-001 and installed deps; would remove shipped functionality.            |
+| Edit `AGENTS.md` in this task                            | Violates T-P004 lease and AGENTS.md:39-41 conflict-resolution rule; requires explicit approval. |
+| Ignore stale docs                                        | Guarantees future agents implement against the wrong baseline; violates AGENTS.md:817-833.      |
+| Treat ADR-005/006 as authoritative without transcription | Leaves `docs/architecture/` incomplete; ledger evidence contradicts reality.                    |
 
 ## Consequences
 
@@ -56,11 +56,11 @@ No module or package edge added/removed. Public surface unchanged. Documentation
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Doc task not scheduled | medium | high | Explicit condition C4 in T-P004 report; coordinator tracking | coordinator |
-| Implementers follow stale `AGENTS.md:90` | high | medium | Chat/ADR sign-off states ADR-001 authoritative until doc task lands | architect |
-| Lockfile churn from peer fix | medium | low | ADR-002 dual-lockfile policy; verify both files | implementer |
+| Risk                                     | Likelihood | Impact | Mitigation                                                          | Owner       |
+| ---------------------------------------- | ---------- | ------ | ------------------------------------------------------------------- | ----------- |
+| Doc task not scheduled                   | medium     | high   | Explicit condition C4 in T-P004 report; coordinator tracking        | coordinator |
+| Implementers follow stale `AGENTS.md:90` | high       | medium | Chat/ADR sign-off states ADR-001 authoritative until doc task lands | architect   |
+| Lockfile churn from peer fix             | medium     | low    | ADR-002 dual-lockfile policy; verify both files                     | implementer |
 
 ## Verification
 

@@ -103,7 +103,7 @@ No ADR was written for routine local changes; all nine are structural (boundarie
 ## Open questions
 
 - Exact 7-phase titles/acceptance criteria are not in the repository — matters because T-P005 must own the implementation plan; user-provided guide is the only source.
-- Which layout is canonical for *published* artifacts — matters because ADR-012 must not enshrine the wrong path; needs read-only verification.
+- Which layout is canonical for _published_ artifacts — matters because ADR-012 must not enshrine the wrong path; needs read-only verification.
 - Notification/Toast mechanism was not approved (token exists at `tokens.json:86`, no implementation) — matters because it could introduce another dependency; requires decision before implementation.
 - Workspace persistence mechanism and privacy posture — matters because `useSidebarState` needs an injected port, not an ambient global.
 - Whether client refetch requires a new route handler/server action — matters because it adds an HTTP surface; must reuse the same repository if introduced.

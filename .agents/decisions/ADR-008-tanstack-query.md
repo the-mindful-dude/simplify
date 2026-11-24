@@ -27,12 +27,12 @@ Forces: the redesign needs domain-owned loading/error/empty states, request dedu
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
+| Alternative                                                 | Why rejected                                                                                                                                                        |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Continue prop-drilling the snapshot with `useState` filters | Keeps data/filter logic in one client component (`registry-browser.tsx:90-108`), blocks domain ownership of states and invalidation; does not satisfy the redesign. |
-| SWR / Redux / Zustand | Adds a competing tool with no requirement; violates `AGENTS.md:103`. |
-| Hand-rolled cache in `modules/core` | Duplicates a mature, tested capability and invites unbounded shared mutable state; rejected per abstraction-at-boundaries rule. |
-| Module-global QueryClient | Leaks cache between SSR requests and users; violates isolation and horizontal-scaling requirements. |
+| SWR / Redux / Zustand                                       | Adds a competing tool with no requirement; violates `AGENTS.md:103`.                                                                                                |
+| Hand-rolled cache in `modules/core`                         | Duplicates a mature, tested capability and invites unbounded shared mutable state; rejected per abstraction-at-boundaries rule.                                     |
+| Module-global QueryClient                                   | Leaks cache between SSR requests and users; violates isolation and horizontal-scaling requirements.                                                                 |
 
 ## Consequences
 
@@ -56,11 +56,11 @@ Added: `modules/core -> @tanstack/react-query` (types/factory only), `modules/ap
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Cache leaks between SSR requests | medium | high | Request-scoped factory; boundary test with two requests | implementer + reviewer |
-| Unbounded cache/query growth | medium | medium | Explicit `staleTime`/`gcTime` defaults in `createAppQueryClient`; no unlimited polling; document defaults | implementer |
-| Two hydration paths diverge | low | high | Server prefetch and client hook must use the same domain query key and repository; single test covering both | reviewer |
+| Risk                             | Likelihood | Impact | Mitigation                                                                                                   | Owner                  |
+| -------------------------------- | ---------- | ------ | ------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| Cache leaks between SSR requests | medium     | high   | Request-scoped factory; boundary test with two requests                                                      | implementer + reviewer |
+| Unbounded cache/query growth     | medium     | medium | Explicit `staleTime`/`gcTime` defaults in `createAppQueryClient`; no unlimited polling; document defaults    | implementer            |
+| Two hydration paths diverge      | low        | high   | Server prefetch and client hook must use the same domain query key and repository; single test covering both | reviewer               |
 
 ## Verification
 

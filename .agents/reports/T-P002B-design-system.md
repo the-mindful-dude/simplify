@@ -4,6 +4,7 @@ Agent: explore | Status: complete | Scope: packages/tokens, packages/ui, apps/we
 No files changed by the research agent. No builds/tests/screenshots performed.
 
 ## Canonical token pipeline (retain)
+
 - Source: packages/tokens/src/source/tokens.json; generated CSS: src/outputs/tokens.css; generator: src/generators/generate.mjs:17-21,58-70; typed exports: src/tokens.ts:4-41; public entry: src/index.ts:1-22.
 - ADR-003 contract: docs/architecture/ADR-003-canonical-tokens-and-ui-contracts.md:23-49,96-105.
 - Colors (tokens.json:3-27): background #0a0a0a, backgroundSubtle #111111, surface #151515, surfaceRaised #1c1c1c, surfaceOverlay #242424, surfaceHover #1f1f1f, foreground #ededed, foregroundMuted #a1a1aa, foregroundSubtle #90909a, foregroundOnAccent #0a0a0a, overlay #000000, border #262626, borderStrong #73737d, borderFocus #a1a1aa, accent #e4e4e7, accentHover #ffffff, accentMuted #27272a; status colors success #4caf7d, warning #d4a72c, danger #f0645e, info #6ba8f5 plus surfaces.
@@ -15,6 +16,7 @@ No files changed by the research agent. No builds/tests/screenshots performed.
 - Token parity/contrast tests: packages/tokens/test/tokens.test.ts:8-39 parity, :41-95 WCAG recomputation.
 
 ## Component inventory (retain/extend, do not rebuild)
+
 - Public API: packages/ui/src/index.ts:1-118. Radix deps: packages/ui/package.json:23-35. No hex/rgb/hsl literals in packages/ui/src or apps/web.
 - Button: Button.tsx:11-116 — 5 variants (primary, secondary, ghost, outline, destructive), sizes sm/md/lg, loading, leading/trailing, fullWidth, asChild via Slottable (:98); CSS states at Button.module.css:22-39,51-100,102-118. Heights: sm 28px, md 36px, lg 44px (:102-118). Missing explicit icon/link variants.
 - Other primitives: InputField (InputField.tsx:11-184, label/description/error/useId/aria-describedby), Text, Badge (5 variants), Avatar, Spinner (role=status, reduced motion), Skeleton, Separator.
@@ -24,16 +26,19 @@ No files changed by the research agent. No builds/tests/screenshots performed.
 - 'use client' only in 6 UI modules (Tabs, Dialog, DropdownMenu, Tooltip, InputField, Avatar).
 
 ## Web visual identity / a11y
+
 - apps/web/styles/globals.css:1-95: color-scheme dark (:2), :focus-visible (:47-50), skip link (:52-70), scrollbar-color thin (:77-80), reduced-motion kill switch (:82-95). No ::-webkit-scrollbar anywhere; no ScrollArea component.
 - Hero: hero.tsx:21-167, hero.module.css:8-16,77-81,121-131,145-181 (glow, stagger, chart). Browser: registry-browser.tsx:263-283 empty state, browser.module.css:74-107,193-214. detail.module.css:1-90.
 - No framer-motion/motion in any package.json or lockfile (grep -c 0/0). Motion is CSS-only.
 - React 19 installed (apps/web/package.json:20-22, packages/ui/package.json:32-35); AGENTS.md:90 and technical-standards.md:17-18 still claim 18/14.
 
 ## Prior a11y history and residual notes
+
 - Ledger T-017: WCAG AA NOT APPROVED, 5 P0 + 4 P1 (.agents/ledger.yaml:258-267). T-019/T-020 fixed via commit c1e4878 (ledger:277-313): foregroundSubtle #71717a→#90909a, borderStrong #3f3f46→#73737d, destructive text 2.68→6.31:1, outline border 1.90→4.22:1, Slottable preservation, result count role=status. T-021 APPROVED_WITH_NON_BLOCKING_NOTES (ledger:314-323).
 - Residual observed: InputField.module.css:34,37 uses low-contrast --sd-color-border (focus uses strong at :40-44); foregroundMuted #a1a1aa vs foregroundSubtle #90909a close; stale docs (packages/tokens/README.md:17-19 says "not implemented yet"; ADR-003:17,78 references removed packages/ui/styles/styles.css).
 
 ## Gaps vs the supplied guide (guide is not a repo file; requires user decision)
+
 - Palette values differ from guide's Obsidian/Graphite/Charcoal/Slate/Silver/Pearl.
 - Radius: card/dialog 12px vs requested 14–18 / 18–22. No dedicated tokens.
 - Default control height 36px vs requested 40–44.

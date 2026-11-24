@@ -31,13 +31,13 @@ This is a **critical** finding: three competing path conventions for "where a ve
 
 ## Alternatives considered
 
-| Alternative | Why rejected |
-| --- | --- |
-| Keep both readers (web FS code + RegistryClient) | Two competing authoritative path rules; the CLI path is already broken against checked-in data; violates single-ownership. |
-| Move web FS code verbatim into `modules/registry` and leave `RegistryClient` broken | Preserves the defect and gives the frontend module a second registry client; rejected. |
-| Change RegistryClient tests to match the current doubled path | Enshrines a bug; contradicts the checked-in registry and the CLI's purpose. |
-| Let each domain read files directly | Duplicates path/traversal/validation logic in five modules; unacceptable. |
-| Fix layout only in `apps/registry-api` | Wrong boundary: that service is a webhook receiver (`package.json:26-28`) and is not the web data path. |
+| Alternative                                                                         | Why rejected                                                                                                               |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Keep both readers (web FS code + RegistryClient)                                    | Two competing authoritative path rules; the CLI path is already broken against checked-in data; violates single-ownership. |
+| Move web FS code verbatim into `modules/registry` and leave `RegistryClient` broken | Preserves the defect and gives the frontend module a second registry client; rejected.                                     |
+| Change RegistryClient tests to match the current doubled path                       | Enshrines a bug; contradicts the checked-in registry and the CLI's purpose.                                                |
+| Let each domain read files directly                                                 | Duplicates path/traversal/validation logic in five modules; unacceptable.                                                  |
+| Fix layout only in `apps/registry-api`                                              | Wrong boundary: that service is a webhook receiver (`package.json:26-28`) and is not the web data path.                    |
 
 ## Consequences
 
@@ -62,12 +62,12 @@ Added: `modules/registry -> @simplify-dev/registry`; `apps/web -> modules/regist
 
 ## Risks
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| Published artifacts use a layout not observed in `registry/` | medium | high | Step 1 verification; versioned layout contract; support both layouts during migration | architect + implementer |
-| CLI breaks after path fix | medium | high | Contract test with real checked-in asset before and after; staged rollback | implementer |
-| `./server` adapter imported into a client bundle | medium | high | `server-only` guard + ESLint rule forbidding `module-registry/server` in `'use client'` files | foundation |
-| Fixtures leak to production | low | medium | Fixtures test-only; no production import path; boundary check | reviewer |
+| Risk                                                         | Likelihood | Impact | Mitigation                                                                                    | Owner                   |
+| ------------------------------------------------------------ | ---------- | ------ | --------------------------------------------------------------------------------------------- | ----------------------- |
+| Published artifacts use a layout not observed in `registry/` | medium     | high   | Step 1 verification; versioned layout contract; support both layouts during migration         | architect + implementer |
+| CLI breaks after path fix                                    | medium     | high   | Contract test with real checked-in asset before and after; staged rollback                    | implementer             |
+| `./server` adapter imported into a client bundle             | medium     | high   | `server-only` guard + ESLint rule forbidding `module-registry/server` in `'use client'` files | foundation              |
+| Fixtures leak to production                                  | low        | medium | Fixtures test-only; no production import path; boundary check                                 | reviewer                |
 
 ## Verification
 
