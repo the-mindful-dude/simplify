@@ -723,3 +723,75 @@ open_risks:
   - 'Docker base image pinned by tag not digest (tag mutability low risk); Dependabot cannot exclude secondary package-lock.json (reviewer reconciliation per ADR-002 required).'
   - 'Release automation deferred by user; no publish workflow or registry/credentials decisions.'
   - 'Untracked .idea/ IDE directory is ignored/preserved and intentionally not committed.'
+
+# --- Frontend foundation & product-experience redesign: PLANNING PHASE (user request) ---
+planning_phase:
+  objective: >-
+    Produce an evidence-based, phased implementation plan for the frontend
+    architecture and product-experience redesign supplied by the user. This is
+    PLANNING ONLY: no source, test, config, schema, route, token, component, or
+    documentation implementation is authorized in this phase.
+  constraints:
+    - 'Root AGENTS.md is binding; only one AGENTS.md exists in the repo.'
+    - 'modules/registry/ (frontend domain module) is NOT apps/registry-api/ (webhook ingestion service). Plan must keep them distinct.'
+    - 'Locked decisions in AGENTS.md Section 3 must be preserved or formally justified via ADR.'
+    - 'Coordinator may write only .agents/**; all implementation must be delegated to specialist agents.'
+    - 'Working tree was clean at planning start; branch feat/ui-foundation-hardening @ 65fb13a.'
+    - 'Prior .agents governance files were accidentally overwritten, then restored from HEAD; content preserved.'
+  exclusions:
+    - 'No implementation, no builds, no installs, no commits of project files, no pushes.'
+    - 'No edits to AGENTS.md, TODO.md, docs/**, apps/**, packages/**, schemas/** during planning.'
+  user_requirements:
+    - 'Take the supplied guide seriously; investigate and produce a detailed plan.'
+    - 'Give detailed agent instructions; do not take the work cheaply.'
+    - 'Sidebar must support menus, menu groups, context menu where necessary, and dynamic menus/workspaces.'
+    - 'Consult the correct specialist agent for each kind of work.'
+    - 'Ask all needed questions through the question tool.'
+  research_reports:
+    - id: T-P002A
+      path: '.agents/reports/T-P002A-frontend-architecture.md'
+      status: complete
+    - id: T-P002B
+      path: '.agents/reports/T-P002B-design-system.md'
+      status: complete
+    - id: T-P002C
+      path: '.agents/reports/T-P002C-data-nav-tooling.md'
+      status: complete
+  planning_tasks:
+    - id: T-P001
+      objective: 'Startup context and governance.'
+      owner: coordinator
+      status: done
+      evidence:
+        - 'AGENTS.md read; single AGENTS.md confirmed; Git branch/HEAD/clean state recorded; governance restored.'
+    - id: T-P002
+      objective: 'Three parallel read-only explore reports on architecture, design system, data/nav/tooling.'
+      owner: explore
+      status: done
+      evidence:
+        - 'T-P002A/B/C reports received with file:line evidence; no files changed by research agents.'
+    - id: T-P003
+      objective: 'Resolve material scope/product/compatibility questions with user.'
+      owner: coordinator
+      status: done
+      evidence:
+        - '8 decisions recorded in .agents/decisions/DECISION-FE-FOUNDATION-001.md.'
+        - 'Addenda: collapsible hover-animated sidebar; no duplicated logic/components; no native UI controls; docs must be updated.'
+    - id: T-P004
+      objective: 'Architect evaluation of module boundaries, dependency rules, and design-system fit.'
+      owner: architect
+      status: done
+      dependencies: [T-P003]
+      evidence:
+        - 'Verdict APPROVE_WITH_CONDITIONS; report at .agents/decisions/REPORT-T-P004-architecture-evaluation.md.'
+        - 'ADR-007..015 written under .agents/decisions/; no source files changed.'
+        - 'Conditions: doc/ADR reconciliation task, ADR-012 read-only layout verification, fresh baseline gate run.'
+    - id: T-P005
+      objective: 'Produce the detailed phased implementation plan under .agents/.'
+      owner: coordinator
+      status: done
+      dependencies: [T-P003, T-P004]
+      evidence:
+        - 'Full 7-phase plan with F1.0-F7.7 task specs, leases, acceptance, validation, remediation mapping, parallelism, dependencies, and DoD written to .agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md.'
+        - 'All 8 user decisions + addenda recorded in .agents/decisions/DECISION-FE-FOUNDATION-001.md.'
+        - 'No source/test/config/docs/TODO/AGENTS changes made; planning only.'
