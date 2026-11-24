@@ -795,3 +795,4 @@ planning_phase:
         - 'Full 7-phase plan with F1.0-F7.7 task specs, leases, acceptance, validation, remediation mapping, parallelism, dependencies, and DoD written to .agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md.'
         - 'All 8 user decisions + addenda recorded in .agents/decisions/DECISION-FE-FOUNDATION-001.md.'
         - 'No source/test/config/docs/TODO/AGENTS changes made; planning only.'
+  commit: c4d2a95
