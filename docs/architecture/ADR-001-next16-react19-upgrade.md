@@ -5,6 +5,11 @@
 - **Owners:** architect
 - **Related tasks:** T-002, T-001, T-006
 
+> **Superseded baseline:** every React 18.x / Next.js 14.x reference in this record describes the
+> pre-upgrade baseline that this ADR replaced, not a current target. The current target is
+> **Next.js 16.4.6 / React 19.x**, as installed in `apps/web/package.json` and recorded in
+> `AGENTS.md` §3 and `technical-standards.md` §2.
+
 ## Context
 
 **Observed (repository evidence):**

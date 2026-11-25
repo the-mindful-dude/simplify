@@ -12,10 +12,10 @@ versioning standards for the simplify.dev monorepo.
 | Area                   | Standard                            |
 | ---------------------- | ----------------------------------- |
 | Primary language       | TypeScript                          |
-| Runtime                | Node.js 20 LTS                      |
+| Runtime                | Node.js >=20.9.0 (20 LTS)           |
 | TypeScript             | 5.x, strict mode                    |
-| React                  | 18.x                                |
-| Next.js                | 14.x                                |
+| React                  | 19.x                                |
+| Next.js                | 16.4.6                              |
 | Package manager        | pnpm 9.x workspaces                 |
 | Module format          | ESM only                            |
 | Build orchestration    | Turborepo                           |
@@ -70,6 +70,31 @@ Hard rules:
 - Integrations implement contracts and remain optional dependencies.
 - Packages must import only public entry points of other packages.
 - A new package requires a genuine reusable boundary, not merely a folder.
+
+### 4.1 Frontend module topology (ADR-007, ADR-013)
+
+- `modules/*` are **private** `@simplify-dev/*` workspace packages owned by the application. They are never published contracts, and `pnpm-workspace.yaml` includes the `modules/*` pattern.
+- Dependency direction is strictly `core <- domains <- app <- apps/web`. `modules/app` receives domain contributions as data assembled by the `apps/web` composition root; it does not depend on domain modules.
+- `modules/core` holds framework-independent contracts and pure infrastructure only: no React, no `next/*`, no filesystem or network I/O, no domain entity types. Only `modules/app` and `apps/web` may import `next/*`.
+- `modules/app` owns the shell, `navConfig`, sidebar composition, providers, command/mobile hosts and sidebar action definitions. Domain modules contribute `NavContribution[]` data and never import `modules/app`.
+- `modules/registry` is the frontend feature module: a `RegistryRepository` port with hooks and view mappers, and the real on-disk adapter behind a deliberate `./server` subpath guarded by `server-only`. Path, version-segment and validation rules are owned by `@simplify-dev/registry`; the module must not build a second filesystem path or re-validate manifests. `apps/registry-api` is the separate Node webhook receiver and must not be conflated with it.
+- Other domains (`dashboard`, `assets`, `collections`, `compositions`, `publishers`, `settings`) exist only when their own queries/components/fixtures exist. No placeholder modules and no `modules/auth` (visual-only auth pages are `apps/web` route files).
+- No published package and no `apps/registry-api` package may depend on any `modules/*` package. Third-party UI engines (`cmdk`, `@radix-ui/*`) are confined to `packages/ui/src/**`.
+- These are ratified contracts governing the redesign, not a claim that the modules already exist. At this baseline there is no `modules/` directory; phasing is recorded in `.agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md`.
+
+### 4.2 Design-system-only interactive controls (ADR-014)
+
+- Every interactive control rendered by `apps/web/**` or `modules/**` must come from `@simplify-dev/ui`'s public entry point. Bare native controls (`<select>`, `<option>`, `<input>`, `<textarea>`, `<button>`, `<a>`, `<dialog>`, `<details>`, `<summary>`) and hand-rolled menus/dropdowns are not permitted in pages or modules.
+- A design-system component may emit the underlying semantic element internally (for example `Button asChild` for anchors). Accessibility is provided by the component, not by ad hoc page markup.
+- Plain semantic elements in app code are limited to non-interactive content (`div`, `span`, headings, lists, `img`). Forms use `InputField`/`Select`; overlays use `Dialog`/`Drawer`; navigation uses `Button asChild`/`Breadcrumb`.
+- Visual values come from `var(--sd-*)` tokens. No literal brand colors or hardcoded motion values outside the token source and its generated output.
+
+### 4.3 Application shell and sidebar (ADR-013)
+
+- `modules/app` owns the shell and navigation policy (`AppShell`, `AppSidebar`, `navConfig`, the workspace-switcher data contract, sidebar actions, `useSidebarState`, `CommandPaletteHost`). `packages/ui` owns only route-agnostic presentational primitives (`Sidebar`, `Collapsible`, `ContextMenu`, `Breadcrumb`, `ScrollArea`, `Drawer`, `Tooltip`).
+- The redesigned sidebar must be collapsible and expose declarative groups, keyboard-accessible item context menus and a local workspace switcher backed by fixtures/persisted preference through injected storage — no server or account linkage.
+- Collapse/hover reveal animation uses CSS transitions driven by `--sd-motion-*` tokens and `prefers-reduced-motion`. Motion for React is limited to orchestrated shell/command-palette transitions in `modules/app` behind a shared reduced-motion guard (ADR-009); it is not the sidebar hover mechanism.
+- One `navConfig` and one set of sidebar actions; no per-page sidebar, menu or duplicate nav state. Mobile navigation uses the ui `Drawer` primitive. These are requirements for the redesign, not shipped UI; the existing header and registry browser remain until migration.
 
 ## 5. TypeScript and API Conventions
 
@@ -144,7 +169,7 @@ apply to UI and blocks as they are introduced.
 
 Accessibility is functionality, not an optional style.
 
-- Use semantic HTML and accessible names and descriptions.
+- Use semantic HTML and accessible names and descriptions. In `apps/web`/`modules/**`, semantic controls are emitted by `@simplify-dev/ui` components rather than ad hoc markup (ADR-014).
 - Support keyboard navigation, focus management, and focus restoration.
 - Provide screen-reader announcements for dynamic state.
 - Implement correct dialog, menu, and overlay behavior.

@@ -87,7 +87,7 @@ The following decisions are established architectural constraints:
 | CLI executable        | `simplify` from `@simplify-dev/cli`           |
 | Runtime               | Node.js 20 LTS                                |
 | TypeScript            | 5.x, strict                                   |
-| React / Next.js       | React 18.x / Next.js 14.x                     |
+| React / Next.js       | React 19.x / Next.js 16.4.6                   |
 | Package manager       | pnpm 9.x workspaces                           |
 | Build orchestration   | Turborepo                                     |
 | Tests                 | Vitest                                        |
@@ -116,7 +116,16 @@ The intended dependency structure is:
 
 ```text
 apps/web
-  └── registry client, ui, tokens, preview runtime
+  └── modules/app, modules/* (domains), registry client, ui, tokens, preview runtime
+
+modules/app
+  └── modules/core, ui, approved UI libraries
+
+modules/<domain> (for example modules/registry)
+  └── modules/core, canonical registry contracts, approved data/UI libraries
+
+modules/core
+  └── framework-independent contracts only (no React, no next/*, no I/O)
 
 apps/registry-api
   └── registry, github
@@ -160,6 +169,12 @@ Mandatory rules:
 - The CLI must not import web application internals.
 
 - The web application must consume registry data rather than maintain a separate catalogue.
+
+- Frontend `modules/*` are private `@simplify-dev/*` workspace packages owned by the application; they are never published contracts. Dependency direction is `core <- domains <- app <- apps/web`.
+
+- `modules/core` is framework-independent: no React, no `next/*`, no filesystem or network I/O. Only `modules/app` and `apps/web` may import `next/*`.
+
+- `modules/registry` is the frontend feature module; it is not `apps/registry-api`, the Node webhook receiver. No published package and no `apps/registry-api` package may depend on any `modules/*` package.
 
 - Framework-independent logic must not import React, UI components, or framework-specific code.
 
@@ -349,6 +364,34 @@ Where appropriate, support deliberate customization through `className`, slots, 
 
 Accessibility is functionality. Account for semantics, accessible names, keyboard interaction, focus management, screen-reader announcements, reduced motion, labels, validation, and loading, pending, and disabled states.
 
+## 4.8 Frontend module and UI control contracts
+
+The following rules are ratified architecture contracts (ADR-007, ADR-010–014) for the frontend redesign. They bind implementation but do not assert that the redesigned UI already exists: as of this reconciliation `apps/web` still renders the existing header and registry browser, and the phasing is recorded in `.agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md`.
+
+### Module ownership
+
+- `modules/core` — cross-domain contracts and pure infrastructure (query-client factory, `AsyncState`/`RepositoryError`, `APP_ROUTES`, navigation/workspace types). No I/O, no React, no domain entity types, no `next/*`.
+- `modules/app` — application shell, `navConfig`, sidebar composition, providers and command/mobile hosts. Depends only on `core`, `@simplify-dev/ui` and approved UI libraries. It receives domain contributions as data from the `apps/web` composition root; it does not depend on domain modules.
+- `modules/registry` (frontend) — `RegistryRepository` port, query keys/hooks and view mappers. The real on-disk adapter lives behind a deliberate `./server` subpath with a `server-only` guard and delegates path and validation rules to `@simplify-dev/registry`; it must not build a second filesystem path.
+- Domain modules (`dashboard`, `assets`, `collections`, `compositions`, `publishers`, `settings`) are created only when their own queries/components/fixtures exist. No placeholder packages and no `modules/auth` (visual-only auth pages belong to `apps/web` route files).
+- Do not create a module merely to organize files; every module needs a real responsibility and a deliberate public interface.
+
+### Interactive controls
+
+- Every interactive control rendered by `apps/web/**` or `modules/**` must come from the public entry point of `@simplify-dev/ui`. A page or module must not use a bare native control (`<select>`, `<option>`, `<input>`, `<textarea>`, `<button>`, `<a>`, `<dialog>`, `<details>`, `<summary>`) or a hand-rolled menu/dropdown.
+- A design-system component may render the underlying semantic element internally (for example `Button asChild` for anchors). This preserves accessibility while keeping one control vocabulary.
+- Direct imports of `cmdk`, `@radix-ui/*` or any third-party UI library are confined to `packages/ui/src/**`. Domains and pages consume design-system wrappers, not third-party engines.
+- Plain semantic elements in app code are limited to non-interactive content (`div`, `span`, headings, lists, `img`). Forms use `InputField`/`Select`; overlays use `Dialog`/`Drawer`.
+- Visual values come from `var(--sd-*)` tokens; no literal brand colors or hardcoded motion values outside the token source and its generated output.
+
+### Application shell and sidebar
+
+- `modules/app` owns the shell and navigation policy (`AppShell`, `AppSidebar`, `navConfig`, the workspace-switcher data contract, sidebar action definitions, `useSidebarState`, `CommandPaletteHost`). `packages/ui` owns only generic presentational primitives (`Sidebar`, `Collapsible`, `ContextMenu`, `Breadcrumb`, `ScrollArea`, `Drawer`, `Tooltip`) with no route knowledge.
+- Domain modules contribute `NavContribution[]` data through the composition root; they never export sidebar components or import `modules/app`.
+- The redesigned sidebar **must be collapsible** and expose declarative groups, keyboard-accessible item context menus and a local workspace switcher (fixture/persisted preference behind injected storage; no server or account linkage).
+- Collapse/hover reveal animation uses CSS transitions driven by `--sd-motion-*` tokens plus `prefers-reduced-motion`. Motion for React is reserved for orchestrated shell/command-palette transitions in `modules/app`, gated by a shared reduced-motion guard; it is not the sidebar hover mechanism.
+- There is one `navConfig` and one set of sidebar actions; no per-page sidebar, menu or duplicate nav state. Mobile navigation uses the `Drawer` primitive, never a native `dialog` or `details` element.
+
 ### 5\. Repository Structure
 
 Follow the structure defined in `docs/MODEL.md`. The intended layout is:
@@ -367,6 +410,12 @@ packages/
   interaction/                  Framework-independent feature logic
   blocks/                       Functional React compositions
   tooling/                      Asset validator, library builder, preview runtime
+
+modules/                        Private frontend @simplify-dev/* packages (never published)
+  core/                         Framework-independent contracts and pure infrastructure
+  app/                          Shell, navigation policy, sidebar and command/mobile hosts
+  registry/                     Frontend registry repository port, hooks, view mappers (not apps/registry-api)
+  <domain>/                     Added only when its own code and tests exist
 
 registry/                       Official asset source layout
 schemas/                        Registry, configuration, asset, library schemas
