@@ -14,7 +14,7 @@
 - `AGENTS.md:169-176` requires cross-package imports via deliberate public entry points and forbids importing another package's `internal/` or arbitrary deep paths.
 - `docs/architecture/technical-standards.md:26,55,71-72,169-178` reinforces CSS custom properties + CSS Modules, Radix, `ui → tokens`, token generation framework-independence, reproducible outputs, no hardcoded brand values, and no global React provider required for basic components.
 - `docs/MODEL.md:1203-1233` defines semantic tokens (illustrative `--sd-*` values), customization via stable extension points, and compound components.
-- Current implementation is placeholder: `packages/tokens/src/index.ts:1` and `packages/ui/src/index.ts:1` export empty modules; `packages/ui/package.json:25-27` depends only on `@simplify-dev/tokens`; `packages/ui/styles/styles.css:1-13` contains illustrative hex values; no Radix declarations/lockfile entries observed (R-004).
+- At the time of this decision the implementation was a placeholder: both `packages/tokens/src/index.ts` and `packages/ui/src/index.ts` exported empty modules, `packages/ui/package.json` depended only on `@simplify-dev/tokens`, and no Radix declarations or lockfile entries were observed (R-004). That state was superseded: token values now live in `packages/tokens/src/source/tokens.json` and generate `packages/tokens/src/outputs/tokens.css` plus `tokens.generated.ts` (`packages/tokens/src/generators/generate.mjs:17-21,58-70`), while `packages/ui` builds compiled JS and CSS Modules into `dist/`, which is its only shipped output (`packages/ui/package.json:7-17`, `packages/ui/scripts/copy-css.mjs:79-89`).
 
 **Research/constraints (R-004, provided):** reference project VTN-Lab demonstrates useful grouping and responsive/slot patterns but includes defects (hardcoded colors, blanket `"use client"`, `any`/`@ts-ignore`) that must not be copied. Target repo must keep CSS Modules + CSS vars, no component hex literals, deliberate root entry point, and no internal deep imports.
 
@@ -75,7 +75,7 @@ Establish **tokens as the canonical design source** and **`packages/ui` as the c
 
 ## Compatibility and migration
 
-1. **Tokens:** replace illustrative values in `packages/ui/styles/styles.css:1-13` with generated/owned token outputs sourced from `packages/tokens`; ensure only token source/generated artifacts contain raw hex.
+1. **Tokens:** token values belong only in `packages/tokens/src/source/tokens.json` and its generated artifacts (`src/outputs/tokens.css`, `src/outputs/tokens.generated.ts`); the old illustrative UI stylesheet was removed, and `packages/ui` components consume `var(--sd-*)` through CSS Modules emitted into `dist/`.
 2. **UI package:** evolve `packages/ui/src/index.ts` from placeholder to deliberate exports; add grouped component modules/CSS Modules/tests/READMEs; update `packages/ui/package.json` dependencies/peer ranges as needed (React compatibility aligned with ADR-001 for app consumers).
 3. **Consumers:** migrate `apps/web` to import from public UI/token APIs and semantic tokens only (T-006); avoid deep imports.
 4. **Verification gates:** add checks (lint/review/grep as appropriate) to prevent hex literals outside token sources and to enforce export boundaries.

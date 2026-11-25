@@ -4,9 +4,12 @@ Framework-independent design tokens and generated outputs.
 
 ## Responsibilities
 
-- `source/` — canonical token definitions and schema validation.
-- `generators/` — CSS custom properties, JSON, TypeScript, and future outputs.
-- `outputs/` — generated light, dark, and custom theme artifacts.
+- `src/source/tokens.json` — canonical definitions; the only hand-authored source of raw
+  values.
+- `src/generators/generate.mjs` — regenerates both artifacts under `src/outputs/` from that
+  source.
+- `src/outputs/tokens.css` and `src/outputs/tokens.generated.ts` — generated CSS custom
+  properties and the typed source consumed by `src/index.ts`.
 
 ## Boundaries
 
@@ -16,4 +19,7 @@ Framework-independent design tokens and generated outputs.
 
 ## Status
 
-Foundation scaffold. Token definitions and generators are not implemented yet.
+Implemented. The generator writes `--sd-*` custom properties on `:root` and
+`[data-sd-theme='dark']`; there is no light theme or switcher. The package root exports typed
+token constants, `cssVariables` and `tokenCss`. `test/tokens.test.ts` verifies source/output
+parity and recomputes WCAG AA contrast for the dark theme.
