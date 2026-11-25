@@ -43,6 +43,10 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Report-only until F2.4: findings are WARNINGS and do not fail the job.
+      - name: Architecture boundaries (report-only)
+        run: node scripts/checks/boundaries.mjs
+
       - name: Type-check
         run: pnpm typecheck
 
