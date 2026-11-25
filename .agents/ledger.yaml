@@ -954,28 +954,47 @@ implementation_phase:
       open_risks: []
       commit: 0d1d2d9
     - id: I-F1.6
-      objective: 'Fix blocks React 19 peers and stale web/token READMEs; verify unused blocks dependency.'
+      objective: 'Fix blocks React 19 peers, refresh the authoritative lockfile, and remove an unused web blocks dependency if confirmed.'
       owner: bugfixer
-      reviewer: null
+      reviewer: reviewer
       signoff: []
       dependencies: []
       acceptance:
-        - 'No React 18 peers; accurate READMEs; both lockfiles consistent; gates pass.'
+        - 'No React 18 peers; pnpm-lock.yaml matches manifests; unused @simplify-dev/blocks removed from apps/web only if proven unused; gates pass.'
       verification:
         - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
       status: in_progress
       lease:
         {
           owner: bugfixer,
+          paths: [packages/blocks/**, package-lock.json, pnpm-lock.yaml, apps/web/package.json],
+          task: I-F1.6,
+        }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.6b
+      objective: 'Correct stale web/token READMEs and the ADR-003 removed-styles.css reference.'
+      owner: documenter
+      reviewer: reviewer
+      signoff: []
+      dependencies: [I-F1.5]
+      acceptance:
+        - 'READMEs describe actual behavior; ADR-003 no longer references a removed stylesheet; no false implementation claims.'
+      verification:
+        - 'pnpm format:check; cross-check each statement against current source.'
+      status: in_progress
+      lease:
+        {
+          owner: documenter,
           paths:
             [
-              packages/blocks/**,
-              package-lock.json,
-              pnpm-lock.yaml,
               apps/web/README.md,
               packages/tokens/README.md,
+              docs/architecture/ADR-003-canonical-tokens-and-ui-contracts.md,
             ],
-          task: I-F1.6,
+          task: I-F1.6b,
         }
       evidence: []
       reports: []
