@@ -872,7 +872,7 @@ implementation_phase:
       verification:
         - 'pnpm --filter @simplify-dev/module-core test|typecheck|lint; boundary checker'
       status: in_progress
-      lease: { owner: coder, paths: [modules/core/**], task: I-F1.2 }
+      lease: { owner: coder, paths: [modules/core/**, pnpm-lock.yaml], task: I-F1.2 }
       evidence: []
       reports: []
       open_risks: []
@@ -958,16 +958,16 @@ implementation_phase:
       owner: bugfixer
       reviewer: reviewer
       signoff: []
-      dependencies: []
+      dependencies: [I-F1.2]
       acceptance:
-        - 'No React 18 peers; pnpm-lock.yaml matches manifests; unused @simplify-dev/blocks removed from apps/web only if proven unused; gates pass.'
+        - 'No React 18 peers; pnpm-lock.yaml reflects both core and blocks manifests; unused @simplify-dev/blocks removed from apps/web only if proven unused; gates pass.'
       verification:
         - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
-      status: in_progress
+      status: not_started
       lease:
         {
           owner: bugfixer,
-          paths: [packages/blocks/**, package-lock.json, pnpm-lock.yaml, apps/web/package.json],
+          paths: [packages/blocks/**, package-lock.json, apps/web/package.json],
           task: I-F1.6,
         }
       evidence: []
