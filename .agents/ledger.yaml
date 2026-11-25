@@ -830,15 +830,15 @@ implementation_phase:
     - id: I-F1.1
       objective: 'Workspace wiring, private module manifests, report-only boundary/export/hex/JSX gates.'
       owner: foundation
-      reviewer: null
-      signoff: []
+      reviewer: reviewer
+      signoff: [reviewer, security]
       dependencies: [I-F1.0]
       acceptance:
         - 'modules/* included in pnpm-workspace.yaml; gate scripts exist and are wired into CI.'
         - 'Gates run report-only (warnings, not errors); zero current forbidden edges.'
       verification:
         - 'pnpm format:check && pnpm lint; boundary checker output'
-      status: not_started
+      status: done
       lease:
         {
           owner: foundation,
@@ -853,10 +853,13 @@ implementation_phase:
             ],
           task: I-F1.1,
         }
-      evidence: []
-      reports: []
-      open_risks: []
-      commit: null
+      evidence:
+        - 'modules/* wired; report-only gates wired into CI/Turbo; reviewer APPROVE and security APPROVE recorded.'
+      reports:
+        - '.agents/reports/I-F1.1-foundation-integration.md'
+      open_risks:
+        - 'Gates advisory until F2.4; deep-package-import overlaps specialized rules.'
+      commit: dac2592
     - id: I-F1.2
       objective: 'Implement modules/core pure contracts and scoped QueryClient factory.'
       owner: coder
@@ -877,19 +880,22 @@ implementation_phase:
     - id: I-F1.3
       objective: 'Add registry artifact resolver and correct RegistryClient path with tests.'
       owner: coder
-      reviewer: null
-      signoff: []
+      reviewer: reviewer
+      signoff: [reviewer, security]
       dependencies: [I-F1.0]
       acceptance:
         - 'One resolver; CLI and web resolve the same checked-in asset; client.test.ts updated with justification.'
       verification:
         - 'pnpm --filter @simplify-dev/registry test; pnpm --filter @simplify-dev/cli test; pnpm typecheck'
-      status: not_started
+      status: done
       lease: { owner: coder, paths: [packages/registry/**], task: I-F1.3 }
-      evidence: []
-      reports: []
-      open_risks: []
-      commit: null
+      evidence:
+        - 'Registry tests 6 files/104 passed; CLI tests 16 files/207 passed; full gates exit 0; reviewer/security APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.3-registry-integration.md'
+      open_risks:
+        - 'Lexical containment only (no realpath); published artifact layout undefined; CLI source asset files still absent.'
+      commit: 4d483e5
     - id: I-F1.4
       objective: 'Create frontend modules/registry with repository port, server adapter, queries and view mapping.'
       owner: coder
@@ -920,14 +926,14 @@ implementation_phase:
     - id: I-F1.5
       objective: 'Reconcile framework docs/ADRs and ratify ADR-007..015.'
       owner: documenter
-      reviewer: null
-      signoff: []
+      reviewer: reviewer
+      signoff: [reviewer]
       dependencies: []
       acceptance:
         - 'Zero stale React 18/Next 14 claims; ADR index lists 001..015; module conventions documented.'
       verification:
         - 'pnpm format:check; cross-check claims against code'
-      status: not_started
+      status: done
       lease:
         {
           owner: documenter,
@@ -941,10 +947,12 @@ implementation_phase:
             ],
           task: I-F1.5,
         }
-      evidence: []
-      reports: []
+      evidence:
+        - 'Zero stale framework claims outside historical ADR-001 note; ADR index 001..015; 9/9 ADRs Accepted; format check passed.'
+      reports:
+        - '.agents/reports/I-F1.5-docs-integration.md'
       open_risks: []
-      commit: null
+      commit: 0d1d2d9
     - id: I-F1.6
       objective: 'Fix blocks React 19 peers and stale web/token READMEs; verify unused blocks dependency.'
       owner: bugfixer
@@ -977,33 +985,38 @@ implementation_phase:
       objective: 'Extend boundary checker with app-to-domain and deep-import rules plus self-tests.'
       owner: foundation
       reviewer: reviewer
-      signoff: []
+      signoff: [reviewer, security]
       dependencies: [I-F1.1]
       acceptance:
         - 'Checker reports module/app -> domain module imports and forbidden deep/internal imports.'
         - '--self-test covers positive and negative cases for both new rules; repo scan stays 0 findings.'
       verification:
         - 'node scripts/checks/boundaries.mjs --self-test && node scripts/checks/boundaries.mjs && pnpm lint'
-      status: not_started
+      status: done
       lease: { owner: foundation, paths: [scripts/checks/**], task: I-F1.1b }
-      evidence: []
-      reports: []
-      open_risks: []
-      commit: null
+      evidence:
+        - 'Self-test 27/27; repo scan 170 files/0 findings; both new rules covered positively and negatively; reviewer APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.1-foundation-integration.md'
+      open_risks:
+        - 'Deep-package-import overlaps specialized rules; deterministic duplicate warnings possible.'
+      commit: dac2592
     - id: I-F1.3b
       objective: 'Add CLI consumption test proving the corrected registry resolution against a real checked-in asset.'
       owner: coder
       reviewer: reviewer
-      signoff: []
+      signoff: [reviewer, security]
       dependencies: [I-F1.3]
       acceptance:
         - 'CLI-side test resolves a real registry asset through the production client path and asserts exact canonical path.'
         - 'pnpm --filter @simplify-dev/cli test passes.'
       verification:
         - 'pnpm --filter @simplify-dev/cli test && pnpm typecheck'
-      status: not_started
+      status: done
       lease: { owner: coder, paths: [packages/cli/test/**], task: I-F1.3b }
-      evidence: []
-      reports: []
+      evidence:
+        - 'CLI test uses real RegistryClient + SourceInstaller against checked-in asset; CLI suite 16 files/207 tests passed; reviewer APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.3-registry-integration.md'
       open_risks: []
-      commit: null
+      commit: b8abcaa
