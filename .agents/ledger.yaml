@@ -863,20 +863,23 @@ implementation_phase:
     - id: I-F1.2
       objective: 'Implement modules/core pure contracts and scoped QueryClient factory.'
       owner: coder
-      reviewer: null
-      signoff: []
+      reviewer: reviewer
+      signoff: [reviewer, security]
       dependencies: [I-F1.1]
       acceptance:
         - 'No I/O, React components, next/* or domain entities in core.'
         - 'Tests prove distinct QueryClient instances and pure contracts.'
       verification:
         - 'pnpm --filter @simplify-dev/module-core test|typecheck|lint; boundary checker'
-      status: in_progress
+      status: done
       lease: { owner: coder, paths: [modules/core/**, pnpm-lock.yaml], task: I-F1.2 }
-      evidence: []
-      reports: []
-      open_risks: []
-      commit: null
+      evidence:
+        - 'Module tests 2 files/8 tests passed; typecheck/lint passed; boundary scan 177 files/0 findings; coordinator gates exit 0; reviewer/security APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.2-I-F1.7-integration.md'
+      open_risks:
+        - 'ADR-sanctioned React-coupled QueryClient factory in nominally framework-independent core; package-lock drift deferred to I-F1.6.'
+      commit: a184646
     - id: I-F1.3
       objective: 'Add registry artifact resolver and correct RegistryClient path with tests.'
       owner: coder
@@ -906,7 +909,7 @@ implementation_phase:
         - 'Only module-registry/server reads fs; server-only assertion passes; web page unchanged; no duplicated validation.'
       verification:
         - 'module tests; pnpm --filter @simplify-dev/web build; boundary checker'
-      status: not_started
+      status: in_progress
       lease:
         {
           owner: coder,
@@ -963,11 +966,11 @@ implementation_phase:
         - 'No React 18 peers; pnpm-lock.yaml reflects both core and blocks manifests; unused @simplify-dev/blocks removed from apps/web only if proven unused; gates pass.'
       verification:
         - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
-      status: not_started
+      status: in_progress
       lease:
         {
           owner: bugfixer,
-          paths: [packages/blocks/**, package-lock.json, apps/web/package.json],
+          paths: [packages/blocks/**, package-lock.json, pnpm-lock.yaml, apps/web/package.json],
           task: I-F1.6,
         }
       evidence: []
@@ -978,13 +981,13 @@ implementation_phase:
       objective: 'Correct stale web/token READMEs and the ADR-003 removed-styles.css reference.'
       owner: documenter
       reviewer: reviewer
-      signoff: []
+      signoff: [reviewer]
       dependencies: [I-F1.5]
       acceptance:
         - 'READMEs describe actual behavior; ADR-003 no longer references a removed stylesheet; no false implementation claims.'
       verification:
         - 'pnpm format:check; cross-check each statement against current source.'
-      status: in_progress
+      status: done
       lease:
         {
           owner: documenter,
@@ -996,10 +999,12 @@ implementation_phase:
             ],
           task: I-F1.6b,
         }
-      evidence: []
-      reports: []
+      evidence:
+        - 'Prettier and git diff --check passed; all claims cross-checked against source; reviewer APPROVE; coordinator gates exit 0.'
+      reports:
+        - '.agents/reports/I-F1.6b-docs-integration.md'
       open_risks: []
-      commit: null
+      commit: ef7af16
     - id: I-F1.1b
       objective: 'Extend boundary checker with app-to-domain and deep-import rules plus self-tests.'
       owner: foundation
@@ -1043,7 +1048,7 @@ implementation_phase:
       objective: 'Repair pre-existing Node 20 engine-strict install failure from content-type@3.1.1.'
       owner: bugfixer
       reviewer: reviewer
-      signoff: []
+      signoff: [reviewer, security]
       dependencies: []
       acceptance:
         - '`pnpm install --lockfile-only` exits 0 on Node 20 without engine override flags.'
@@ -1051,11 +1056,12 @@ implementation_phase:
         - 'Root cause is fixed at the dependency boundary with evidence, not hidden by a CLI flag.'
       verification:
         - 'pnpm install --lockfile-only && pnpm install --frozen-lockfile && pnpm build'
-      status: in_progress
+      status: done
       lease: { owner: bugfixer, paths: [package.json, pnpm-lock.yaml], task: I-F1.7 }
       evidence:
-        - 'I-F1.2 reported exact failure: pnpm install --lockfile-only exit 1, ERR_PNPM_UNSUPPORTED_ENGINE, content-type@3.1.1 requires Node >=22, environment Node v20.19.5; workaround --config.engine-strict=false succeeded.'
-      reports: []
+        - 'Added pnpm-recognised parent-scoped override; lockfile content-type@3.1.1 -> 2.1.0 with TanStack entries preserved; coordinator chain exit 0 including both install commands and build; reviewer/security APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.2-I-F1.7-integration.md'
       open_risks:
-        - 'Fix likely needs a scoped pnpm override pinning a Node-20-compatible transitive version; compatibility and security impact require review.'
-      commit: null
+        - 'Scoped override is outside upstream ^3.0.0 range; exact pin may miss future 2.x security patches.'
+      commit: a184646

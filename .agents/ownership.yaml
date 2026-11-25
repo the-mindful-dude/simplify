@@ -73,7 +73,7 @@ owners:
     task: I-F1.7
   - path: pnpm-lock.yaml
     owner: bugfixer
-    task: I-F1.7
+    task: I-F1.6
   - path: apps/web/package.json
     owner: bugfixer
     task: I-F1.6
