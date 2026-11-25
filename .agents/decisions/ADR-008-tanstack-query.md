@@ -1,6 +1,6 @@
 # ADR-008 — TanStack Query as the web data/cache layer
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, T-P005; user decision `.agents/decisions/DECISION-FE-FOUNDATION-001.md:10`

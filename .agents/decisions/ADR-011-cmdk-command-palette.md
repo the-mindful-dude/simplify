@@ -1,6 +1,6 @@
 # ADR-011 — cmdk command palette behind a design-system wrapper
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, T-P005; user decision `.agents/decisions/DECISION-FE-FOUNDATION-001.md:10`

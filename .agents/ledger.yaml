@@ -928,7 +928,19 @@ implementation_phase:
       verification:
         - 'pnpm format:check; cross-check claims against code'
       status: not_started
-      lease: { owner: documenter, paths: [AGENTS.md, docs/**, README.md, .agents/decisions/ADR-00[7-9]-*.md, .agents/decisions/ADR-01[0-5]-*.md], task: I-F1.5 }
+      lease:
+        {
+          owner: documenter,
+          paths:
+            [
+              AGENTS.md,
+              docs/**,
+              README.md,
+              '.agents/decisions/ADR-00[7-9]-*.md',
+              '.agents/decisions/ADR-01[0-5]-*.md',
+            ],
+          task: I-F1.5,
+        }
       evidence: []
       reports: []
       open_risks: []
@@ -957,6 +969,40 @@ implementation_phase:
             ],
           task: I-F1.6,
         }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.1b
+      objective: 'Extend boundary checker with app-to-domain and deep-import rules plus self-tests.'
+      owner: foundation
+      reviewer: reviewer
+      signoff: []
+      dependencies: [I-F1.1]
+      acceptance:
+        - 'Checker reports module/app -> domain module imports and forbidden deep/internal imports.'
+        - '--self-test covers positive and negative cases for both new rules; repo scan stays 0 findings.'
+      verification:
+        - 'node scripts/checks/boundaries.mjs --self-test && node scripts/checks/boundaries.mjs && pnpm lint'
+      status: not_started
+      lease: { owner: foundation, paths: [scripts/checks/**], task: I-F1.1b }
+      evidence: []
+      reports: []
+      open_risks: []
+      commit: null
+    - id: I-F1.3b
+      objective: 'Add CLI consumption test proving the corrected registry resolution against a real checked-in asset.'
+      owner: coder
+      reviewer: reviewer
+      signoff: []
+      dependencies: [I-F1.3]
+      acceptance:
+        - 'CLI-side test resolves a real registry asset through the production client path and asserts exact canonical path.'
+        - 'pnpm --filter @simplify-dev/cli test passes.'
+      verification:
+        - 'pnpm --filter @simplify-dev/cli test && pnpm typecheck'
+      status: not_started
+      lease: { owner: coder, paths: [packages/cli/test/**], task: I-F1.3b }
       evidence: []
       reports: []
       open_risks: []

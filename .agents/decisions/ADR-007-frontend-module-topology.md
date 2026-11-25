@@ -1,6 +1,6 @@
 # ADR-007 — Frontend module topology and dependency direction
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, T-P005; supersedes `.agents/decisions/DECISION-004-boundary-conflicts.md:17-27` for the new redesign scope only

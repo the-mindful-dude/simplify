@@ -1,6 +1,6 @@
 # ADR-009 — Motion for React for orchestrated UI motion only
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, T-P005; user decision `.agents/decisions/DECISION-FE-FOUNDATION-001.md:10`

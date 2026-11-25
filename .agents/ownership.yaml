@@ -25,13 +25,16 @@ owners:
     task: I-F1.1
   - path: scripts/**
     owner: foundation
-    task: I-F1.1
+    task: I-F1.1b
   - path: modules/core/**
     owner: coder
     task: I-F1.2
   - path: packages/registry/**
     owner: coder
     task: I-F1.3
+  - path: packages/cli/test/**
+    owner: coder
+    task: I-F1.3b
   - path: modules/registry/**
     owner: coder
     task: I-F1.4

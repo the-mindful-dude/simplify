@@ -1,6 +1,6 @@
 # ADR-012 — RegistryRepository port and one canonical registry artifact layout
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, T-P005; pre-existing defect from T-P002A:29, T-P002C:42-43

@@ -1,6 +1,6 @@
 # ADR-013 — Application shell, navigation, and sidebar ownership
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, T-P005; `DECISION-FE-FOUNDATION-001.md:5,13`

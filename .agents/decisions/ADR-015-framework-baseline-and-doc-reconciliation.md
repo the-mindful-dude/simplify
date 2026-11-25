@@ -1,6 +1,6 @@
 # ADR-015 — Framework baseline and architecture-document reconciliation
 
-- Status: proposed
+- Status: Accepted
 - Date: 2026-11-23
 - Owners: architect
 - Related tasks: T-P004, coordinator doc task; `ADR-001`, `ADR-005`, `ADR-006`
