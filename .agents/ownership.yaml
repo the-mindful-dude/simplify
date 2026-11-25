@@ -71,3 +71,9 @@ owners:
   - path: pnpm-lock.yaml
     owner: bugfixer
     task: I-F1.6
+  - path: apps/web/README.md
+    owner: bugfixer
+    task: I-F1.6
+  - path: packages/tokens/README.md
+    owner: bugfixer
+    task: I-F1.6

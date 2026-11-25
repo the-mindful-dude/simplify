@@ -871,7 +871,7 @@ implementation_phase:
         - 'Tests prove distinct QueryClient instances and pure contracts.'
       verification:
         - 'pnpm --filter @simplify-dev/module-core test|typecheck|lint; boundary checker'
-      status: not_started
+      status: in_progress
       lease: { owner: coder, paths: [modules/core/**], task: I-F1.2 }
       evidence: []
       reports: []
@@ -963,7 +963,7 @@ implementation_phase:
         - 'No React 18 peers; accurate READMEs; both lockfiles consistent; gates pass.'
       verification:
         - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
-      status: not_started
+      status: in_progress
       lease:
         {
           owner: bugfixer,
