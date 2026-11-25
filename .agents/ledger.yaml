@@ -1039,3 +1039,23 @@ implementation_phase:
         - '.agents/reports/I-F1.3-registry-integration.md'
       open_risks: []
       commit: b8abcaa
+    - id: I-F1.7
+      objective: 'Repair pre-existing Node 20 engine-strict install failure from content-type@3.1.1.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: []
+      dependencies: []
+      acceptance:
+        - '`pnpm install --lockfile-only` exits 0 on Node 20 without engine override flags.'
+        - 'Node 20 LTS runtime and `engine-strict=true` remain unchanged; no security gate is weakened.'
+        - 'Root cause is fixed at the dependency boundary with evidence, not hidden by a CLI flag.'
+      verification:
+        - 'pnpm install --lockfile-only && pnpm install --frozen-lockfile && pnpm build'
+      status: in_progress
+      lease: { owner: bugfixer, paths: [package.json, pnpm-lock.yaml], task: I-F1.7 }
+      evidence:
+        - 'I-F1.2 reported exact failure: pnpm install --lockfile-only exit 1, ERR_PNPM_UNSUPPORTED_ENGINE, content-type@3.1.1 requires Node >=22, environment Node v20.19.5; workaround --config.engine-strict=false succeeded.'
+      reports: []
+      open_risks:
+        - 'Fix likely needs a scoped pnpm override pinning a Node-20-compatible transitive version; compatibility and security impact require review.'
+      commit: null

@@ -68,9 +68,12 @@ owners:
   - path: package-lock.json
     owner: bugfixer
     task: I-F1.6
+  - path: package.json
+    owner: bugfixer
+    task: I-F1.7
   - path: pnpm-lock.yaml
-    owner: coder
-    task: I-F1.2
+    owner: bugfixer
+    task: I-F1.7
   - path: apps/web/package.json
     owner: bugfixer
     task: I-F1.6
