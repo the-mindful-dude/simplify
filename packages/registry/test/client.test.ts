@@ -115,10 +115,12 @@ function fixtureFor(filePath: string): string | Buffer {
   if (key === `${registryRoot}/index.json`) {
     return JSON.stringify(indexFixture);
   }
-  if (key === `${registryRoot}/assets/ui/ui/button/@1.0.0/manifest.json`) {
+  // Source-v1: assetId already contains the category, so there is no
+  // `assets/<category>/` prefix and the versioned manifest is `asset.json`.
+  if (key === `${registryRoot}/ui/button/@1.0.0/asset.json`) {
     return JSON.stringify(buttonManifest);
   }
-  if (key === `${registryRoot}/assets/blocks/blocks/calendar/@0.5.0/manifest.json`) {
+  if (key === `${registryRoot}/blocks/calendar/@0.5.0/asset.json`) {
     return JSON.stringify({
       ...buttonManifest,
       id: 'blocks/calendar',
@@ -130,7 +132,8 @@ function fixtureFor(filePath: string): string | Buffer {
   if (key === `${registryRoot}/libraries/agent-chat/@1.0.0/manifest.json`) {
     return JSON.stringify(agentChatManifest);
   }
-  if (key === `${registryRoot}/assets/ui/ui/button/@1.0.0/src/button.tsx`) {
+  // Asset files live beside the checked-in asset.json under the version directory.
+  if (key === `${registryRoot}/ui/button/@1.0.0/src/button.tsx`) {
     return Buffer.from('export const Button = () => null;\n');
   }
   const error = new Error(
@@ -167,6 +170,10 @@ describe('RegistryClient', () => {
     expect(asset).not.toBeNull();
     expect(asset?.id).toBe('ui/button');
     expect(asset?.version).toBe('1.0.0');
+    expect(mockReadFile).toHaveBeenCalledWith(
+      `${registryRoot}/ui/button/@1.0.0/asset.json`,
+      'utf8',
+    );
   });
 
   it('resolves the latest version from the index when version is omitted', async () => {
@@ -255,6 +262,7 @@ describe('RegistryClient', () => {
 
     expect(bytes).toBeInstanceOf(Uint8Array);
     expect(new TextDecoder().decode(bytes)).toContain('export const Button');
+    expect(mockReadFile).toHaveBeenCalledWith(`${registryRoot}/ui/button/@1.0.0/src/button.tsx`);
   });
 
   it('throws for an unsafe source path', async () => {
@@ -264,6 +272,9 @@ describe('RegistryClient', () => {
     await expect(client.getAssetFile('ui/button', '1.0.0', '../outside/file.tsx')).rejects.toThrow(
       RegistryClientError,
     );
+    await expect(
+      client.getAssetFile('ui/button', '1.0.0', '../outside/file.tsx'),
+    ).rejects.toMatchObject({ code: 'INVALID_SOURCE_PATH' });
   });
 
   it('throws a descriptive error when the index file is missing', async () => {
@@ -289,6 +300,17 @@ describe('RegistryClient', () => {
 
     const client = new RegistryClient({ registryRoot });
     await expect(client.getAsset('Button')).rejects.toThrow(RegistryClientError);
+    await expect(client.getAsset('Button')).rejects.toMatchObject({ code: 'INVALID_ASSET_ID' });
+  });
+
+  it('throws a structured error for an invalid version', async () => {
+    mockReadFile.mockResolvedValue('');
+
+    const client = new RegistryClient({ registryRoot });
+    await expect(client.getAsset('ui/button', 'latest')).rejects.toMatchObject({
+      code: 'INVALID_VERSION',
+      name: 'RegistryClientError',
+    });
   });
 
   it('returns typed summaries from the index', async () => {

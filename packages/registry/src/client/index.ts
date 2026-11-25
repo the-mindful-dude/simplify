@@ -11,6 +11,8 @@ import {
   type RegistryLibrarySummary,
 } from '@simplify-dev/schemas';
 
+import { RegistryArtifactResolver, RegistryArtifactResolverError } from '../artifact-resolver.js';
+
 export class RegistryClientError extends Error {
   public readonly code: string;
 
@@ -25,58 +27,40 @@ export interface RegistryClientOptions {
   readonly registryRoot?: string;
 }
 
-function isSafeRelativePath(value: string): boolean {
-  if (value.startsWith('/') || value.startsWith('\\') || /^[A-Za-z]:/.test(value)) {
-    return false;
-  }
-
-  return !value.split(/[\\/]+/).includes('..');
-}
-
-function categoryFromAssetId(assetId: string): string | undefined {
-  const parts = assetId.split('/');
-  const category = parts[0];
-  if (category === undefined || category.length === 0) {
-    return undefined;
-  }
-
-  return category;
-}
-
 export class RegistryClient {
-  private readonly registryRoot: string;
+  private readonly artifacts: RegistryArtifactResolver;
 
   constructor(options: RegistryClientOptions = {}) {
-    this.registryRoot = options.registryRoot ?? join(process.cwd(), 'registry');
+    const registryRoot = options.registryRoot ?? join(process.cwd(), 'registry');
+    this.artifacts = new RegistryArtifactResolver({ registryRoot });
+  }
+
+  /** Keep resolver failures structured under the client's public error type. */
+  private resolvePath<T>(buildPath: () => T): T {
+    try {
+      return buildPath();
+    } catch (error) {
+      if (error instanceof RegistryArtifactResolverError) {
+        throw new RegistryClientError(error.message, error.code, error);
+      }
+      throw error;
+    }
   }
 
   private indexPath(): string {
-    return join(this.registryRoot, 'index.json');
+    return this.resolvePath(() => this.artifacts.indexPath());
   }
 
-  private assetDirectory(category: string, assetId: string, version: string): string {
-    return join(this.registryRoot, 'assets', category, assetId, `@${version}`);
-  }
-
-  private assetManifestPath(category: string, assetId: string, version: string): string {
-    return join(this.assetDirectory(category, assetId, version), 'manifest.json');
-  }
-
-  private libraryDirectory(libraryId: string, version: string): string {
-    return join(this.registryRoot, 'libraries', libraryId, `@${version}`);
+  private assetManifestPath(assetId: string, version: string): string {
+    return this.resolvePath(() => this.artifacts.assetManifestPath(assetId, version));
   }
 
   private libraryManifestPath(libraryId: string, version: string): string {
-    return join(this.libraryDirectory(libraryId, version), 'manifest.json');
+    return this.resolvePath(() => this.artifacts.libraryManifestPath(libraryId, version));
   }
 
-  private assetFilePath(
-    category: string,
-    assetId: string,
-    version: string,
-    sourcePath: string,
-  ): string {
-    return join(this.assetDirectory(category, assetId, version), sourcePath);
+  private assetFilePath(assetId: string, version: string, sourcePath: string): string {
+    return this.resolvePath(() => this.artifacts.assetFilePath(assetId, version, sourcePath));
   }
 
   private async readJsonFile<T>(filePath: string): Promise<T> {
@@ -144,14 +128,7 @@ export class RegistryClient {
   }
 
   async getAsset(assetId: string, version?: string): Promise<AssetManifest | null> {
-    const category = categoryFromAssetId(assetId);
-    if (!category) {
-      throw new RegistryClientError(
-        `Invalid asset ID: "${assetId}". Expected "<category>/<name>".`,
-        'INVALID_ASSET_ID',
-      );
-    }
-
+    this.resolvePath(() => this.artifacts.validateAssetId(assetId));
     const resolvedVersion = version ?? (await this.resolveAssetVersion(assetId));
     if (!resolvedVersion) {
       return null;
@@ -159,7 +136,7 @@ export class RegistryClient {
 
     try {
       return await this.readJsonFile<AssetManifest>(
-        this.assetManifestPath(category, assetId, resolvedVersion),
+        this.assetManifestPath(assetId, resolvedVersion),
       );
     } catch (error) {
       if ((error as RegistryClientError).code === 'REGISTRY_FILE_NOT_FOUND') {
@@ -218,21 +195,6 @@ export class RegistryClient {
   }
 
   async getAssetFile(assetId: string, version: string, sourcePath: string): Promise<Uint8Array> {
-    const category = categoryFromAssetId(assetId);
-    if (!category) {
-      throw new RegistryClientError(
-        `Invalid asset ID: "${assetId}". Expected "<category>/<name>".`,
-        'INVALID_ASSET_ID',
-      );
-    }
-
-    if (!isSafeRelativePath(sourcePath)) {
-      throw new RegistryClientError(
-        `Unsafe source path: "${sourcePath}". Paths must be relative and stay within the project.`,
-        'INVALID_SOURCE_PATH',
-      );
-    }
-
-    return this.readBytes(this.assetFilePath(category, assetId, version, sourcePath));
+    return this.readBytes(this.assetFilePath(assetId, version, sourcePath));
   }
 }
