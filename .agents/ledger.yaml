@@ -970,7 +970,14 @@ implementation_phase:
       lease:
         {
           owner: bugfixer,
-          paths: [packages/blocks/**, package-lock.json, pnpm-lock.yaml, apps/web/package.json],
+          paths:
+            [
+              packages/blocks/**,
+              package-lock.json,
+              pnpm-lock.yaml,
+              apps/web/package.json,
+              apps/web/next.config.mjs,
+            ],
           task: I-F1.6,
         }
       evidence: []
