@@ -1,0 +1,67 @@
+.root {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: var(--sd-font-family-sans);
+  color: var(--sd-color-foreground);
+}
+
+.body {
+  font-size: var(--sd-font-size-md);
+  line-height: var(--sd-font-leading-normal);
+}
+
+.lead {
+  font-size: var(--sd-font-size-lg);
+  line-height: var(--sd-font-leading-relaxed);
+}
+
+.caption {
+  font-size: var(--sd-font-size-xs);
+  line-height: var(--sd-font-leading-normal);
+}
+
+.code {
+  font-family: var(--sd-font-family-mono);
+  font-size: var(--sd-font-size-sm);
+  line-height: var(--sd-font-leading-normal);
+}
+
+.label {
+  font-size: var(--sd-font-size-sm);
+  font-weight: var(--sd-font-weight-medium);
+  line-height: var(--sd-font-leading-tight);
+}
+
+.default {
+  color: var(--sd-color-foreground);
+}
+
+.muted {
+  color: var(--sd-color-foreground-muted);
+}
+
+.subtle {
+  color: var(--sd-color-foreground-subtle);
+}
+
+.regular {
+  font-weight: var(--sd-font-weight-regular);
+}
+
+.medium {
+  font-weight: var(--sd-font-weight-medium);
+}
+
+.semibold {
+  font-weight: var(--sd-font-weight-semibold);
+}
+
+.bold {
+  font-weight: var(--sd-font-weight-bold);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

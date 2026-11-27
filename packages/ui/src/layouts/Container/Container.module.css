@@ -1,0 +1,90 @@
+.root {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--sd-container-padding, var(--sd-spacing-4));
+}
+
+@media (min-width: 640px) {
+  .root {
+    padding-inline: var(
+      --sd-container-padding-sm,
+      var(--sd-container-padding, var(--sd-spacing-4))
+    );
+  }
+}
+
+@media (min-width: 768px) {
+  .root {
+    padding-inline: var(
+      --sd-container-padding-md,
+      var(--sd-container-padding-sm, var(--sd-container-padding, var(--sd-spacing-4)))
+    );
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    padding-inline: var(
+      --sd-container-padding-lg,
+      var(
+        --sd-container-padding-md,
+        var(--sd-container-padding-sm, var(--sd-container-padding, var(--sd-spacing-4)))
+      )
+    );
+  }
+}
+
+@media (min-width: 1280px) {
+  .root {
+    padding-inline: var(
+      --sd-container-padding-xl,
+      var(
+        --sd-container-padding-lg,
+        var(
+          --sd-container-padding-md,
+          var(--sd-container-padding-sm, var(--sd-container-padding, var(--sd-spacing-4)))
+        )
+      )
+    );
+  }
+}
+
+@media (min-width: 1536px) {
+  .root {
+    padding-inline: var(
+      --sd-container-padding-2xl,
+      var(
+        --sd-container-padding-xl,
+        var(
+          --sd-container-padding-lg,
+          var(
+            --sd-container-padding-md,
+            var(--sd-container-padding-sm, var(--sd-container-padding, var(--sd-spacing-4)))
+          )
+        )
+      )
+    );
+  }
+}
+
+.sm {
+  max-width: 40rem;
+}
+
+.md {
+  max-width: 64rem;
+}
+
+.lg {
+  max-width: 90rem;
+}
+
+.full {
+  max-width: none;
+}
+
+.center {
+  margin-inline: auto;
+}

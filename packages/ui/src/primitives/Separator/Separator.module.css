@@ -1,0 +1,16 @@
+.root {
+  box-sizing: border-box;
+  flex: none;
+  background: var(--sd-color-border);
+}
+
+.horizontal {
+  width: 100%;
+  height: 1px;
+}
+
+.vertical {
+  align-self: stretch;
+  width: 1px;
+  min-height: 1rem;
+}

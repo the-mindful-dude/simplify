@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - packages/*
+  - modules/*
+  - schemas
+
+allowBuilds:
+  esbuild: true

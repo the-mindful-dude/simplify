@@ -1,0 +1,22 @@
+/** Compatibility shim: view contracts are owned by the registry domain module. */
+export type {
+  AssetCategory,
+  AssetFilters,
+  AssetStatus,
+  CategoryCount,
+  CSSVars,
+  DocumentationView,
+  ImplementationView,
+  InstallationFileView,
+  InstallationModeView,
+  ManifestIssue,
+  ManifestView,
+  PackageDependencyView,
+  RegistryAssetView,
+  RegistryDataErrorCode,
+  RegistryDependencyView,
+  RegistryLibraryView,
+  RegistrySnapshot,
+  SortKey,
+  TargetView,
+} from '@simplify-dev/module-registry';

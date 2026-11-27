@@ -1,0 +1,29 @@
+# dependencies and generated output
+node_modules
+**/node_modules
+dist
+**/dist
+.next
+**/.next
+.turbo
+**/.turbo
+coverage
+**/coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# local state and environment files
+.env
+.env.*
+!.env.example
+.simplify
+registry-local
+
+# repository metadata and local guidance
+.git
+.gitignore
+.github
+AGENTS.md
+TODO.md
+CONTRIBUTING.md
+docs

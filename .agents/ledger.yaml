@@ -1,0 +1,1267 @@
+version: 1
+branch: feat/ui-foundation-hardening
+base_head: b63b1b9df85a9edea05cdee27f9610923159119b
+final_head: 9850027
+objective: 'Deliver the credential-free local webhook foundation and Cloudflare Tunnel workflow, harden webhook processing and publication provenance, implement the status UI and documented residual fixes, synchronize documentation, verify all gates and sign-offs, and commit the completed phase.'
+user_decisions:
+  - 'Next phase = complete Phase 9 (branch continuity); Phase 8 skipped (no GitHub credentials).'
+  - 'Fix npm run dev via Corepack pnpm@9.15.9 + pnpm reinstall + Node >=20.9.'
+  - 'Track package-lock.json alongside pnpm-lock.yaml; document with ADR.'
+  - 'Latest Next.js (16.4.6) and React 19; document locked-decision change in ADR.'
+  - 'Premium registry browser UI; dark monochrome/silver, Vercel-like, smooth/animated, mature/interactive.'
+  - 'components/ui is canonical home for reusable components; no hardcoded hex; correct grouping/props; viewport hidden/collapsible props.'
+  - 'tokens package is canonical source (CSS vars + typed TS constants); hex only in token source/generated output.'
+  - 'Radix + jsdom + @testing-library/react added for Dialog/interactive components and DOM tests.'
+  - 'Responsive API = simple flags + responsive value objects.'
+  - 'Component set = broader: Button, InputField, Container, SplitView, AutoGrid, Stack, Dialog, Text, Badge, Card, Separator, Skeleton, Spinner, Tabs, DropdownMenu, Tooltip, Avatar.'
+  - 'Every reusable component gets a README.md with complete, specific, non-generic usage docs and no phase references.'
+  - 'DECISION-003: next phase = credential-free webhook foundation + Cloudflare Tunnel quick tunnel.'
+  - 'No GitHub credentials available; test with local GITHUB_APP_WEBHOOK_SECRET fixture only.'
+  - 'Use .env.example to enumerate every required secret/token and explain what the user puts in .env.local.'
+  - 'ui-ux-designer scope = webhook/sync/GitHub status UI design plus documented UI residuals.'
+  - 'DECISION-003 supersedes DECISION-002 foundation path restriction for this phase; docs remain with documenter.'
+preserve:
+  - 'package-lock.json (was untracked at start; user wanted it tracked; deleted-never; refreshed in T-014).'
+  - '.agents/ (coordinator scaffold created at start).'
+commits:
+  - {
+      hash: 66afa11,
+      task: T-001,
+      message: 'chore(toolchain): provision pnpm 9 and upgrade to Next 16 / React 19',
+    }
+  - {
+      hash: 339086b,
+      task: 'T-003/T-004',
+      message: 'fix(cli): complete Phase 9 safe operations and clear pre-existing test lint defects',
+    }
+  - {
+      hash: 4271bad,
+      task: T-005,
+      message: 'feat(ui): deliver canonical tokens and reusable accessible component library',
+    }
+  - {
+      hash: f548e28,
+      task: T-006,
+      message: 'feat(web): build premium registry browser and fix UI CSS asset build',
+    }
+  - {
+      hash: cd9c235,
+      task: 'T-007/T-008',
+      message: 'docs: sync component READMEs, ADRs, toolchain status, and track package-lock.json',
+    }
+  - {
+      hash: fe3e2ab,
+      task: 'T-013/T-014/T-015/T-016',
+      message: 'fix: implement functional init, align npm lockfile, correct ADR status and format docs',
+    }
+  - {
+      hash: 9850027,
+      task: 'T-026/T-027/T-028/T-029/T-030/T-031/T-032/T-033/T-034/T-035/T-036/T-037/T-038',
+      message: 'feat(github): add credential-free webhook foundation and provenance hardening',
+    }
+tasks:
+  - id: T-001
+    objective: 'Foundation: pnpm 9.15.9 via Corepack, Node >=20.9, workspace reinstall, Next 16.4.6/React 19, Radix + DOM-test deps, dev scripts, Vitest DOM env, both lockfiles.'
+    owner: coder
+    dependencies: [T-002]
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          [
+            '.nvmrc',
+            'package.json',
+            'pnpm-lock.yaml',
+            'turbo.json',
+            'vitest.shared.ts',
+            'apps/registry-api/package.json',
+            'apps/web/package.json',
+            'apps/web/next.config.mjs',
+            'apps/web/tsconfig.json',
+            'packages/ui/package.json',
+            'packages/tokens/package.json',
+          ],
+        task: T-001,
+      }
+    evidence:
+      - 'pnpm --version => 9.15.9; pnpm install => exit 0; workspace symlinks restored.'
+      - 'pnpm build/typecheck/test/lint => 11/11, 19/19, 19/19, 19/19.'
+      - 'timeout 30s pnpm dev => registry-api :3002, Next :3000; no binary-path error.'
+    commit: 66afa11
+  - id: T-002
+    objective: 'Architecture decision records for locked-decision changes and UI/token contracts.'
+    owner: architect
+    dependencies: []
+    status: done
+    lease: { owner: architect, paths: ['.agents/decisions/**'], task: T-002 }
+    evidence:
+      - '4 ADRs produced in .agents/decisions/, transcribed to docs/architecture/ in T-008, status corrected in T-015.'
+    commit: 66afa11
+  - id: T-003
+    objective: 'Audit and complete Phase 9.5 safe file/configuration operations and verify 9.1-9.6.'
+    owner: coder
+    dependencies: [T-001]
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths: ['packages/cli/src/installation/**', 'packages/cli/test/phase9-operations.test.ts'],
+        task: T-003,
+      }
+    evidence:
+      - 'Rollback, interruption recovery, modified/missing file detection covered by packages/cli/test/phase9-operations.test.ts.'
+    commit: 339086b
+  - id: T-004
+    objective: 'Fix all pre-existing lint/type/test errors.'
+    owner: bugfixer
+    dependencies: [T-001]
+    status: done
+    lease:
+      {
+        owner: bugfixer,
+        paths:
+          [
+            'packages/cli/test/**',
+            'packages/github/test/**',
+            'packages/registry/test/**',
+            'packages/tooling/test/**',
+            'AGENTS.md',
+          ],
+        task: T-004,
+      }
+    evidence:
+      - '15 pre-existing ESLint errors in test files fixed without weakening assertions; AGENTS.md formatted.'
+    commit: 339086b
+  - id: T-005
+    objective: 'Implement canonical tokens and the full reusable UI component library with DOM tests.'
+    owner: coder
+    dependencies: [T-001, T-002]
+    status: done
+    lease: { owner: coder, paths: ['packages/tokens/**', 'packages/ui/**'], task: T-005 }
+    evidence:
+      - 'Tokens: CSS vars + typed constants; hex only in token source/generated output.'
+      - '17 components with CSS Modules, Radix, responsive flags/objects, no hex literals; UI 40/40 tests pass.'
+    commit: 4271bad
+  - id: T-006
+    objective: 'Build the premium dark monochrome registry browser in apps/web.'
+    owner: coder
+    dependencies: [T-001, T-005]
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          ['apps/web/app/**', 'apps/web/components/**', 'apps/web/styles/**', 'apps/web/lib/**'],
+        task: T-006,
+      }
+    evidence:
+      - 'Real registry data via RegistryClient + validateRegistryIndex/validateAssetManifest on on-disk registry/index.json; no fake catalogue.'
+      - 'pnpm --filter @simplify-dev/web build => exit 0; dev GET / => 200 (296KB HTML), zero MODULE_NOT_FOUND.'
+    commit: f548e28
+  - id: T-007
+    objective: 'Write complete per-component README.md documentation for every reusable component.'
+    owner: documenter
+    dependencies: [T-005]
+    status: done
+    lease: { owner: documenter, paths: ['packages/ui/src/**/README.md'], task: T-007 }
+    evidence:
+      - '17 READMEs exist; no phase references/generic filler; formatted in T-016.'
+    commit: cd9c235
+  - id: T-008
+    objective: 'Transcribe ADRs into docs/architecture and correct stale TODO.md after verification.'
+    owner: documenter
+    dependencies: [T-002, T-003, T-004, T-005, T-006]
+    status: done
+    lease: { owner: documenter, paths: ['docs/architecture/**', 'TODO.md'], task: T-008 }
+    evidence:
+      - '4 ADRs transcribed + indexed; TODO.md verified-status block added; ADR statuses corrected in T-015.'
+    commit: cd9c235
+  - id: T-009
+    objective: 'Independent correctness and regression review.'
+    owner: reviewer
+    dependencies: [T-003, T-004, T-005, T-006, T-007, T-008]
+    status: done
+    lease: { owner: reviewer, paths: [], task: T-009 }
+    evidence:
+      - 'T-009 (UI/web): APPROVE_WITH_MINOR, no blocking defects; no files modified.'
+      - 'T-009b (toolchain/CLI/docs): REQUEST_CHANGES → 2 MAJOR + 1 MINOR fixed via T-013/T-014/T-015; residual MINOR (corepack artifact) documented.'
+    commit: null
+  - id: T-010
+    objective: 'Security review of installation engine, new dependencies, tokens/UI data flow and registry browser.'
+    owner: security
+    dependencies: [T-003, T-005, T-006]
+    status: done
+    lease: { owner: security, paths: [], task: T-010 }
+    evidence:
+      - 'SECURE_WITH_MINOR; path traversal prevented; no script execution/secret overwrite; no secrets committed; manifests validated. Low residual: lexical path containment (symlink realpath), hybrid-installer default overwrite, dual lockfiles — documented, no defects found.'
+    commit: null
+  - id: T-011
+    objective: 'Fix UI lint/format/test failures and ESLint internal-import rule defect.'
+    owner: bugfixer
+    dependencies: [T-005]
+    status: done
+    lease: { owner: bugfixer, paths: ['eslint.config.mjs', 'packages/ui/**'], task: T-011 }
+    evidence:
+      - 'ESLint no-restricted-imports regex fixed; type imports/empty interfaces/unused imports fixed; Avatar image-load tests fixed; UI 38/38 then 40/40; all gates exit 0.'
+    commit: 4271bad
+  - id: T-012
+    objective: 'Fix UI package build so CSS Modules are emitted into dist.'
+    owner: bugfixer
+    dependencies: [T-005, T-006]
+    status: done
+    lease: { owner: bugfixer, paths: ['packages/ui/**'], task: T-012 }
+    evidence:
+      - 'copy-css.mjs copies 18 CSS modules + removes stale; web build/dev now succeed; regression test added (UI 40/40).'
+    commit: f548e28
+  - id: T-013
+    objective: 'Implement functional simplify init (doctor remediation).'
+    owner: bugfixer
+    dependencies: [T-009b]
+    status: done
+    lease:
+      {
+        owner: bugfixer,
+        paths: ['packages/cli/src/commands/init.ts', 'packages/cli/test/**'],
+        task: T-013,
+      }
+    evidence:
+      - 'init creates simplify.config.json + .simplify/lock.json; 5 new tests; CLI 205/205 pass.'
+    commit: fe3e2ab
+  - id: T-014
+    objective: 'Align tracked package-lock.json with upgraded dependency set.'
+    owner: coder
+    dependencies: []
+    status: done
+    lease: { owner: coder, paths: ['package-lock.json'], task: T-014 }
+    evidence:
+      - 'Regenerated via npm install --package-lock-only --ignore-scripts; react/react-dom 18.3.1 → 19.3.1; documented residual: npm lock is root-only (no workspace links), pnpm-lock.yaml authoritative per ADR-002.'
+    commit: fe3e2ab
+  - id: T-015
+    objective: 'Correct stale ADR status text after transcription.'
+    owner: documenter
+    dependencies: [T-008]
+    status: done
+    lease: { owner: documenter, paths: ['docs/architecture/ADR-*.md'], task: T-015 }
+    evidence:
+      - 'All 4 ADR statuses set to Accepted-implemented with commit hashes; ADR-002 known limitation added.'
+    commit: fe3e2ab
+  - id: T-016
+    objective: 'Format the 16 component READMEs that failed prettier.'
+    owner: coder
+    dependencies: [T-007]
+    status: done
+    lease: { owner: coder, paths: ['packages/ui/src/**/README.md'], task: T-016 }
+    evidence:
+      - 'pnpm exec prettier --check on 16 paths => exit 0; full pnpm format:check => exit 0.'
+    commit: fe3e2ab
+  - id: T-017
+    objective: 'ui-ux-designer audit: design/token spec approval, visual review, WCAG accessibility audit.'
+    owner: ui-ux-designer
+    dependencies: []
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-017 }
+    evidence:
+      - 'Token architecture APPROVED; surface APPROVED_WITH_CHANGES; WCAG AA NOT APPROVED — 5 P0 + 4 P1 findings with file:line.'
+      - 'P0: foregroundSubtle/borderStrong contrast, destructive button text, outline border, silent result count, Button asChild slot loss.'
+    commit: null
+  - id: T-018
+    objective: 'foundation needs-driven infrastructure assessment and proposal.'
+    owner: foundation
+    dependencies: []
+    status: done
+    lease: { owner: foundation, paths: [], task: T-018 }
+    evidence:
+      - 'Found CI/Docker/Changesets ALREADY EXIST; proposed alignment + hardening; user approved CI/Node pin + Dependabot only.'
+    commit: null
+  - id: T-019
+    objective: 'Fix P0 token/Button contrast defects and remove stale light-token stylesheet.'
+    owner: coder
+    dependencies: [T-017]
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          [
+            'packages/tokens/**',
+            'packages/ui/src/primitives/Button/**',
+            'packages/ui/styles/**',
+            'packages/ui/package.json',
+          ],
+        task: T-019,
+      }
+    evidence:
+      - 'foregroundSubtle #71717a→#90909a (min 4.71:1), borderStrong #3f3f46→#73737d (min 3.18:1); generated outputs regenerated.'
+      - 'Destructive text 2.68→6.31:1; outline border 1.90→4.22:1; Slottable preserves asChild slots; stale styles.css removed.'
+      - 'Tokens 6 tests, UI 42 tests; all gates exit 0.'
+    commit: c1e4878
+  - id: T-020
+    objective: 'Fix P0/P1 web-component accessibility defects from T-017.'
+    owner: ui-ux-designer
+    dependencies: [T-017]
+    status: done
+    lease:
+      {
+        owner: ui-ux-designer,
+        paths:
+          ['apps/web/components/{registry-browser,site-header,catalog-skeleton,asset-detail}.tsx'],
+        task: T-020,
+      }
+    evidence:
+      - 'result count role="status"; header id="top"; dangling aria-labelledby removed; h4→h3 in dialog; gates pass.'
+    commit: c1e4878
+  - id: T-021
+    objective: 'Final ui-ux-designer sign-off after remediation.'
+    owner: ui-ux-designer
+    dependencies: [T-019, T-020]
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-021 }
+    evidence:
+      - 'APPROVED_WITH_NON_BLOCKING_NOTES; all P0/P1 resolved; independent contrast recompute confirmed; no files modified.'
+      - 'Non-blocking notes: border token advisory on inputs, narrow subtle/muted separation, stale docs references, dark-only theme intentional.'
+    commit: null
+  - id: T-022
+    objective: 'Implement approved foundation scope: Node 20.19.0 pin in CI/Docker + Dependabot.'
+    owner: foundation
+    dependencies: [T-018, user approval]
+    status: done
+    lease:
+      {
+        owner: foundation,
+        paths: ['.github/workflows/ci.yml', 'Dockerfile', '.github/dependabot.yml'],
+        task: T-022,
+      }
+    evidence:
+      - 'ci.yml:34 node-version 20→20.19.0; Dockerfile:3,32 node:20→node:20.19.0-bookworm-slim; dependabot.yml added (weekly, limit 5, grouped patch/minor).'
+      - 'YAML parse + prettier pass; all 5 gates exit 0; security SECURE_WITH_MINOR; reviewer APPROVE.'
+    commit: 3506dea
+  - id: T-023
+    objective: 'Security sign-off for foundation CI/infrastructure changes.'
+    owner: security
+    dependencies: [T-022]
+    status: done
+    lease: { owner: security, paths: [], task: T-023 }
+    evidence:
+      - 'SECURE_WITH_MINOR; least privilege preserved; no secrets/permissions; Docker tag-mutability and dual-lockfile Dependabot risk documented as low; no files modified.'
+    commit: null
+  - id: T-024
+    objective: 'Independent reviewer sign-off for foundation CI/infrastructure changes.'
+    owner: reviewer
+    dependencies: [T-022]
+    status: done
+    lease: { owner: reviewer, paths: [], task: T-024 }
+    evidence:
+      - 'APPROVE; all 3 changes match user decisions; YAML valid; Node pin consistent; 5 CI gates preserved; no weakening; no files modified.'
+    commit: null
+  - id: T-025
+    objective: 'Mark only evidence-verified completed items in root TODO.md as complete.'
+    owner: documenter
+    dependencies: ['T-013..T-024']
+    status: done
+    lease: { owner: documenter, paths: ['TODO.md'], task: T-025 }
+    evidence:
+      - '113 items marked complete (unchecked 666→553, checked 288→401); Phase 8 remains entirely unchecked.'
+      - 'Verified sections: 9.1-9.5, portions of 9.6/11/12/15; all unverified/future/publishing items left unchecked.'
+      - 'Verified Status note updated with c1e4878/3506dea/a466446 + sign-offs; prettier exit 0.'
+    commit: null
+  # --- Phase: credential-free webhook foundation + Cloudflare tunnel (DECISION-003) ---
+  - id: T-026
+    objective: 'Architecture/ADR review for webhook-only config, atomic dedup, event dispatch, and Cloudflare tunnel local-dev boundaries.'
+    owner: architect
+    dependencies: []
+    acceptance:
+      - 'Recommendation recorded under .agents/decisions/ with boundaries, alternatives, and compatibility notes.'
+      - 'No change to public registry asset model or GitHub-specific leakage into core registry.'
+    verification:
+      - 'Read .agents/decisions/DECISION-003-webhook-foundation-phase.md and research findings.'
+      - 'Return explicit sign-off or required changes with file:line evidence.'
+    status: done
+    lease: { owner: architect, paths: ['.agents/decisions/**'], task: T-026 }
+    evidence:
+      - 'ADR-005 accepted: webhook-only config, atomic dedup, tunnel trust boundary, no dev helper in production package.'
+      - 'T-026b co-signed compose interpolation and app-local status UI exception.'
+      - 'T-026c aligned ADR-005 config path to packages/github/src/webhooks/webhook-config.ts; grep found no stale path.'
+    reports:
+      [
+        '.agents/decisions/ADR-005-credential-free-webhook-boundaries.md',
+        '.agents/decisions/DECISION-004-boundary-conflicts.md',
+      ]
+    open_risks: []
+    commit: null
+  - id: T-027
+    objective: 'Establish a repeatable performance baseline and budget for the registry browser and webhook receiver.'
+    owner: performance
+    dependencies: []
+    acceptance:
+      - 'Measured baseline with exact commands and observed values.'
+      - 'Named performance risks and a concrete measurement method for post-change sign-off.'
+    verification:
+      - 'Inspect apps/web bundle diagnostics and registry data loading; identify measurable checks.'
+    status: done
+    lease: { owner: performance, paths: [], task: T-027 }
+    evidence:
+      - 'Baseline at b63b1b9: / 609,447 B / 6 chunks; /_not-found 457,165 B / 5; all static chunks 722,041 B; registry 18,288 B / 39 assets / 7 libraries.'
+    reports: ['.agents/reports/R-001-R003-baseline.md']
+    open_risks: []
+    commit: null
+  - id: T-028
+    objective: 'Design spec and accessibility plan for webhook/sync/GitHub status views and UI residual audit.'
+    owner: ui-ux-designer
+    dependencies: []
+    acceptance:
+      - 'Design spec with token plan, states, keyboard/focus/announcement behavior, and component boundary decisions.'
+      - 'Every documented UI residual confirmed with current file:line and a proposed fix.'
+    verification:
+      - 'Read research findings; confirm design before implementation task T-032 starts.'
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-028 }
+    evidence:
+      - 'Design approved: nine-state model, token-only styling, live announcer, focus preservation, no new ui exports/packages.'
+      - 'UI residual audit confirmed stale styles export, stale JS cleanup, raw error display, Suspense fallback, and contrast advisory fixes.'
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-029
+    objective: 'Local webhook development foundation: env templates, dev scripts, compose env wiring, and tunnel harness.'
+    owner: foundation
+    dependencies: ['DECISION-003 user approval']
+    scope:
+      [
+        'package.json',
+        '.env.example',
+        'apps/registry-api/package.json',
+        'docker-compose.yml',
+        '.github/dependabot.yml',
+        'scripts/**',
+      ]
+    acceptance:
+      - '.env.example enumerates every required secret/token with instructions for .env.local, including the webhook-only path.'
+      - 'A Cloudflare quick-tunnel harness exposes the local webhook endpoint without committing binaries or secrets.'
+      - 'docker-compose registry-api receives all five required GitHub App variables (or documented env_file pattern).'
+      - 'Root API dev scripts use Node --env-file so .env.local is actually loaded.'
+      - 'No tunnel binary or secret is downloaded/committed during implementation.'
+    verification:
+      - 'pnpm format:check; YAML parse of docker-compose.yml and dependabot.yml; pnpm --filter @simplify-dev/registry-api build.'
+    status: done
+    lease:
+      {
+        owner: foundation,
+        paths:
+          [
+            'package.json',
+            '.env.example',
+            'apps/registry-api/package.json',
+            'docker-compose.yml',
+            '.github/dependabot.yml',
+            'scripts/**',
+          ],
+        task: T-029,
+      }
+    evidence:
+      - 'Root/app scripts add dev:webhooks, webhook:tunnel, webhook:send and Node --env-file loading; no dependencies added.'
+      - '.env.example enumerates all five GITHUB_APP_* variables and webhook secret; docker-compose uses host interpolation; no secrets committed.'
+      - 'scripts/dev/webhook-tunnel.mjs exposes local endpoint through user-invoked Cloudflare quick tunnel; no binary committed.'
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-030
+    objective: 'Harden webhook core: webhook-only config, atomic dedup, structured errors, event dispatch, HTTP tests, local signed sender.'
+    owner: coder
+    dependencies: []
+    scope:
+      [
+        'packages/github/src/**',
+        'packages/github/test/**',
+        'apps/registry-api/src/**',
+        'apps/registry-api/test/**',
+      ]
+    acceptance:
+      - 'Signed delivery works with only GITHUB_APP_WEBHOOK_SECRET configured; full App config still required for authenticated API actions.'
+      - 'Delivery claim is atomic; concurrent duplicate deliveries cannot both be processed.'
+      - 'Errors use GitHubIntegrationError codes; oversized bodies receive a response before socket teardown.'
+      - 'repository/installation events invoke declared handlers; parseGitHubWebhookEvent is used at the boundary.'
+      - 'HTTP-level tests cover 200/401/400/500, duplicate, event dispatch, and webhook-only config.'
+      - 'Local signed-request helper exists for credential-free testing.'
+    verification:
+      - 'pnpm --filter @simplify-dev/github test; pnpm --filter @simplify-dev/registry-api test; pnpm lint; pnpm typecheck.'
+    status: done
+    lease:
+      {
+        owner: coder,
+        paths:
+          [
+            'packages/github/src/**',
+            'packages/github/test/**',
+            'apps/registry-api/src/**',
+            'apps/registry-api/test/**',
+          ],
+        task: T-030,
+      }
+    evidence:
+      - 'Webhook-only receiver config, HMAC-before-parse, 1 MB body cap, atomic claim, structured errors, event dispatch, and generic wire errors implemented.'
+      - 'Local signed sender and helper live only in apps/registry-api/src/dev; removed from packages/github public API and stale dist artifacts.'
+      - 'Final targeted tests: github 27/27, registry-api 15/15; full suite/build pass.'
+    reports: []
+    open_risks: []
+    commit: null
+  - id: T-031
+    objective: 'Fix pre-existing publication provenance placeholders in the library builder.'
+    owner: bugfixer
+    dependencies: []
+    scope: ['packages/tooling/src/library-builder/**', 'packages/tooling/test/**']
+    acceptance:
+      - 'Publication records no longer emit owner/publisher "unknown" or zero SHA as valid provenance.'
+      - 'Actionable error or documented fallback behavior is covered by regression tests.'
+    verification:
+      - 'pnpm --filter @simplify-dev/tooling test; pnpm lint; pnpm typecheck.'
+    status: done
+    lease:
+      {
+        owner: bugfixer,
+        paths: ['packages/tooling/src/library-builder/**', 'packages/tooling/test/**'],
+        task: T-031,
+      }
+    evidence:
+      - 'Initial placeholder fix superseded by ADR-006/T-042b: ProvenanceCandidate has no immutable/verified claim; SHA/repository/publisher validation is fail-fast before writes.'
+      - 'tooling 55/55 and CLI no-immutable guard pass; no validatePublicationRecord or publicationRecord emission remains.'
+    reports: ['.agents/decisions/ADR-006-publication-provenance-boundary.md']
+    open_risks: []
+    commit: null
+  - id: T-032
+    objective: 'Implement status UI and resolve documented UI residuals.'
+    owner: ui-ux-designer
+    dependencies: [T-028]
+    scope:
+      [
+        'apps/web/app/**',
+        'apps/web/components/**',
+        'apps/web/styles/**',
+        'apps/web/lib/**',
+        'packages/ui/src/**',
+        'packages/ui/package.json',
+        'packages/ui/scripts/**',
+      ]
+    acceptance:
+      - 'Status presentation for webhook/sync state uses tokens, live regions, and accessible loading/error/empty states.'
+      - 'Stale styles export claim/packaging, contrast advisory, unreachable Suspense fallback, raw error display, and UI stale-JS cleanup are resolved.'
+      - 'Design spec from T-028 is implemented; visual and accessibility self-review recorded.'
+    verification:
+      - 'pnpm --filter @simplify-dev/ui test; pnpm --filter @simplify-dev/web build; pnpm format:check; pnpm lint; pnpm typecheck.'
+    status: done
+    lease:
+      {
+        owner: ui-ux-designer,
+        paths:
+          [
+            'apps/web/app/**',
+            'apps/web/components/**',
+            'apps/web/styles/**',
+            'apps/web/lib/**',
+            'packages/ui/src/**',
+            'packages/ui/package.json',
+            'packages/ui/scripts/**',
+          ],
+        task: T-032,
+      }
+    evidence:
+      - 'Nine-state status UI, loading/error/not-found routes, sanitized DataError, structured manifest issues, skip link, Suspense, live announcer, focus-preserving retry, and reduced-motion styling implemented.'
+      - 'Stale packages/ui styles export claim and CSS cleanup verified; UI 44/44 tests and web build pass.'
+    reports: ['.agents/reports/T-032b-design.md']
+    open_risks: []
+    commit: null
+  - id: T-033
+    objective: 'Independent correctness and regression review of all phase diffs.'
+    owner: reviewer
+    dependencies: [T-029, T-030, T-031, T-032]
+    acceptance:
+      - 'Actual diff inspected for lease violations, acceptance gaps, weakened tests, and regressions.'
+      - 'Explicit APPROVE or REQUEST_CHANGES with file:line evidence.'
+    verification:
+      - 'git diff against base_head; targeted tests; gate results.'
+    status: done
+    lease: { owner: reviewer, paths: [], task: T-033 }
+    evidence:
+      - 'Initial review CHANGES REQUIRED (F1-F4); all findings resolved and T-033b re-review status APPROVE.'
+      - 'T-033b verified no weakened tests, secrets, debug artifacts, or public-contract leaks; final full gates passed by coordinator.'
+    reports: ['.agents/reports/T-033b-review.md']
+    open_risks: []
+    commit: null
+  - id: T-034
+    objective: 'Security sign-off for webhook, secrets, tunnel harness, and new UI surface.'
+    owner: security
+    dependencies: [T-029, T-030, T-032]
+    acceptance:
+      - 'Signature verification, secret handling, tunnel trust boundary, error disclosure, and resource limits assessed.'
+      - 'No committed secrets; no arbitrary script execution; explicit sign-off with residual risks.'
+    verification:
+      - 'Static review of final diff; no mutating checks.'
+    status: done
+    lease: { owner: security, paths: [], task: T-034 }
+    evidence:
+      - 'Initial review blocked on fake immutable provenance; ADR-006 implementation resolved the block; T-034b status APPROVED.'
+      - 'No critical/high findings; three low local-dev findings documented with pre-production gates.'
+    reports: ['.agents/reports/T-034b-security.md']
+    open_risks:
+      - 'Before hosted exposure: add webhook request timeouts/concurrency cap, validate WEBHOOK_SENDER_MODULE path, cap tunnel log buffer.'
+      - 'Before trusted immutable publication: implement Phase 8 registry-side verification and persistent dedup adapter.'
+    commit: null
+  - id: T-035
+    objective: 'Post-change performance measurement and sign-off.'
+    owner: performance
+    dependencies: [T-029, T-030, T-032]
+    acceptance:
+      - 'Baseline from T-027 compared with post-change measurements using the same commands.'
+      - 'No unexplained regression; explicit sign-off or required remediation.'
+    verification:
+      - 'Same measurement commands as T-027; report exact values.'
+    status: done
+    lease: { owner: performance, paths: [], task: T-035 }
+    evidence:
+      - 'T-035 APPROVED: no unexplained bundle/runtime regression; no new runtime dependencies; static web build remains successful.'
+      - 'Final test 19/19 tasks and build 11/11 tasks pass.'
+    reports: ['.agents/reports/T-035-performance.md']
+    open_risks: []
+    commit: null
+  - id: T-036
+    objective: 'Final ui-ux-designer visual and accessibility sign-off.'
+    owner: ui-ux-designer
+    dependencies: [T-032]
+    acceptance:
+      - 'Visual review and accessibility audit results confirmed against T-028 spec.'
+      - 'Explicit APPROVE / APPROVED_WITH_NOTES / REQUEST_CHANGES.'
+    verification:
+      - 'Review final diff and test evidence; no file modifications.'
+    status: done
+    lease: { owner: ui-ux-designer, paths: [], task: T-036 }
+    evidence:
+      - 'T-036 APPROVED WITH LIMITATIONS: design/token match, nine states, semantics, focus, live regions, reduced motion, and static error copy confirmed by code review.'
+      - 'No browser screenshot/axe run; recorded limitation accepted as non-blocking.'
+    reports: ['.agents/reports/T-036-design.md']
+    open_risks: []
+    commit: null
+  - id: T-037
+    objective: 'Synchronize docs, ADRs, AGENTS.md locked table, READMEs, and TODO.md with verified phase state.'
+    owner: documenter
+    dependencies: [T-026, T-033, T-034, T-035, T-036]
+    scope:
+      [
+        'docs/**',
+        'README.md',
+        'CONTRIBUTING.md',
+        'apps/web/README.md',
+        'packages/github/README.md',
+        'packages/ui/README.md',
+        'AGENTS.md',
+        'TODO.md',
+      ]
+    acceptance:
+      - 'Local webhook/tunnel setup guide documented from verified final state.'
+      - 'Stale React 18/Next 14 claims corrected to ADR-001 decision; stale README/styles references corrected.'
+      - 'TODO.md checkboxes changed only where evidence verifies them; Phase 8 remains blocked.'
+    verification:
+      - 'pnpm format:check; cross-check claims against final diff and gate evidence.'
+    status: done
+    lease:
+      {
+        owner: documenter,
+        paths:
+          [
+            'docs/**',
+            'README.md',
+            'CONTRIBUTING.md',
+            'apps/web/README.md',
+            'packages/github/README.md',
+            'packages/ui/README.md',
+            'AGENTS.md',
+            'TODO.md',
+          ],
+        task: T-037,
+      }
+    evidence:
+      - 'docs/development/README.md Local Webhook Delivery section and packages/ui README corrections completed; doc report formatted.'
+      - 'T-037b updated TODO.md with verified status note and two newly verified boxes; Phase 8 remains blocked/unchecked; prettier exit 0.'
+    reports: ['.agents/reports/T-037-docs.md', '.agents/reports/T-037b-docs.md']
+    open_risks: []
+    commit: null
+  - id: T-038
+    objective: 'Coordinator integration: verify gates, inspect final diff, commit completed changes.'
+    owner: coordinator
+    dependencies: [T-037]
+    acceptance:
+      - 'All five repository gates pass on final tree.'
+      - 'Every acceptance criterion has recorded evidence; all sign-offs present; commit hash recorded.'
+    verification:
+      - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build; git status --short --branch.'
+    status: done
+    lease: { owner: coordinator, paths: [], task: T-038 }
+    evidence:
+      - 'Final gates pass on final tree: format exit 0; lint 19/19; typecheck 19/19; test 19/19; build 11/11.'
+      - 'Test counts: root 9, tokens 6, UI 44, registry 74, tooling 55, CLI 205, github 27, registry-api 15.'
+      - 'Staged diff inspected; 72 files, 4517 insertions, 373 deletions; no secrets, debug artifacts, unrelated files, or user changes lost.'
+      - 'Integration commit 9850027 created on feat/ui-foundation-hardening; push intentionally not performed without explicit authorization.'
+    reports: ['.agents/reports/T-038-final.md']
+    open_risks: []
+    commit: 9850027
+final_verification:
+  - 'BASELINE 2026-11-21 @ b63b1b9 (coordinator, clean tree): pnpm format:check => exit 0; pnpm lint => 19/19; pnpm typecheck => 19/19; pnpm test => 19/19 (root 9, tokens 6, ui 42, github 17, registry 74, tooling 30, cli 205); pnpm build => 11/11 exit 0.'
+  - 'FINAL 2026-11-22 @ b63b1b9 + phase diff: pnpm format:check => exit 0; pnpm lint => 19/19; pnpm typecheck => 19/19; pnpm test => 19/19 (root 9, tokens 6, ui 44, registry 74, tooling 55, cli 205, github 27, registry-api 15); pnpm build => 11/11 exit 0.'
+  - 'Final web build emitted two non-fatal Turbopack warnings for dynamic filesystem access in apps/web/lib/registry-data.ts.'
+  - 'Sign-offs: reviewer APPROVE; security APPROVED; performance APPROVED; ui-ux-designer APPROVED WITH LIMITATIONS; architect ADR-005/ADR-006 complete.'
+  - 'pnpm dev baseline result at b63b1b9: GET http://localhost:3000/ => 200, 296KB HTML, no module-not-found.'
+  - 'Phase 8 remains intentionally blocked: no GitHub App credentials/secrets and no hosted publishing implementation.'
+open_risks:
+  - 'Phase 8 (GitHub App hosted integration and publishing) intentionally skipped — no credentials/secrets; TODO.md documents blocker.'
+  - 'Webhook delivery was tested with local signed fixtures; no real GitHub App webhook or quick-tunnel round trip was performed.'
+  - 'UI sign-off is code review plus recorded DOM markers; no browser screenshot, axe, Lighthouse, or screen-reader runtime pass.'
+  - 'Turbopack build warnings for dynamic filesystem access in apps/web/lib/registry-data.ts are non-fatal; static scoping/ignore comment is future hardening.'
+  - 'Before hosted exposure: add webhook request timeouts/concurrency cap, validate WEBHOOK_SENDER_MODULE path, and cap tunnel log buffer.'
+  - 'Before trusted immutable publication: implement Phase 8 registry-side verification, publisher binding, artifact/SHA match, once-only version write, and persistent dedup adapter.'
+  - 'repositoryId representation drift (URL vs GitHub node id) needs an ADR before Phase 8 publishes records.'
+  - 'Local provenance can still be forged by controlling untrusted env/manifest strings; ADR-006 accepts this because no immutable/verified claim is emitted and registry verification is mandatory in Phase 8.'
+  - 'Transitive dependency advisory audits not run (read-only security review).'
+  - 'Docker base image pinned by tag not digest (tag mutability low risk); Dependabot cannot exclude secondary package-lock.json (reviewer reconciliation per ADR-002 required).'
+  - 'Release automation deferred by user; no publish workflow or registry/credentials decisions.'
+  - 'Untracked .idea/ IDE directory is ignored/preserved and intentionally not committed.'
+
+# --- Frontend foundation & product-experience redesign: PLANNING PHASE (user request) ---
+planning_phase:
+  objective: >-
+    Produce an evidence-based, phased implementation plan for the frontend
+    architecture and product-experience redesign supplied by the user. This is
+    PLANNING ONLY: no source, test, config, schema, route, token, component, or
+    documentation implementation is authorized in this phase.
+  constraints:
+    - 'Root AGENTS.md is binding; only one AGENTS.md exists in the repo.'
+    - 'modules/registry/ (frontend domain module) is NOT apps/registry-api/ (webhook ingestion service). Plan must keep them distinct.'
+    - 'Locked decisions in AGENTS.md Section 3 must be preserved or formally justified via ADR.'
+    - 'Coordinator may write only .agents/**; all implementation must be delegated to specialist agents.'
+    - 'Working tree was clean at planning start; branch feat/ui-foundation-hardening @ 65fb13a.'
+    - 'Prior .agents governance files were accidentally overwritten, then restored from HEAD; content preserved.'
+  exclusions:
+    - 'No implementation, no builds, no installs, no commits of project files, no pushes.'
+    - 'No edits to AGENTS.md, TODO.md, docs/**, apps/**, packages/**, schemas/** during planning.'
+  user_requirements:
+    - 'Take the supplied guide seriously; investigate and produce a detailed plan.'
+    - 'Give detailed agent instructions; do not take the work cheaply.'
+    - 'Sidebar must support menus, menu groups, context menu where necessary, and dynamic menus/workspaces.'
+    - 'Consult the correct specialist agent for each kind of work.'
+    - 'Ask all needed questions through the question tool.'
+  research_reports:
+    - id: T-P002A
+      path: '.agents/reports/T-P002A-frontend-architecture.md'
+      status: complete
+    - id: T-P002B
+      path: '.agents/reports/T-P002B-design-system.md'
+      status: complete
+    - id: T-P002C
+      path: '.agents/reports/T-P002C-data-nav-tooling.md'
+      status: complete
+  planning_tasks:
+    - id: T-P001
+      objective: 'Startup context and governance.'
+      owner: coordinator
+      status: done
+      evidence:
+        - 'AGENTS.md read; single AGENTS.md confirmed; Git branch/HEAD/clean state recorded; governance restored.'
+    - id: T-P002
+      objective: 'Three parallel read-only explore reports on architecture, design system, data/nav/tooling.'
+      owner: explore
+      status: done
+      evidence:
+        - 'T-P002A/B/C reports received with file:line evidence; no files changed by research agents.'
+    - id: T-P003
+      objective: 'Resolve material scope/product/compatibility questions with user.'
+      owner: coordinator
+      status: done
+      evidence:
+        - '8 decisions recorded in .agents/decisions/DECISION-FE-FOUNDATION-001.md.'
+        - 'Addenda: collapsible hover-animated sidebar; no duplicated logic/components; no native UI controls; docs must be updated.'
+    - id: T-P004
+      objective: 'Architect evaluation of module boundaries, dependency rules, and design-system fit.'
+      owner: architect
+      status: done
+      dependencies: [T-P003]
+      evidence:
+        - 'Verdict APPROVE_WITH_CONDITIONS; report at .agents/decisions/REPORT-T-P004-architecture-evaluation.md.'
+        - 'ADR-007..015 written under .agents/decisions/; no source files changed.'
+        - 'Conditions: doc/ADR reconciliation task, ADR-012 read-only layout verification, fresh baseline gate run.'
+    - id: T-P005
+      objective: 'Produce the detailed phased implementation plan under .agents/.'
+      owner: coordinator
+      status: done
+      dependencies: [T-P003, T-P004]
+      evidence:
+        - 'Full 7-phase plan with F1.0-F7.7 task specs, leases, acceptance, validation, remediation mapping, parallelism, dependencies, and DoD written to .agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md.'
+        - 'All 8 user decisions + addenda recorded in .agents/decisions/DECISION-FE-FOUNDATION-001.md.'
+        - 'No source/test/config/docs/TODO/AGENTS changes made; planning only.'
+  commit: c4d2a95
+
+# --- Phase 1 implementation (authorized 2026-11-24; user said "proceed") ---
+implementation_phase:
+  plan: '.agents/reports/FE-FOUNDATION-IMPLEMENTATION-PLAN.md'
+  decisions:
+    - '.agents/decisions/DECISION-FE-FOUNDATION-002.md'
+  scope: 'F1.0-F1.6 only; later phases require separate authorization'
+  tasks:
+    - id: I-F1.0
+      objective: 'Fresh baseline gates + read-only registry artifact-layout verification.'
+      owner: coordinator
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'Fresh baseline gate results recorded with exact commands/outcomes.'
+        - 'Canonical artifact layout verified with file:line and command evidence.'
+      verification:
+        - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
+      status: done
+      lease: null
+      evidence:
+        - 'BASELINE_EXIT:0 on re-run; format 1/1, lint 19/19, typecheck 19/19, test 19/19 plus 9 root tests, build 11/11; 2 known Turbopack warnings at apps/web/lib/registry-data.ts:146,160.'
+        - 'First baseline attempt failed on 17 unformatted coordinator .agents files; fixed with pnpm exec prettier --write ".agents/**/*.{md,yaml}".'
+        - 'Read-only explore verification: canonical registry/<category>/<name>/@<version>/asset.json; client doubling defect at packages/registry/src/client/index.ts:57-63 confirmed by runtime probe.'
+      reports:
+        - '.agents/reports/I-F1.0-artifact-verification.md'
+      open_risks:
+        - 'Published on-disk artifact layout undefined; F1.3 implements source-v1 and rejects unsupported layouts instead of inventing a shape.'
+        - 'CLI source installs still lack tracked asset source files (registry/ui/button/@1.0.0/src/button.tsx absent).'
+      commit: null
+    - id: I-F1.1
+      objective: 'Workspace wiring, private module manifests, report-only boundary/export/hex/JSX gates.'
+      owner: foundation
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.0]
+      acceptance:
+        - 'modules/* included in pnpm-workspace.yaml; gate scripts exist and are wired into CI.'
+        - 'Gates run report-only (warnings, not errors); zero current forbidden edges.'
+      verification:
+        - 'pnpm format:check && pnpm lint; boundary checker output'
+      status: done
+      lease:
+        {
+          owner: foundation,
+          paths:
+            [
+              pnpm-workspace.yaml,
+              turbo.json,
+              tsconfig.base.json,
+              eslint.config.mjs,
+              .github/workflows/ci.yml,
+              scripts/**,
+            ],
+          task: I-F1.1,
+        }
+      evidence:
+        - 'modules/* wired; report-only gates wired into CI/Turbo; reviewer APPROVE and security APPROVE recorded.'
+      reports:
+        - '.agents/reports/I-F1.1-foundation-integration.md'
+      open_risks:
+        - 'Gates advisory until F2.4; deep-package-import overlaps specialized rules.'
+      commit: dac2592
+    - id: I-F1.2
+      objective: 'Implement modules/core pure contracts and scoped QueryClient factory.'
+      owner: coder
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.1]
+      acceptance:
+        - 'No I/O, React components, next/* or domain entities in core.'
+        - 'Tests prove distinct QueryClient instances and pure contracts.'
+      verification:
+        - 'pnpm --filter @simplify-dev/module-core test|typecheck|lint; boundary checker'
+      status: done
+      lease: { owner: coder, paths: [modules/core/**, pnpm-lock.yaml], task: I-F1.2 }
+      evidence:
+        - 'Module tests 2 files/8 tests passed; typecheck/lint passed; boundary scan 177 files/0 findings; coordinator gates exit 0; reviewer/security APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.2-I-F1.7-integration.md'
+      open_risks:
+        - 'ADR-sanctioned React-coupled QueryClient factory in nominally framework-independent core; package-lock drift deferred to I-F1.6.'
+      commit: a184646
+    - id: I-F1.3
+      objective: 'Add registry artifact resolver and correct RegistryClient path with tests.'
+      owner: coder
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.0]
+      acceptance:
+        - 'One resolver; CLI and web resolve the same checked-in asset; client.test.ts updated with justification.'
+      verification:
+        - 'pnpm --filter @simplify-dev/registry test; pnpm --filter @simplify-dev/cli test; pnpm typecheck'
+      status: done
+      lease: { owner: coder, paths: [packages/registry/**], task: I-F1.3 }
+      evidence:
+        - 'Registry tests 6 files/104 passed; CLI tests 16 files/207 passed; full gates exit 0; reviewer/security APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.3-registry-integration.md'
+      open_risks:
+        - 'Lexical containment only (no realpath); published artifact layout undefined; CLI source asset files still absent.'
+      commit: 4d483e5
+    - id: I-F1.4
+      objective: 'Create frontend modules/registry with repository port, server adapter, queries and view mapping.'
+      owner: coder
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.2, I-F1.3]
+      acceptance:
+        - 'Only module-registry/server reads fs; server-only assertion passes; web page unchanged; no duplicated validation.'
+      verification:
+        - 'module tests; pnpm --filter @simplify-dev/web build; boundary checker'
+      status: done
+      lease:
+        {
+          owner: coder,
+          paths:
+            [
+              modules/registry/**,
+              apps/web/lib/registry-data.ts,
+              apps/web/lib/catalog.ts,
+              apps/web/lib/types.ts,
+              apps/web/package.json,
+              apps/web/next.config.mjs,
+              pnpm-lock.yaml,
+            ],
+          task: I-F1.4,
+        }
+      evidence:
+        - 'Implemented @simplify-dev/module-registry with client-safe root, RegistryRepository port, query keys/hooks/options, error/state mapping, view mappers/types, and server-only ./server adapter delegating paths/validation to @simplify-dev/registry.'
+        - 'apps/web lib files are thin compatibility re-exports; web package/next config and pnpm-lock importer wire the new workspace module without reintroducing @simplify-dev/blocks.'
+        - 'Coordinator full gate chain exit 0: frozen install, module build/test/typecheck/lint, web build, format, lint, typecheck, test, root build, boundary self-test 27/27, scan 194 files/0 findings. Module tests 3 files/16; full tests 22/22 tasks.'
+        - 'An initial format failure was rechecked by scoped Prettier (all files unchanged) and the subsequent full format:check passed; no remaining formatting defect.'
+        - 'Reviewer I-F1.R5 APPROVE; security I-F1.S5 APPROVE; rendered-HTML parity inferred from identical mapper logic plus successful static generation, not byte-level snapshot.'
+      reports:
+        - '.agents/reports/I-F1.4-I-F1.8-signoffs.md'
+      open_risks:
+        - 'Low pre-existing residual: symlink-aware containment absent in @simplify-dev/registry; tracked for bounded remediation.'
+      commit: 077dcf7
+    - id: I-F1.5
+      objective: 'Reconcile framework docs/ADRs and ratify ADR-007..015.'
+      owner: documenter
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: []
+      acceptance:
+        - 'Zero stale React 18/Next 14 claims; ADR index lists 001..015; module conventions documented.'
+      verification:
+        - 'pnpm format:check; cross-check claims against code'
+      status: done
+      lease:
+        {
+          owner: documenter,
+          paths:
+            [
+              AGENTS.md,
+              docs/**,
+              README.md,
+              '.agents/decisions/ADR-00[7-9]-*.md',
+              '.agents/decisions/ADR-01[0-5]-*.md',
+            ],
+          task: I-F1.5,
+        }
+      evidence:
+        - 'Zero stale framework claims outside historical ADR-001 note; ADR index 001..015; 9/9 ADRs Accepted; format check passed.'
+      reports:
+        - '.agents/reports/I-F1.5-docs-integration.md'
+      open_risks: []
+      commit: 0d1d2d9
+    - id: I-F1.6
+      objective: 'Fix blocks React 19 peers, refresh the authoritative lockfile, and remove an unused web blocks dependency if confirmed.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.2]
+      acceptance:
+        - 'No React 18 peers; pnpm-lock.yaml reflects both core and blocks manifests; unused @simplify-dev/blocks removed from apps/web only if proven unused; gates pass.'
+      verification:
+        - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
+      status: done
+      lease:
+        {
+          owner: bugfixer,
+          paths:
+            [
+              packages/blocks/**,
+              package-lock.json,
+              pnpm-lock.yaml,
+              apps/web/package.json,
+              apps/web/next.config.mjs,
+            ],
+          task: I-F1.6,
+        }
+      evidence:
+        - 'packages/blocks React/React-DOM peers set to ^19.0.0; apps/web removed the unused @simplify-dev/blocks dependency and stale transpilePackages entry; pnpm-lock.yaml regenerated with React 18 transitives dropped and the content-type@2.1.0 override plus TanStack entries preserved.'
+        - 'package-lock.json intentionally unchanged per ADR-002 root-only limitation; grep confirmed no remaining @simplify-dev/blocks reference in apps/web.'
+        - 'Coordinator full gate chain exit 0: frozen install, format, lint, typecheck, test, build, boundary self-test 27/27, repo scan 177 files/0 findings; only the two known registry-data.ts Turbopack warnings remain.'
+        - 'Reviewer I-F1.R4 APPROVE; security I-F1.S4 APPROVE with a medium residual assigned to I-F1.8.'
+      reports:
+        - '.agents/reports/I-F1.6-review-signoff.md'
+      open_risks:
+        - 'Checked-in registry asset manifests still declare React 18 peers; remediated by I-F1.8.'
+      commit: dd3dc03
+    - id: I-F1.6b
+      objective: 'Correct stale web/token READMEs and the ADR-003 removed-styles.css reference.'
+      owner: documenter
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: [I-F1.5]
+      acceptance:
+        - 'READMEs describe actual behavior; ADR-003 no longer references a removed stylesheet; no false implementation claims.'
+      verification:
+        - 'pnpm format:check; cross-check each statement against current source.'
+      status: done
+      lease:
+        {
+          owner: documenter,
+          paths:
+            [
+              apps/web/README.md,
+              packages/tokens/README.md,
+              docs/architecture/ADR-003-canonical-tokens-and-ui-contracts.md,
+            ],
+          task: I-F1.6b,
+        }
+      evidence:
+        - 'Prettier and git diff --check passed; all claims cross-checked against source; reviewer APPROVE; coordinator gates exit 0.'
+      reports:
+        - '.agents/reports/I-F1.6b-docs-integration.md'
+      open_risks: []
+      commit: ef7af16
+    - id: I-F1.1b
+      objective: 'Extend boundary checker with app-to-domain and deep-import rules plus self-tests.'
+      owner: foundation
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.1]
+      acceptance:
+        - 'Checker reports module/app -> domain module imports and forbidden deep/internal imports.'
+        - '--self-test covers positive and negative cases for both new rules; repo scan stays 0 findings.'
+      verification:
+        - 'node scripts/checks/boundaries.mjs --self-test && node scripts/checks/boundaries.mjs && pnpm lint'
+      status: done
+      lease: { owner: foundation, paths: [scripts/checks/**], task: I-F1.1b }
+      evidence:
+        - 'Self-test 27/27; repo scan 170 files/0 findings; both new rules covered positively and negatively; reviewer APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.1-foundation-integration.md'
+      open_risks:
+        - 'Deep-package-import overlaps specialized rules; deterministic duplicate warnings possible.'
+      commit: dac2592
+    - id: I-F1.3b
+      objective: 'Add CLI consumption test proving the corrected registry resolution against a real checked-in asset.'
+      owner: coder
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.3]
+      acceptance:
+        - 'CLI-side test resolves a real registry asset through the production client path and asserts exact canonical path.'
+        - 'pnpm --filter @simplify-dev/cli test passes.'
+      verification:
+        - 'pnpm --filter @simplify-dev/cli test && pnpm typecheck'
+      status: done
+      lease: { owner: coder, paths: [packages/cli/test/**], task: I-F1.3b }
+      evidence:
+        - 'CLI test uses real RegistryClient + SourceInstaller against checked-in asset; CLI suite 16 files/207 tests passed; reviewer APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.3-registry-integration.md'
+      open_risks: []
+      commit: b8abcaa
+    - id: I-F1.7
+      objective: 'Repair pre-existing Node 20 engine-strict install failure from content-type@3.1.1.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: []
+      acceptance:
+        - '`pnpm install --lockfile-only` exits 0 on Node 20 without engine override flags.'
+        - 'Node 20 LTS runtime and `engine-strict=true` remain unchanged; no security gate is weakened.'
+        - 'Root cause is fixed at the dependency boundary with evidence, not hidden by a CLI flag.'
+      verification:
+        - 'pnpm install --lockfile-only && pnpm install --frozen-lockfile && pnpm build'
+      status: done
+      lease: { owner: bugfixer, paths: [package.json, pnpm-lock.yaml], task: I-F1.7 }
+      evidence:
+        - 'Added pnpm-recognised parent-scoped override; lockfile content-type@3.1.1 -> 2.1.0 with TanStack entries preserved; coordinator chain exit 0 including both install commands and build; reviewer/security APPROVE.'
+      reports:
+        - '.agents/reports/I-F1.2-I-F1.7-integration.md'
+      open_risks:
+        - 'Scoped override is outside upstream ^3.0.0 range; exact pin may miss future 2.x security patches.'
+      commit: a184646
+    - id: I-F1.8
+      objective: 'Remediate security residual: replace authoritative React 18 peer declarations with React 19 and prevent generator reintroduction.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.6]
+      acceptance:
+        - 'No React 18 peer declarations remain in tracked registry manifests, CLI asset-create defaults, or peer-specific CLI fixtures.'
+        - 'Generated UI manifests assert react@^19.0.0 as a peer; existing planner/hybrid installer behavior tests continue to pass with updated fixtures.'
+        - 'No lockfiles, schemas, framework-neutral docs, detection/doctor fixtures, or generic package-installer/phase9 fixtures are changed.'
+      verification:
+        - 'pnpm exec prettier --check "registry/**/*.json" "packages/cli/src/commands/asset-create.ts" "packages/cli/test/asset-create.test.ts" "packages/cli/test/installation-planner.test.ts" "packages/cli/test/hybrid-installer.test.ts"'
+        - 'pnpm exec vitest run --config vitest.shared.ts packages/cli/test/asset-create.test.ts packages/cli/test/installation-planner.test.ts packages/cli/test/hybrid-installer.test.ts'
+        - 'pnpm --filter @simplify-dev/cli typecheck && pnpm --filter @simplify-dev/cli lint'
+      status: done
+      lease:
+        {
+          owner: bugfixer,
+          paths:
+            [
+              registry/blocks/agent-chat/@1.0.0/asset.json,
+              registry/recipes/agent-chat-postgres/@1.0.0/asset.json,
+              registry/ui/button/@1.0.0/asset.json,
+              registry/integrations/vercel-ai/@1.0.0/asset.json,
+              packages/cli/src/commands/asset-create.ts,
+              packages/cli/test/asset-create.test.ts,
+              packages/cli/test/installation-planner.test.ts,
+              packages/cli/test/hybrid-installer.test.ts,
+            ],
+          task: I-F1.8,
+        }
+      evidence:
+        - 'Seven authoritative React peer declarations in four registry manifests changed from ^18.3.1 to ^19.0.0; CLI generator default changed from ^18.2.0 to ^19.0.0; peer-specific planner/hybrid fixtures updated without weakening assertions.'
+        - 'Added asset-create regression test proving generated UI manifests declare react@^19.0.0 as peer and still validate; before-fix reproduction failed exactly on ^18.2.0 vs ^19.0.0.'
+        - 'Coordinator authoritative grep returned exit 1 (no React 18 peer matches in the four manifests, generator, and named tests); no lockfile, schema, docs, detection/doctor, or generic installer fixtures changed.'
+        - 'Bugfixer targeted checks passed: Prettier, CLI typecheck/lint, and 3 files/37 tests; coordinator full chain also passed with CLI 16 files/208 tests.'
+        - 'Reviewer I-F1.R5 APPROVE; security I-F1.S5 APPROVE; I-F1.S4 medium residual resolved.'
+      reports:
+        - '.agents/reports/I-F1.8-R-findings.md'
+        - '.agents/reports/I-F1.4-I-F1.8-signoffs.md'
+      open_risks: []
+      commit: b8312e8
+    - id: I-F1.9-R
+      objective: 'Reproduce and define bounded repair for lexical-only registry path containment and raw error cause retention.'
+      owner: explore
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'Report exact file:line evidence, reproduction method, smallest bounded bugfixer scope, and verification commands.'
+      verification:
+        - 'Read-only inspection; no files changed by the research owner.'
+      status: done
+      lease: null
+      evidence:
+        - 'Read-only research found no symlinks currently checked in; lexical containment at artifact-resolver.ts:154-170 can be followed by readFile at client/index.ts:69,100.'
+        - 'Raw cause retention identified at repository.ts:57 and propagated through errors.ts:41,48 and modules/core/src/errors.ts:23; no current web disclosure found.'
+        - 'Coordinator decisions: allow benign in-root symlinks, reject out-of-root resolution, reuse PATH_ESCAPES_ROOT, sanitize client messages and adapter cause, accept documented TOCTOU residual.'
+      reports:
+        - '.agents/reports/I-F1.9-R-findings.md'
+      open_risks:
+        - 'TOCTOU race remains between realpath and readFile; fd-based O_NOFOLLOW reads are out of scope.'
+      commit: null
+    - id: I-F1.10-A
+      objective: 'Recommend an architecture decision for ADR-012 published-layout conflict and registry content gaps.'
+      owner: architect
+      reviewer: null
+      signoff: []
+      dependencies: [I-F1.10-R]
+      acceptance:
+        - 'Report must state whether source-v1-only or published-v1 support is architecturally correct, reconcile ADR-012:24-30, and identify any user decision required.'
+      verification:
+        - 'Evidence-based recommendation with file:line references and no source edits.'
+      status: done
+      lease: null
+      evidence:
+        - 'Architect recommends Option A: reconcile ADR-012 to source-v1-only, reject unknown layouts by design, and defer published-v1 until immutable artifacts and publication pipeline exist.'
+        - 'User approved Option A and approved adding real source files in a later asset phase; index/manifest gap is accepted as discovery-only catalogue semantics.'
+      reports:
+        - '.agents/reports/I-F1.10-R-findings.md'
+        - '.agents/reports/I-F1.10-A-recommendation.md'
+        - '.agents/decisions/DECISION-FE-FOUNDATION-003.md'
+      open_risks:
+        - 'Seven declared source files remain absent under an explicit user-approved later-phase exception.'
+      commit: null
+    - id: I-F1.9
+      objective: 'Harden registry file reads with real-path containment and sanitize error causes/messages.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.9-R]
+      acceptance:
+        - 'RegistryClient read paths reject symlinks resolving outside the resolved registry root while allowing benign in-root and symlinked-ancestor reads.'
+        - 'Missing-file and invalid-JSON semantics remain stable; public error messages and retained causes contain no absolute filesystem paths.'
+        - 'One authoritative containment rule stays in packages/registry; module adapter adds no second FS/path implementation.'
+        - 'Regression tests cover out-of-root file symlink, intermediate directory symlink, benign in-root symlink, symlinked root ancestor, missing file, and invalid JSON.'
+      verification:
+        - 'pnpm --filter @simplify-dev/registry test && pnpm --filter @simplify-dev/registry typecheck && pnpm --filter @simplify-dev/registry lint'
+        - 'pnpm --filter @simplify-dev/module-registry test && pnpm --filter @simplify-dev/module-registry typecheck && pnpm --filter @simplify-dev/module-registry lint'
+        - 'pnpm --filter @simplify-dev/cli test'
+        - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
+      status: in_progress
+      lease:
+        {
+          owner: bugfixer,
+          paths:
+            [
+              packages/registry/src/artifact-resolver.ts,
+              packages/registry/src/client/index.ts,
+              packages/registry/test/artifact-resolver.test.ts,
+              packages/registry/test/client.test.ts,
+              packages/registry/test/client-symlink.test.ts,
+              modules/registry/src/server/repository.ts,
+              modules/registry/test/query-contract.test.ts,
+              modules/registry/test/server-error.test.ts,
+            ],
+          task: I-F1.9,
+        }
+      evidence: []
+      reports:
+        - '.agents/reports/I-F1.9-R-findings.md'
+      open_risks:
+        - 'TOCTOU between realpath and readFile remains for a mutable registry; static checked-in registry is the supported boundary.'
+      commit: null
+    - id: I-F1.11
+      objective: 'Reconcile ADR-012 and registry docs with source-v1-only behavior and approved missing-source exception.'
+      owner: documenter
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: [I-F1.10-A]
+      acceptance:
+        - 'ADR-012 states only source-v1 is defined, unknown layouts are rejected by design, and published-v1 activation requires a superseding ADR plus real immutable artifacts and publication pipeline.'
+        - 'Registry docs state index entries are discovery summaries and only entries with versioned manifests and present source files are installable.'
+        - 'No source code, schemas, manifest content, lockfiles, or published-layout implementation is changed.'
+      verification:
+        - 'pnpm exec prettier --check .agents/decisions/ADR-012-registry-repository-and-artifact-layout.md registry/README.md docs/specifications/registry-index.md'
+        - 'Coordinator diff review confirms documentation-only changes and exact alignment with the implemented resolver.'
+      status: in_progress
+      lease:
+        {
+          owner: documenter,
+          paths:
+            [
+              .agents/decisions/ADR-012-registry-repository-and-artifact-layout.md,
+              registry/README.md,
+              docs/specifications/registry-index.md,
+            ],
+          task: I-F1.11,
+        }
+      evidence: []
+      reports:
+        - '.agents/reports/I-F1.10-R-findings.md'
+      open_risks: []
+      commit: null
+    - id: I-F1.12
+      objective: 'Add real source implementations for the seven declared files in a later asset-content phase.'
+      owner: coder
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: [I-F1.11]
+      acceptance:
+        - 'Every declared source mapping in the six tracked versioned manifests exists under the canonical registry tree and contains a real implementation.'
+        - 'A CLI test installs at least one real declared source file through RegistryClient and SourceInstaller without mocked registry bytes.'
+        - 'No manifests become discovery-only placeholders and no test assertions are weakened.'
+      verification:
+        - 'git ls-files "registry/**/src/**"'
+        - 'pnpm --filter @simplify-dev/registry test && pnpm --filter @simplify-dev/cli test'
+        - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
+      status: not_started
+      lease: null
+      evidence: []
+      reports:
+        - '.agents/reports/I-F1.10-R-findings.md'
+        - '.agents/decisions/DECISION-FE-FOUNDATION-003.md'
+      open_risks:
+        - 'Explicit user-approved exception: source installs for six tracked assets remain unavailable until this later-phase task is completed.'
+      commit: null

@@ -1,0 +1,64 @@
+.header {
+  position: sticky;
+  z-index: var(--sd-z-index-raised);
+  inset-block-start: 0;
+  border-block-end: 1px solid var(--sd-color-border);
+  background: color-mix(in srgb, var(--sd-color-background) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.inner {
+  display: flex;
+  min-block-size: 3.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sd-spacing-4);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sd-spacing-3);
+  color: var(--sd-color-foreground);
+  text-decoration: none;
+}
+
+.mark {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border: 1px solid var(--sd-color-accent);
+  border-radius: var(--sd-radius-sm);
+  box-shadow: 0 0 0 3px var(--sd-color-accent-muted);
+  transform: rotate(45deg);
+  transition: transform var(--sd-motion-duration-normal) var(--sd-motion-ease-out);
+}
+
+.brand:hover .mark {
+  transform: rotate(135deg);
+}
+
+.brandText {
+  letter-spacing: -0.02em;
+}
+
+.brandDot {
+  color: var(--sd-color-foreground-subtle);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sd-spacing-1);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sd-spacing-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark {
+    transition: none;
+  }
+}

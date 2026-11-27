@@ -1,0 +1,11 @@
+.wrap {
+  padding-block: var(--sd-spacing-20);
+}
+
+.card {
+  border-color: var(--sd-color-danger);
+}
+
+.hint {
+  font-family: var(--sd-font-family-mono);
+}

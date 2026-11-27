@@ -1956,7 +1956,7 @@ A successful GitHub Actions run should not automatically mean an asset is truste
 
 Development should proceed by validating the platform's most important architectural capabilities before expanding its asset catalogue.
 
-### Phase 1: Platform Foundations
+### 17.1 Platform Foundations
 
 Implement:
 
@@ -1971,7 +1971,7 @@ Implement:
 
 Goal: Establish a stable foundation for describing and distributing assets.
 
-### Phase 2: GitHub Integration and Library Creation
+### 17.2 GitHub Integration and Library Creation
 
 Implement:
 
@@ -1988,7 +1988,7 @@ Implement:
 
 Goal: Make GitHub the primary environment for creating, maintaining, and publishing libraries.
 
-### Phase 3: Installation Engine
+### 17.3 Installation Engine
 
 Implement:
 
@@ -2003,7 +2003,7 @@ Implement:
 
 Goal: Reliably install assets into real projects.
 
-### Phase 4: Design System and Core UI
+### 17.4 Design System and Core UI
 
 Implement:
 
@@ -2017,7 +2017,7 @@ Implement:
 
 Goal: Establish the visual and technical foundation for UI assets.
 
-### Phase 5: Functional Blocks and Integrations
+### 17.5 Functional Blocks and Integrations
 
 Build a limited set of complete examples:
 
@@ -2036,7 +2036,7 @@ For Agent Chat, implement:
 
 Goal: Prove that simplify.dev can distribute complete, composable features rather than just visual components.
 
-### Phase 6: Documentation and Registry Browser
+### 17.6 Documentation and Registry Browser
 
 Implement:
 
@@ -2052,7 +2052,7 @@ Implement:
 
 Goal: Make assets and libraries discoverable and understandable.
 
-### Phase 7: Theme Studio
+### 17.7 Theme Studio
 
 Implement:
 
@@ -2065,7 +2065,7 @@ Implement:
 
 Goal: Allow developers to configure the actual design system used by their installed assets.
 
-### Phase 8: Library Publishing and Management
+### 17.8 Library Publishing and Management
 
 Expand:
 
@@ -2082,7 +2082,7 @@ Expand:
 
 Goal: Provide a complete and reliable library lifecycle for simplify.dev and external developers.
 
-### Phase 9: Ecosystem Expansion
+### 17.9 Ecosystem Expansion
 
 Expand into additional languages, frameworks, integrations, recipes, and templates.
 

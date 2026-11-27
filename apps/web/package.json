@@ -1,0 +1,24 @@
+{
+  "name": "@simplify-dev/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config ../../vitest.shared.ts --passWithNoTests",
+    "clean": "rm -rf .next dist"
+  },
+  "dependencies": {
+    "@simplify-dev/module-registry": "workspace:*",
+    "@simplify-dev/registry": "workspace:*",
+    "@simplify-dev/tokens": "workspace:*",
+    "@simplify-dev/ui": "workspace:*",
+    "next": "16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}

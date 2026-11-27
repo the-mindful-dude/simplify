@@ -1,0 +1,90 @@
+.content {
+  display: flex;
+  max-block-size: min(85vh, 48rem);
+  flex-direction: column;
+  gap: var(--sd-spacing-5);
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sd-spacing-3);
+}
+
+.headerBadges {
+  display: flex;
+  gap: var(--sd-spacing-2);
+  flex-wrap: wrap;
+}
+
+.title.title {
+  font-size: var(--sd-font-size2xl);
+  letter-spacing: -0.03em;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sd-spacing-4);
+}
+
+.tabList {
+  inline-size: max-content;
+  max-inline-size: 100%;
+}
+
+.tabPanel {
+  padding-block-start: var(--sd-spacing-1);
+}
+
+.definitions {
+  display: grid;
+  gap: var(--sd-spacing-3);
+}
+
+.definition {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  align-items: start;
+  gap: var(--sd-spacing-3);
+}
+
+.definitionValue {
+  min-inline-size: 0;
+  color: var(--sd-color-foreground);
+  font-size: var(--sd-font-size-sm);
+}
+
+.code {
+  font-family: var(--sd-font-family-mono);
+  font-size: var(--sd-font-size-xs);
+}
+
+.plainList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sd-spacing-3);
+  list-style: none;
+}
+
+.fileMapping {
+  display: flex;
+  align-items: center;
+  gap: var(--sd-spacing-2);
+  flex-wrap: wrap;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sd-spacing-3);
+}
+
+@media (max-width: 480px) {
+  .definition {
+    grid-template-columns: 1fr;
+    gap: var(--sd-spacing-1);
+  }
+}
