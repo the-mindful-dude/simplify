@@ -1,8 +1,8 @@
 version: 1
 branch: feat/ui-foundation-hardening
 base_head: b63b1b9df85a9edea05cdee27f9610923159119b
-final_head: 9850027
-objective: 'Deliver the credential-free local webhook foundation and Cloudflare Tunnel workflow, harden webhook processing and publication provenance, implement the status UI and documented residual fixes, synchronize documentation, verify all gates and sign-offs, and commit the completed phase.'
+final_head: e09addb
+objective: 'Deliver the credential-free local webhook foundation and Cloudflare Tunnel workflow, harden webhook processing and publication provenance, implement the status UI and documented residual fixes, synchronize documentation, verify all gates and sign-offs, and commit the completed phase; then reconcile frontend foundation registry artifacts and close bounded closeout defects.'
 user_decisions:
   - 'Next phase = complete Phase 9 (branch continuity); Phase 8 skipped (no GitHub credentials).'
   - 'Fix npm run dev via Corepack pnpm@9.15.9 + pnpm reinstall + Node >=20.9.'
@@ -58,6 +58,16 @@ commits:
       hash: 9850027,
       task: 'T-026/T-027/T-028/T-029/T-030/T-031/T-032/T-033/T-034/T-035/T-036/T-037/T-038',
       message: 'feat(github): add credential-free webhook foundation and provenance hardening',
+    }
+  - {
+      hash: d25dcb8,
+      task: 'I-F1.9/I-F1.13-F',
+      message: 'fix(registry): enforce real-path containment and sanitize read errors',
+    }
+  - {
+      hash: e09addb,
+      task: I-F1.11,
+      message: 'docs: reconcile registry layout and installability contracts',
     }
 tasks:
   - id: T-001
@@ -1184,12 +1194,13 @@ implementation_phase:
         - 'Missing-file and invalid-JSON semantics remain stable; public error messages and retained causes contain no absolute filesystem paths.'
         - 'One authoritative containment rule stays in packages/registry; module adapter adds no second FS/path implementation.'
         - 'Regression tests cover out-of-root file symlink, intermediate directory symlink, benign in-root symlink, symlinked root ancestor, missing file, and invalid JSON.'
+        - 'Resolver docstring describes path construction plus authoritative real-path containment, not a purely lexical resolver.'
       verification:
         - 'pnpm --filter @simplify-dev/registry test && pnpm --filter @simplify-dev/registry typecheck && pnpm --filter @simplify-dev/registry lint'
         - 'pnpm --filter @simplify-dev/module-registry test && pnpm --filter @simplify-dev/module-registry typecheck && pnpm --filter @simplify-dev/module-registry lint'
         - 'pnpm --filter @simplify-dev/cli test'
         - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
-      status: in_progress
+      status: done
       lease:
         {
           owner: bugfixer,
@@ -1206,12 +1217,19 @@ implementation_phase:
             ],
           task: I-F1.9,
         }
-      evidence: []
+      evidence:
+        - 'Bugfixer post-fix targeted checks: registry 7 files/112 tests, module 4 files/17 tests, CLI 16 files/208 tests; package typecheck/lint passed.'
+        - 'Reviewer I-F1.R6 APPROVE: all six symlink cases, missing/invalid JSON semantics, sanitized messages/causes, single authoritative containment rule, and test integrity pass.'
+        - 'Security I-F1.S6 APPROVE: original symlink escape and path-disclosure findings resolved; residual TOCTOU and dangling-symlink behavior documented as low/non-blocking.'
+        - 'Follow-up docstring correction passed Prettier, registry 112 tests, registry typecheck, and registry lint.'
+        - 'Coordinator full chain `pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && node scripts/checks/boundaries.mjs --self-test && node scripts/checks/boundaries.mjs` exited 0; lint had 9 known report-only native-anchor warnings and 0 errors; test had 9 root + 112 registry + 17 module-registry + 208 CLI tests passed; build 13/13; boundary self-test 27/27 and scan 196 files/0 findings.'
       reports:
         - '.agents/reports/I-F1.9-R-findings.md'
+        - '.agents/reports/I-F1.9-signoffs.md'
       open_risks:
         - 'TOCTOU between realpath and readFile remains for a mutable registry; static checked-in registry is the supported boundary.'
-      commit: null
+        - 'Dangling out-of-root symlinks produce REGISTRY_FILE_NOT_FOUND rather than PATH_ESCAPES_ROOT; no path disclosure and requires same write-access precondition.'
+      commit: d25dcb8
     - id: I-F1.11
       objective: 'Reconcile ADR-012 and registry docs with source-v1-only behavior and approved missing-source exception.'
       owner: documenter
@@ -1222,10 +1240,11 @@ implementation_phase:
         - 'ADR-012 states only source-v1 is defined, unknown layouts are rejected by design, and published-v1 activation requires a superseding ADR plus real immutable artifacts and publication pipeline.'
         - 'Registry docs state index entries are discovery summaries and only entries with versioned manifests and present source files are installable.'
         - 'No source code, schemas, manifest content, lockfiles, or published-layout implementation is changed.'
+        - 'ADR line citations reflect current files after I-F1.9, and unverified claims are removed or qualified with evidence.'
       verification:
         - 'pnpm exec prettier --check .agents/decisions/ADR-012-registry-repository-and-artifact-layout.md registry/README.md docs/specifications/registry-index.md'
         - 'Coordinator diff review confirms documentation-only changes and exact alignment with the implemented resolver.'
-      status: in_progress
+      status: done
       lease:
         {
           owner: documenter,
@@ -1237,11 +1256,17 @@ implementation_phase:
             ],
           task: I-F1.11,
         }
-      evidence: []
+      evidence:
+        - 'Documenter reconciled source-v1-only behavior, unknown-layout rejection, deferred published-v1 preconditions, discovery/installability distinction, and the I-F1.12 exception.'
+        - 'Final citation precision fix verified by documenter; reviewer I-F1.R8 APPROVE after correction.'
+        - 'Prettier check for all three leased docs passed; coordinator full repository gate chain exited 0.'
       reports:
         - '.agents/reports/I-F1.10-R-findings.md'
-      open_risks: []
-      commit: null
+        - '.agents/reports/I-F1.10-A-recommendation.md'
+        - '.agents/reports/I-F1.11-signoff.md'
+      open_risks:
+        - 'Six tracked assets remain non-installable in source mode until user-authorized later-phase I-F1.12; explicitly documented and approved.'
+      commit: e09addb
     - id: I-F1.12
       objective: 'Add real source implementations for the seven declared files in a later asset-content phase.'
       owner: coder
@@ -1265,3 +1290,45 @@ implementation_phase:
       open_risks:
         - 'Explicit user-approved exception: source installs for six tracked assets remain unavailable until this later-phase task is completed.'
       commit: null
+    - id: I-F1.13-R
+      objective: 'Establish whether the registry index integrity-hash test failure predates I-F1.9 and identify its bounded repair.'
+      owner: explore
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'Report exact failing command/output, baseline evidence from HEAD, file:line root cause, and bounded remediation lease.'
+      verification:
+        - 'Read-only reproduction/evidence; no working-tree changes.'
+      status: done
+      lease: null
+      evidence:
+        - 'Package-scoped reproduction `pnpm --filter @simplify-dev/registry test` failed only at index.test.ts:158; 111 passed, 1 failed.'
+        - 'HEAD and working-tree blobs for test/index.test.ts and asset.json are byte-identical; sha256sum both matches, so the failure predates I-F1.9.'
+        - 'Commit-level evidence shows I-F1.8 (b8312e8) changed the asset bytes from the pre-b8312e8 hash to the currently computed hash while the hardcoded expectation remained stale.'
+      reports:
+        - '.agents/reports/I-F1.13-R-findings.md'
+      open_risks: []
+      commit: null
+    - id: I-F1.13-F
+      objective: 'Update the stale expected integrity hash in the registry index test.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: [I-F1.13-R]
+      acceptance:
+        - 'Only packages/registry/test/index.test.ts changes; expected ui/button hash becomes the exact SHA-256 of the tracked asset.json.'
+        - 'The strict equality assertion remains unchanged and no asset, schema, lockfile, or I-F1.9-leased file is modified.'
+      verification:
+        - 'pnpm --filter @simplify-dev/registry exec vitest run --config ../../vitest.shared.ts test/index.test.ts'
+        - 'pnpm --filter @simplify-dev/registry test && pnpm --filter @simplify-dev/registry typecheck && pnpm --filter @simplify-dev/registry lint'
+      status: done
+      lease: { owner: bugfixer, paths: [packages/registry/test/index.test.ts], task: I-F1.13-F }
+      evidence:
+        - 'Expected hash updated to exact SHA-256 of tracked asset.json; strict equality assertion unchanged; no asset/schema/lockfile/I-F1.9 lease modified.'
+        - 'Focused registry index test 30/30, registry package 7 files/112 tests, typecheck and lint passed; reviewer I-F1.R7 APPROVE.'
+        - 'Coordinator full repository gate chain exited 0 with the corrected fixture included.'
+      reports:
+        - '.agents/reports/I-F1.13-F-review.md'
+      open_risks: []
+      commit: d25dcb8

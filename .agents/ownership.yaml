@@ -29,6 +29,9 @@ owners:
   - path: modules/core/**
     owner: coder
     task: I-F1.2
+  - path: packages/registry/test/index.test.ts
+    owner: bugfixer
+    task: I-F1.13-F
   - path: packages/registry/**
     owner: bugfixer
     task: I-F1.9
