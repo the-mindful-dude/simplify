@@ -20,7 +20,7 @@
   "dependencies": {
     "packages": [
       { "name": "ai", "version": "^3.4.0", "kind": "peer" },
-      { "name": "react", "version": "^18.3.1", "kind": "peer" }
+      { "name": "react", "version": "^19.0.0", "kind": "peer" }
     ]
   },
   "installation": {

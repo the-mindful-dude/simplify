@@ -102,7 +102,7 @@ describe('HybridInstaller', () => {
           exists: false,
         },
       ],
-      packageDependencies: [{ name: 'react', version: '^18.0.0', kind: 'peer' }],
+      packageDependencies: [{ name: 'react', version: '^19.0.0', kind: 'peer' }],
     });
 
     const installer = new HybridInstaller();

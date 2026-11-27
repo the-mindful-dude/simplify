@@ -19,8 +19,8 @@
   ],
   "dependencies": {
     "packages": [
-      { "name": "react", "version": "^18.3.1", "kind": "peer" },
-      { "name": "react-dom", "version": "^18.3.1", "kind": "peer" },
+      { "name": "react", "version": "^19.0.0", "kind": "peer" },
+      { "name": "react-dom", "version": "^19.0.0", "kind": "peer" },
       { "name": "@radix-ui/react-button", "version": "^1.1.0", "kind": "runtime" }
     ]
   },

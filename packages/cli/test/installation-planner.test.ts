@@ -94,7 +94,7 @@ const packageModeAsset = {
         mode: 'package' as const,
         packageName: '@simplify-dev/ui-button',
         dependencies: {
-          packages: [{ name: 'react', version: '^18.0.0', kind: 'peer' as const }],
+          packages: [{ name: 'react', version: '^19.0.0', kind: 'peer' as const }],
         },
       },
     ],
@@ -197,7 +197,7 @@ describe('planInstallation', () => {
       mockResolve.mockResolvedValue({
         assets: [{ id: 'ui/button', version: '1.0.0', category: 'ui' }],
         registryDependencies: [],
-        packageDependencies: [{ name: 'react', version: '^18.0.0', kind: 'peer' }],
+        packageDependencies: [{ name: 'react', version: '^19.0.0', kind: 'peer' }],
         installationModes: [{ assetId: 'ui/button', mode: 'package' }],
         fileMappings: [],
         environmentVariables: [],
@@ -213,7 +213,7 @@ describe('planInstallation', () => {
       expect(plan.packageDependencies).toHaveLength(1);
       expect(plan.packageDependencies[0]).toEqual({
         name: 'react',
-        version: '^18.0.0',
+        version: '^19.0.0',
         kind: 'peer',
       });
       expect(plan.fileChanges).toHaveLength(0);

@@ -101,6 +101,29 @@ describe('asset-create', () => {
     ).resolves.toBeUndefined();
   });
 
+  it('declares react@^19.0.0 as a peer in generated UI manifests', async () => {
+    await assetCreateCommand.handler(makeContext({ options: optionsFor() }));
+
+    const manifest = (await readManifest(
+      join(testDir, 'simplify', 'assets', 'ui', 'button.json'),
+    )) as {
+      readonly dependencies?: {
+        readonly packages?: readonly {
+          readonly name: string;
+          readonly version: string;
+          readonly kind: string;
+        }[];
+      };
+    };
+
+    expect(validateAssetManifest(manifest).valid).toBe(true);
+    expect(manifest.dependencies?.packages).toContainEqual({
+      name: 'react',
+      version: '^19.0.0',
+      kind: 'peer',
+    });
+  });
+
   it('supports logic assets without preview metadata', async () => {
     await assetCreateCommand.handler(
       makeContext({ options: optionsFor({ category: 'logic', name: 'Format Utility' }) }),

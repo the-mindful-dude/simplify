@@ -23,8 +23,8 @@
       { "id": "ui/input", "version": "1.0.0" }
     ],
     "packages": [
-      { "name": "react", "version": "^18.3.1", "kind": "peer" },
-      { "name": "react-dom", "version": "^18.3.1", "kind": "peer" }
+      { "name": "react", "version": "^19.0.0", "kind": "peer" },
+      { "name": "react-dom", "version": "^19.0.0", "kind": "peer" }
     ]
   },
   "installation": {

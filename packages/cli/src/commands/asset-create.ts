@@ -202,7 +202,7 @@ function buildAssetManifest(options: ResolvedOptions, libraryLicense: string): A
             scenarios: ['default'],
           },
           dependencies: {
-            packages: [{ name: 'react', version: '^18.2.0', kind: 'peer' }],
+            packages: [{ name: 'react', version: '^19.0.0', kind: 'peer' }],
           },
         }
       : {}),
