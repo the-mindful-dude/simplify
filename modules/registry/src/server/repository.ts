@@ -18,6 +18,17 @@ import type { RegistrySnapshot } from '../view/types.js';
 
 const REGISTRY_DIRECTORY = 'registry';
 
+/** Retain only stable diagnostic context from delegated registry failures. */
+function safeCause(error: unknown): Readonly<{ name: string; code?: string }> | undefined {
+  if (error instanceof RegistryClientError) {
+    return { name: error.name, code: error.code };
+  }
+  if (error instanceof Error) {
+    return { name: error.name };
+  }
+  return undefined;
+}
+
 /**
  * Locate the repository registry source from the current working directory.
  * Path construction and containment checks are delegated to the registry
@@ -54,7 +65,7 @@ async function readIndex(client: RegistryClient): Promise<RegistryIndex> {
     raw = await client.getRegistryIndex();
   } catch (error) {
     throw new RegistryDataError('index_read_failed', 'Failed to read the registry index.', {
-      cause: error,
+      cause: safeCause(error),
     });
   }
 

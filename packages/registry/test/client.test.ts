@@ -1,6 +1,13 @@
+import type * as NodeFs from 'node:fs';
+
 vi.mock('node:fs/promises', () => ({
   readFile: vi.fn(),
 }));
+
+vi.mock('node:fs', async (importOriginal) => {
+  const actual = await importOriginal<typeof NodeFs>();
+  return { ...actual, realpathSync: (path: string) => path };
+});
 
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 

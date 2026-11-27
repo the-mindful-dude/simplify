@@ -23,6 +23,15 @@ export class RegistryClientError extends Error {
   }
 }
 
+/** Keep stable diagnostics without retaining path-bearing filesystem errors. */
+function sanitizeCause(error: unknown): Readonly<{ name: string; code?: string }> | undefined {
+  if (!(error instanceof Error)) {
+    return undefined;
+  }
+  const code = (error as NodeJS.ErrnoException).code;
+  return typeof code === 'string' ? { name: error.name, code } : { name: error.name };
+}
+
 export interface RegistryClientOptions {
   readonly registryRoot?: string;
 }
@@ -41,9 +50,25 @@ export class RegistryClient {
       return buildPath();
     } catch (error) {
       if (error instanceof RegistryArtifactResolverError) {
-        throw new RegistryClientError(error.message, error.code, error);
+        throw new RegistryClientError(error.message, error.code, sanitizeCause(error));
       }
       throw error;
+    }
+  }
+
+  /** Enforce the registry package's containment rule before every read. */
+  private assertReadPathContained(filePath: string): void {
+    try {
+      this.resolvePath(() => this.artifacts.assertReadPathContained(filePath));
+    } catch (error) {
+      if (error instanceof RegistryClientError) {
+        throw error;
+      }
+      throw new RegistryClientError(
+        'Failed to resolve registry file.',
+        'REGISTRY_READ_FAILED',
+        sanitizeCause(error),
+      );
     }
   }
 
@@ -64,6 +89,7 @@ export class RegistryClient {
   }
 
   private async readJsonFile<T>(filePath: string): Promise<T> {
+    this.assertReadPathContained(filePath);
     let raw: string;
     try {
       raw = await readFile(filePath, 'utf8');
@@ -71,15 +97,15 @@ export class RegistryClient {
       const nodeError = error as NodeJS.ErrnoException;
       if (nodeError.code === 'ENOENT') {
         throw new RegistryClientError(
-          `Registry file not found: ${filePath}`,
+          'Registry file not found.',
           'REGISTRY_FILE_NOT_FOUND',
-          error,
+          sanitizeCause(error),
         );
       }
       throw new RegistryClientError(
-        `Failed to read registry file "${filePath}": ${nodeError.message ?? String(error)}`,
+        'Failed to read registry file.',
         'REGISTRY_READ_FAILED',
-        error,
+        sanitizeCause(error),
       );
     }
 
@@ -87,14 +113,15 @@ export class RegistryClient {
       return JSON.parse(raw) as T;
     } catch (error) {
       throw new RegistryClientError(
-        `Failed to parse registry file "${filePath}" as JSON: ${(error as Error).message}`,
+        'Failed to parse registry file as JSON.',
         'REGISTRY_INVALID_JSON',
-        error,
+        sanitizeCause(error),
       );
     }
   }
 
   private async readBytes(filePath: string): Promise<Uint8Array> {
+    this.assertReadPathContained(filePath);
     let buffer: Buffer;
     try {
       buffer = await readFile(filePath);
@@ -102,15 +129,15 @@ export class RegistryClient {
       const nodeError = error as NodeJS.ErrnoException;
       if (nodeError.code === 'ENOENT') {
         throw new RegistryClientError(
-          `Registry file not found: ${filePath}`,
+          'Registry file not found.',
           'REGISTRY_FILE_NOT_FOUND',
-          error,
+          sanitizeCause(error),
         );
       }
       throw new RegistryClientError(
-        `Failed to read registry file "${filePath}": ${nodeError.message ?? String(error)}`,
+        'Failed to read registry file.',
         'REGISTRY_READ_FAILED',
-        error,
+        sanitizeCause(error),
       );
     }
 

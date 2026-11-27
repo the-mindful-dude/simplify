@@ -1,3 +1,4 @@
+import { realpathSync } from 'node:fs';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 
 import { assetIdPattern, semanticVersionPattern } from '@simplify-dev/schemas';
@@ -45,6 +46,17 @@ export interface RegistryArtifactResolverOptions {
 const ASSET_ID_PATTERN = new RegExp(assetIdPattern);
 const VERSION_PATTERN = new RegExp(semanticVersionPattern);
 const LIBRARY_ID_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+
+/** The single containment rule shared by lexical and real-path checks. */
+function isWithinRegistryRoot(root: string, target: string): boolean {
+  const relativeTarget = relative(root, target);
+  return (
+    relativeTarget !== '' &&
+    relativeTarget !== '..' &&
+    !relativeTarget.startsWith(`..${sep}`) &&
+    !isAbsolute(relativeTarget)
+  );
+}
 
 function assertAssetId(assetId: string): void {
   if (!ASSET_ID_PATTERN.test(assetId)) {
@@ -95,8 +107,9 @@ function assertSourcePath(sourcePath: string): void {
 }
 
 /**
- * Pure path resolver for registry source-v1 artifacts. It owns path
- * construction and input validation; callers remain responsible for reads.
+ * Path authority for registry source-v1 artifacts. It owns path construction,
+ * input validation, and the authoritative real-path containment check;
+ * callers remain responsible for `readFile`.
  */
 export class RegistryArtifactResolver {
   private readonly registryRoot: string;
@@ -150,16 +163,29 @@ export class RegistryArtifactResolver {
     return this.containedPath('libraries', libraryId, `@${version}`, 'manifest.json');
   }
 
+  /**
+   * Verify that a constructed path resolves to a real file inside the real
+   * registry root. A missing target is reported by the caller's read, so it is
+   * intentionally left to that read rather than becoming a containment error.
+   */
+  assertReadPathContained(filePath: string): void {
+    const realRoot = this.realPathOrMissing(this.registryRoot);
+    const realTarget = this.realPathOrMissing(filePath);
+    if (realRoot === undefined || realTarget === undefined) {
+      return;
+    }
+    if (!isWithinRegistryRoot(realRoot, realTarget)) {
+      throw new RegistryArtifactResolverError(
+        'PATH_ESCAPES_ROOT',
+        'Resolved registry path escapes the registry root.',
+      );
+    }
+  }
+
   /** Normalize and verify containment after path construction, never before. */
   private containedPath(...segments: string[]): string {
     const target = resolve(this.registryRoot, ...segments);
-    const relativeTarget = relative(this.registryRoot, target);
-    if (
-      relativeTarget === '' ||
-      relativeTarget === '..' ||
-      relativeTarget.startsWith(`..${sep}`) ||
-      isAbsolute(relativeTarget)
-    ) {
+    if (!isWithinRegistryRoot(this.registryRoot, target)) {
       throw new RegistryArtifactResolverError(
         'PATH_ESCAPES_ROOT',
         'Resolved registry path escapes the registry root.',
@@ -167,5 +193,16 @@ export class RegistryArtifactResolver {
       );
     }
     return target;
+  }
+
+  private realPathOrMissing(path: string): string | undefined {
+    try {
+      return realpathSync(path);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        return undefined;
+      }
+      throw error;
+    }
   }
 }
