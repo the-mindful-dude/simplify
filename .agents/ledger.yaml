@@ -1130,3 +1130,138 @@ implementation_phase:
         - '.agents/reports/I-F1.4-I-F1.8-signoffs.md'
       open_risks: []
       commit: b8312e8
+    - id: I-F1.9-R
+      objective: 'Reproduce and define bounded repair for lexical-only registry path containment and raw error cause retention.'
+      owner: explore
+      reviewer: null
+      signoff: []
+      dependencies: []
+      acceptance:
+        - 'Report exact file:line evidence, reproduction method, smallest bounded bugfixer scope, and verification commands.'
+      verification:
+        - 'Read-only inspection; no files changed by the research owner.'
+      status: done
+      lease: null
+      evidence:
+        - 'Read-only research found no symlinks currently checked in; lexical containment at artifact-resolver.ts:154-170 can be followed by readFile at client/index.ts:69,100.'
+        - 'Raw cause retention identified at repository.ts:57 and propagated through errors.ts:41,48 and modules/core/src/errors.ts:23; no current web disclosure found.'
+        - 'Coordinator decisions: allow benign in-root symlinks, reject out-of-root resolution, reuse PATH_ESCAPES_ROOT, sanitize client messages and adapter cause, accept documented TOCTOU residual.'
+      reports:
+        - '.agents/reports/I-F1.9-R-findings.md'
+      open_risks:
+        - 'TOCTOU race remains between realpath and readFile; fd-based O_NOFOLLOW reads are out of scope.'
+      commit: null
+    - id: I-F1.10-A
+      objective: 'Recommend an architecture decision for ADR-012 published-layout conflict and registry content gaps.'
+      owner: architect
+      reviewer: null
+      signoff: []
+      dependencies: [I-F1.10-R]
+      acceptance:
+        - 'Report must state whether source-v1-only or published-v1 support is architecturally correct, reconcile ADR-012:24-30, and identify any user decision required.'
+      verification:
+        - 'Evidence-based recommendation with file:line references and no source edits.'
+      status: done
+      lease: null
+      evidence:
+        - 'Architect recommends Option A: reconcile ADR-012 to source-v1-only, reject unknown layouts by design, and defer published-v1 until immutable artifacts and publication pipeline exist.'
+        - 'User approved Option A and approved adding real source files in a later asset phase; index/manifest gap is accepted as discovery-only catalogue semantics.'
+      reports:
+        - '.agents/reports/I-F1.10-R-findings.md'
+        - '.agents/reports/I-F1.10-A-recommendation.md'
+        - '.agents/decisions/DECISION-FE-FOUNDATION-003.md'
+      open_risks:
+        - 'Seven declared source files remain absent under an explicit user-approved later-phase exception.'
+      commit: null
+    - id: I-F1.9
+      objective: 'Harden registry file reads with real-path containment and sanitize error causes/messages.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.9-R]
+      acceptance:
+        - 'RegistryClient read paths reject symlinks resolving outside the resolved registry root while allowing benign in-root and symlinked-ancestor reads.'
+        - 'Missing-file and invalid-JSON semantics remain stable; public error messages and retained causes contain no absolute filesystem paths.'
+        - 'One authoritative containment rule stays in packages/registry; module adapter adds no second FS/path implementation.'
+        - 'Regression tests cover out-of-root file symlink, intermediate directory symlink, benign in-root symlink, symlinked root ancestor, missing file, and invalid JSON.'
+      verification:
+        - 'pnpm --filter @simplify-dev/registry test && pnpm --filter @simplify-dev/registry typecheck && pnpm --filter @simplify-dev/registry lint'
+        - 'pnpm --filter @simplify-dev/module-registry test && pnpm --filter @simplify-dev/module-registry typecheck && pnpm --filter @simplify-dev/module-registry lint'
+        - 'pnpm --filter @simplify-dev/cli test'
+        - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
+      status: in_progress
+      lease:
+        {
+          owner: bugfixer,
+          paths:
+            [
+              packages/registry/src/artifact-resolver.ts,
+              packages/registry/src/client/index.ts,
+              packages/registry/test/artifact-resolver.test.ts,
+              packages/registry/test/client.test.ts,
+              packages/registry/test/client-symlink.test.ts,
+              modules/registry/src/server/repository.ts,
+              modules/registry/test/query-contract.test.ts,
+              modules/registry/test/server-error.test.ts,
+            ],
+          task: I-F1.9,
+        }
+      evidence: []
+      reports:
+        - '.agents/reports/I-F1.9-R-findings.md'
+      open_risks:
+        - 'TOCTOU between realpath and readFile remains for a mutable registry; static checked-in registry is the supported boundary.'
+      commit: null
+    - id: I-F1.11
+      objective: 'Reconcile ADR-012 and registry docs with source-v1-only behavior and approved missing-source exception.'
+      owner: documenter
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: [I-F1.10-A]
+      acceptance:
+        - 'ADR-012 states only source-v1 is defined, unknown layouts are rejected by design, and published-v1 activation requires a superseding ADR plus real immutable artifacts and publication pipeline.'
+        - 'Registry docs state index entries are discovery summaries and only entries with versioned manifests and present source files are installable.'
+        - 'No source code, schemas, manifest content, lockfiles, or published-layout implementation is changed.'
+      verification:
+        - 'pnpm exec prettier --check .agents/decisions/ADR-012-registry-repository-and-artifact-layout.md registry/README.md docs/specifications/registry-index.md'
+        - 'Coordinator diff review confirms documentation-only changes and exact alignment with the implemented resolver.'
+      status: in_progress
+      lease:
+        {
+          owner: documenter,
+          paths:
+            [
+              .agents/decisions/ADR-012-registry-repository-and-artifact-layout.md,
+              registry/README.md,
+              docs/specifications/registry-index.md,
+            ],
+          task: I-F1.11,
+        }
+      evidence: []
+      reports:
+        - '.agents/reports/I-F1.10-R-findings.md'
+      open_risks: []
+      commit: null
+    - id: I-F1.12
+      objective: 'Add real source implementations for the seven declared files in a later asset-content phase.'
+      owner: coder
+      reviewer: reviewer
+      signoff: [reviewer]
+      dependencies: [I-F1.11]
+      acceptance:
+        - 'Every declared source mapping in the six tracked versioned manifests exists under the canonical registry tree and contains a real implementation.'
+        - 'A CLI test installs at least one real declared source file through RegistryClient and SourceInstaller without mocked registry bytes.'
+        - 'No manifests become discovery-only placeholders and no test assertions are weakened.'
+      verification:
+        - 'git ls-files "registry/**/src/**"'
+        - 'pnpm --filter @simplify-dev/registry test && pnpm --filter @simplify-dev/cli test'
+        - 'pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build'
+      status: not_started
+      lease: null
+      evidence: []
+      reports:
+        - '.agents/reports/I-F1.10-R-findings.md'
+        - '.agents/decisions/DECISION-FE-FOUNDATION-003.md'
+      open_risks:
+        - 'Explicit user-approved exception: source installs for six tracked assets remain unavailable until this later-phase task is completed.'
+      commit: null

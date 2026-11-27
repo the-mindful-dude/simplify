@@ -30,14 +30,14 @@ owners:
     owner: coder
     task: I-F1.2
   - path: packages/registry/**
-    owner: coder
-    task: I-F1.3
+    owner: bugfixer
+    task: I-F1.9
   - path: packages/cli/test/**
     owner: coder
     task: I-F1.3b
   - path: modules/registry/**
-    owner: coder
-    task: I-F1.4
+    owner: bugfixer
+    task: I-F1.9
   - path: apps/web/lib/registry-data.ts
     owner: coder
     task: I-F1.4
@@ -47,6 +47,15 @@ owners:
   - path: apps/web/lib/types.ts
     owner: coder
     task: I-F1.4
+  - path: .agents/decisions/ADR-012-registry-repository-and-artifact-layout.md
+    owner: documenter
+    task: I-F1.11
+  - path: registry/README.md
+    owner: documenter
+    task: I-F1.11
+  - path: docs/specifications/registry-index.md
+    owner: documenter
+    task: I-F1.11
   - path: AGENTS.md
     owner: documenter
     task: I-F1.5
