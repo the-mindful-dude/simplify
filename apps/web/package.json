@@ -13,6 +13,7 @@
     "clean": "rm -rf .next dist"
   },
   "dependencies": {
+    "@simplify-dev/module-registry": "workspace:*",
     "@simplify-dev/registry": "workspace:*",
     "@simplify-dev/tokens": "workspace:*",
     "@simplify-dev/ui": "workspace:*",

@@ -8,7 +8,12 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   outputFileTracingRoot: path.join(currentDirectory, '../..'),
-  transpilePackages: ['@simplify-dev/registry', '@simplify-dev/tokens', '@simplify-dev/ui'],
+  transpilePackages: [
+    '@simplify-dev/module-registry',
+    '@simplify-dev/registry',
+    '@simplify-dev/tokens',
+    '@simplify-dev/ui',
+  ],
 };
 
 export default nextConfig;

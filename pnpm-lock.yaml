@@ -74,6 +74,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@simplify-dev/module-registry':
+        specifier: workspace:*
+        version: link:../../modules/registry
       '@simplify-dev/registry':
         specifier: workspace:*
         version: link:../../packages/registry
@@ -95,6 +98,18 @@ importers:
 
   modules/core:
     dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.108.4
+        version: 5.108.4(@types/react@19.3.0)(react@19.3.1)
+
+  modules/registry:
+    dependencies:
+      '@simplify-dev/module-core':
+        specifier: workspace:*
+        version: link:../core
+      '@simplify-dev/registry':
+        specifier: workspace:*
+        version: link:../../packages/registry
       '@tanstack/react-query':
         specifier: ^5.108.4
         version: 5.108.4(@types/react@19.3.0)(react@19.3.1)
