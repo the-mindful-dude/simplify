@@ -902,14 +902,14 @@ implementation_phase:
     - id: I-F1.4
       objective: 'Create frontend modules/registry with repository port, server adapter, queries and view mapping.'
       owner: coder
-      reviewer: null
-      signoff: []
+      reviewer: reviewer
+      signoff: [reviewer, security]
       dependencies: [I-F1.2, I-F1.3]
       acceptance:
         - 'Only module-registry/server reads fs; server-only assertion passes; web page unchanged; no duplicated validation.'
       verification:
         - 'module tests; pnpm --filter @simplify-dev/web build; boundary checker'
-      status: in_progress
+      status: done
       lease:
         {
           owner: coder,
@@ -919,13 +919,23 @@ implementation_phase:
               apps/web/lib/registry-data.ts,
               apps/web/lib/catalog.ts,
               apps/web/lib/types.ts,
+              apps/web/package.json,
+              apps/web/next.config.mjs,
+              pnpm-lock.yaml,
             ],
           task: I-F1.4,
         }
-      evidence: []
-      reports: []
-      open_risks: []
-      commit: null
+      evidence:
+        - 'Implemented @simplify-dev/module-registry with client-safe root, RegistryRepository port, query keys/hooks/options, error/state mapping, view mappers/types, and server-only ./server adapter delegating paths/validation to @simplify-dev/registry.'
+        - 'apps/web lib files are thin compatibility re-exports; web package/next config and pnpm-lock importer wire the new workspace module without reintroducing @simplify-dev/blocks.'
+        - 'Coordinator full gate chain exit 0: frozen install, module build/test/typecheck/lint, web build, format, lint, typecheck, test, root build, boundary self-test 27/27, scan 194 files/0 findings. Module tests 3 files/16; full tests 22/22 tasks.'
+        - 'An initial format failure was rechecked by scoped Prettier (all files unchanged) and the subsequent full format:check passed; no remaining formatting defect.'
+        - 'Reviewer I-F1.R5 APPROVE; security I-F1.S5 APPROVE; rendered-HTML parity inferred from identical mapper logic plus successful static generation, not byte-level snapshot.'
+      reports:
+        - '.agents/reports/I-F1.4-I-F1.8-signoffs.md'
+      open_risks:
+        - 'Low pre-existing residual: symlink-aware containment absent in @simplify-dev/registry; tracked for bounded remediation.'
+      commit: 077dcf7
     - id: I-F1.5
       objective: 'Reconcile framework docs/ADRs and ratify ADR-007..015.'
       owner: documenter
@@ -960,13 +970,13 @@ implementation_phase:
       objective: 'Fix blocks React 19 peers, refresh the authoritative lockfile, and remove an unused web blocks dependency if confirmed.'
       owner: bugfixer
       reviewer: reviewer
-      signoff: []
+      signoff: [reviewer, security]
       dependencies: [I-F1.2]
       acceptance:
         - 'No React 18 peers; pnpm-lock.yaml reflects both core and blocks manifests; unused @simplify-dev/blocks removed from apps/web only if proven unused; gates pass.'
       verification:
         - 'pnpm install --frozen-lockfile; pnpm build; pnpm format:check'
-      status: in_progress
+      status: done
       lease:
         {
           owner: bugfixer,
@@ -980,10 +990,16 @@ implementation_phase:
             ],
           task: I-F1.6,
         }
-      evidence: []
-      reports: []
-      open_risks: []
-      commit: null
+      evidence:
+        - 'packages/blocks React/React-DOM peers set to ^19.0.0; apps/web removed the unused @simplify-dev/blocks dependency and stale transpilePackages entry; pnpm-lock.yaml regenerated with React 18 transitives dropped and the content-type@2.1.0 override plus TanStack entries preserved.'
+        - 'package-lock.json intentionally unchanged per ADR-002 root-only limitation; grep confirmed no remaining @simplify-dev/blocks reference in apps/web.'
+        - 'Coordinator full gate chain exit 0: frozen install, format, lint, typecheck, test, build, boundary self-test 27/27, repo scan 177 files/0 findings; only the two known registry-data.ts Turbopack warnings remain.'
+        - 'Reviewer I-F1.R4 APPROVE; security I-F1.S4 APPROVE with a medium residual assigned to I-F1.8.'
+      reports:
+        - '.agents/reports/I-F1.6-review-signoff.md'
+      open_risks:
+        - 'Checked-in registry asset manifests still declare React 18 peers; remediated by I-F1.8.'
+      commit: dd3dc03
     - id: I-F1.6b
       objective: 'Correct stale web/token READMEs and the ADR-003 removed-styles.css reference.'
       owner: documenter
@@ -1072,3 +1088,45 @@ implementation_phase:
       open_risks:
         - 'Scoped override is outside upstream ^3.0.0 range; exact pin may miss future 2.x security patches.'
       commit: a184646
+    - id: I-F1.8
+      objective: 'Remediate security residual: replace authoritative React 18 peer declarations with React 19 and prevent generator reintroduction.'
+      owner: bugfixer
+      reviewer: reviewer
+      signoff: [reviewer, security]
+      dependencies: [I-F1.6]
+      acceptance:
+        - 'No React 18 peer declarations remain in tracked registry manifests, CLI asset-create defaults, or peer-specific CLI fixtures.'
+        - 'Generated UI manifests assert react@^19.0.0 as a peer; existing planner/hybrid installer behavior tests continue to pass with updated fixtures.'
+        - 'No lockfiles, schemas, framework-neutral docs, detection/doctor fixtures, or generic package-installer/phase9 fixtures are changed.'
+      verification:
+        - 'pnpm exec prettier --check "registry/**/*.json" "packages/cli/src/commands/asset-create.ts" "packages/cli/test/asset-create.test.ts" "packages/cli/test/installation-planner.test.ts" "packages/cli/test/hybrid-installer.test.ts"'
+        - 'pnpm exec vitest run --config vitest.shared.ts packages/cli/test/asset-create.test.ts packages/cli/test/installation-planner.test.ts packages/cli/test/hybrid-installer.test.ts'
+        - 'pnpm --filter @simplify-dev/cli typecheck && pnpm --filter @simplify-dev/cli lint'
+      status: done
+      lease:
+        {
+          owner: bugfixer,
+          paths:
+            [
+              registry/blocks/agent-chat/@1.0.0/asset.json,
+              registry/recipes/agent-chat-postgres/@1.0.0/asset.json,
+              registry/ui/button/@1.0.0/asset.json,
+              registry/integrations/vercel-ai/@1.0.0/asset.json,
+              packages/cli/src/commands/asset-create.ts,
+              packages/cli/test/asset-create.test.ts,
+              packages/cli/test/installation-planner.test.ts,
+              packages/cli/test/hybrid-installer.test.ts,
+            ],
+          task: I-F1.8,
+        }
+      evidence:
+        - 'Seven authoritative React peer declarations in four registry manifests changed from ^18.3.1 to ^19.0.0; CLI generator default changed from ^18.2.0 to ^19.0.0; peer-specific planner/hybrid fixtures updated without weakening assertions.'
+        - 'Added asset-create regression test proving generated UI manifests declare react@^19.0.0 as peer and still validate; before-fix reproduction failed exactly on ^18.2.0 vs ^19.0.0.'
+        - 'Coordinator authoritative grep returned exit 1 (no React 18 peer matches in the four manifests, generator, and named tests); no lockfile, schema, docs, detection/doctor, or generic installer fixtures changed.'
+        - 'Bugfixer targeted checks passed: Prettier, CLI typecheck/lint, and 3 files/37 tests; coordinator full chain also passed with CLI 16 files/208 tests.'
+        - 'Reviewer I-F1.R5 APPROVE; security I-F1.S5 APPROVE; I-F1.S4 medium residual resolved.'
+      reports:
+        - '.agents/reports/I-F1.8-R-findings.md'
+        - '.agents/reports/I-F1.4-I-F1.8-signoffs.md'
+      open_risks: []
+      commit: b8312e8
